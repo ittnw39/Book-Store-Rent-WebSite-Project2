@@ -1,5 +1,6 @@
 package io.elice.shoppingmall.cart.entity;
 
+import io.elice.shoppingmall.order.entity.OrderOption;
 import io.elice.shoppingmall.product.entity.Book;
 import io.elice.shoppingmall.user.entity.User;
 import jakarta.persistence.Column;
@@ -36,8 +37,3 @@ public class Cart {
     @JoinColumn(name = "book_id")
     private Book book;
 }
-
-enum OrderOption {
-    RENTED,
-    AVAILABLE
-};

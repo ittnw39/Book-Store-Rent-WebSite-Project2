@@ -59,10 +59,7 @@ public class User {
     @Column(nullable = false, name = "created_at")
     private Date createdAt;
 
-    @OneToOne(mappedBy = "point", cascade = CascadeType.REMOVE)
-    private Point point;
-
-    @OneToOne(mappedBy = "wish_list", cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private WishList wishList;
 
     @OneToMany(mappedBy = "user")
@@ -71,9 +68,6 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Review> review;
 
-    @OneToOne(mappedBy = "cart", cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Cart cart;
-
-    @OneToOne(mappedBy = "rental_user")
-    private RentalUser rentalUser;
 }

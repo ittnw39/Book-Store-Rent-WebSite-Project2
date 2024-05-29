@@ -50,8 +50,3 @@ public class Orders {
     @OneToMany(mappedBy = "orders")
     private List<OrderLine> orderLine;
 }
-
-enum OrderOption {
-    RENTED,
-    AVAILABLE
-};

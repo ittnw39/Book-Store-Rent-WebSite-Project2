@@ -67,16 +67,18 @@ public class Book {
     @OneToMany(mappedBy = "book")
     private List<BookWishList> bookWishList = new ArrayList<>();
 
-    @OneToOne(mappedBy = "author")
+    @OneToOne
+    @JoinColumn(name = "author_id")
     private Author author;
 
-    @OneToOne(mappedBy = "category")
+    @OneToOne
+    @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToOne(mappedBy = "cart", cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "book", cascade = CascadeType.REMOVE)
     private Cart cart;
 
-    @OneToOne(mappedBy = "event")
+    @OneToOne(mappedBy = "book")
     private Event event;
 
     @OneToMany(mappedBy = "book")

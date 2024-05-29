@@ -23,8 +23,4 @@ public class Author {
 
     @Column(nullable = false)
     private String description;
-
-    @OneToOne
-    @JoinColumn(name = "book_id")
-    private Book book;
 }

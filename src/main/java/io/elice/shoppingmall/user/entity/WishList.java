@@ -26,6 +26,6 @@ public class WishList {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "wish_list")
+    @OneToMany(mappedBy = "wishList")
     private List<BookWishList> bookWishList = new ArrayList<>();
 }
