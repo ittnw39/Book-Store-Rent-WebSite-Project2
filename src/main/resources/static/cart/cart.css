@@ -1,0 +1,268 @@
+.header-search-input {
+  width: 20rem;
+}
+
+.navbar-menu .is-info:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.cart-header {
+  border-bottom: #dbdbdb solid 1px;
+  margin-bottom: 2rem;
+  display: flex;
+}
+
+.cart-header .title {
+  margin-bottom: 0;
+  padding: 1rem 0 0 1rem;
+}
+
+.cart-header .subtitle {
+  padding: 3rem 1rem 0 1rem;
+  line-height: 2.5rem;
+}
+
+.cart-products {
+  height: 100%;
+}
+
+.cart-products-container {
+  width: 100%;
+}
+
+.cart-products-header {
+  width: 100%;
+  margin-bottom: 0.5rem;
+  border-bottom: #555 solid 1px;
+  padding-top: 0.75rem;
+  display: flex;
+}
+
+.cart-products-header .help {
+  display: inline-block;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.cart-products-header label {
+  display: inline-block;
+  line-height: 0.5rem;
+  border-radius: 100%;
+}
+
+.cart-products-header input {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.cart-products-header .seperator {
+  line-height: 0.8rem;
+}
+
+.cart-products-header .delete-part {
+  cursor: pointer;
+  line-height: 1rem;
+}
+
+.cart-product-item {
+  padding-top: 0.3rem;
+  padding-bottom: 2rem;
+  margin-bottom: 0.5rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.cart-product-item:not(:last-child) {
+  border-bottom: #ddd solid 1px;
+}
+
+.cart-product-item label {
+  position: absolute;
+  top: 0.2rem;
+}
+
+.cart-product-item .delete-button {
+  position: absolute;
+  top: -0.1rem;
+  right: -0.5rem;
+  border: none;
+  background-color: transparent;
+  font-size: 1rem;
+  color: #bdbdbd;
+  cursor: pointer;
+}
+
+.cart-product-item .image {
+  display: inline-block;
+  margin-left: 1.2rem;
+  cursor: pointer;
+}
+
+.cart-product-item input {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.cart-product-item .content {
+  flex-basis: 12rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 1rem;
+  margin-bottom: 0;
+}
+
+.cart-product-item .content p {
+  font-size: 1.4rem;
+  margin-bottom: 0.5em;
+  cursor: pointer;
+}
+
+.cart-product-item .content p:hover {
+  opacity: 0.8;
+}
+
+.cart-product-item .quantity .button {
+  font-size: 0.6rem;
+  padding: 1px 9px;
+  border-color: #aaa;
+}
+
+.cart-product-item .quantity .input {
+  width: 2.5rem;
+  height: 1.5rem;
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
+}
+
+/* 숫자 input의 위 아래 화살표 제거 */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.calculation {
+  margin-left: 2rem;
+  padding: 0 0.5rem;
+  flex-grow: 1;
+  display: flex;
+  justify-content: space-around;
+}
+
+.calculation .icon {
+  color: #888;
+}
+
+.calculation p {
+  display: block;
+  font-size: 1.4rem;
+}
+
+.tile-order-summary {
+  height: 100%;
+  position: sticky;
+  top: 0.5rem;
+}
+
+.order-summary {
+  background-color: #f0f5f7;
+  width: 100%;
+}
+
+.order-summary .header {
+  border-bottom: #555 solid 1px;
+  font-size: 1.4rem;
+}
+
+.order-info {
+  border-bottom: #555 solid 1px;
+}
+
+.order-info .info {
+  margin-top: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.1rem;
+}
+
+.order-info .info:first-child {
+  margin-top: 1.2rem;
+}
+
+.order-info .info:last-child {
+  margin-bottom: 1.2rem;
+}
+
+.order-info .info p {
+  display: block;
+}
+
+.total {
+  margin-top: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.total P {
+  display: block;
+}
+
+.total .total-label {
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-top: 0.5rem;
+}
+
+.total .total-price {
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+.purchase {
+  margin-top: 3rem;
+  padding: 0.2rem 0;
+}
+
+.purchase button {
+  font-size: 1.4rem;
+  font-weight: 800;
+  width: 100%;
+  height: 4rem;
+}
+
+@media only screen and (max-width: 500px) {
+  .cart-product-item {
+    flex-direction: column;
+  }
+
+  .cart-product-item label {
+    left: 0;
+  }
+
+  .cart-product-item .image {
+    height: 150px;
+    width: 150px;
+    margin-top: 1rem;
+  }
+
+  .cart-product-item .content {
+    flex-basis: 2rem;
+    margin-top: 2rem;
+  }
+
+  .cart-product-item .content p {
+    margin-top: 0.5rem;
+  }
+
+  .calculation {
+    margin-top: 1rem;
+    margin-left: 0;
+    width: 100%;
+  }
+}

@@ -1,0 +1,51 @@
+/* 헤더  */
+.header-search-input {
+  width: 20rem;
+}
+
+.navbar-menu .is-info:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.account-header {
+  display: block;
+  border-bottom: #ddd 1px solid;
+  padding-bottom: 0.7rem;
+}
+
+.heading {
+  font-size: 0.8rem;
+}
+
+/* 주문 리스트 */
+.orders-container {
+  max-width: 1000px !important;
+  margin: 5rem auto 2rem auto;
+}
+
+.orders-top {
+  text-align: center;
+  border-bottom: #aaa 1px solid;
+  padding: 0;
+}
+
+.orders-item {
+  text-align: center;
+  align-items: center;
+}
+
+.orders-item:not(:last-child) {
+  border-bottom: #bbb 1px solid;
+}
+
+.order-summary {
+  white-space: pre-line;
+}
+
+.modal .box {
+  text-align: center;
+}
+.modal .buttons {
+  justify-content: center;
+}

@@ -1,0 +1,53 @@
+/* 헤더  */
+.header-search-input {
+  width: 20rem;
+}
+
+.navbar-menu .is-info:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* 이미지 슬라이드  */
+.slider-arrow-container {
+  position: relative;
+}
+.slider-arrow {
+  position: absolute;
+  top: 500px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  z-index: 1;
+}
+.slider-arrow:hover {
+  opacity: 0.6;
+}
+.slider-arrow-left {
+  left: 0;
+}
+.slider-arrow-right {
+  right: 0;
+}
+.slider-navigation-previous {
+  display: none;
+}
+.slider-navigation-next {
+  display: none;
+}
+
+#slider .card {
+  outline: none;
+  border: white 1px solid;
+  box-shadow: none;
+  cursor: pointer;
+}
+#slider .title:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+#slider .notification:not(:last-child) {
+  margin-bottom: 0;
+}
+#slider .column {
+  padding: 0;
+}

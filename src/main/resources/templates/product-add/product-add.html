@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shopping Mall</title>
+    <!-- 아이콘 -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/elice-rabbit-favicon.png"
+    />
+    <!-- bulma css 관련 -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+    />
+    <!-- 폰트 어썸: 아이콘 -->
+    <script
+      defer
+      src="https://kit.fontawesome.com/9daa42bcef.js"
+      crossorigin="anonymous"
+    ></script>
+    <!-- AWS S3 사용하기 위한 파일 -->
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.410.0.min.js"></script>
+    <!-- 커스텀 css, js -->
+    <link rel="stylesheet" href="/product-add/product-add.css" />
+    <script src="/product-add/product-add.js" type="module" defer></script>
+  </head>
+  <body>
+    <!-- 헤더 -->
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="container mt-3">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="/">
+            <img src="/elice-rabbit.png" width="30" height="30" />
+            <span class="has-text-link">Shopping Mall</span>
+          </a>
+
+          <a
+            role="button"
+            class="navbar-burger"
+            aria-label="menu"
+            aria-expanded="false"
+            data-target="navbarBasicExample"
+          >
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+
+        <div id="navbarBasicExample" class="navbar-menu">
+          <div class="navbar-end breadcrumb my-auto" aria-label="breadcrumbs">
+            <ul id="navbar">
+              <li>
+                <a href="/cart" aria-current="page">
+                  <span class="icon">
+                    <i class="fas fa-cart-shopping"></i>
+                  </span>
+                  <span>카트</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- 제품 추가 폼(Form) -->
+    <section class="section">
+      <div class="container">
+        <div class="block account-header">
+          <h1 class="subtitle is-4">제품판매</h1>
+        </div>
+        <div class="register-product-form-container">
+          <form class="box register-product-form-box" id="registerProductForm">
+            <p class="title is-5 has-text-primary">제품을 판매해 보세요</p>
+            <div class="field">
+              <label class="label" for="titleInput">제품 이름</label>
+              <div class="control">
+                <input
+                  class="input"
+                  id="titleInput"
+                  type="text"
+                  placeholder="아이보리 티셔츠"
+                  autocomplete="on"
+                />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label" for="categorySelectBox">카테고리</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select id="categorySelectBox">
+                    <option value="">카테고리를 선택해 주세요.</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label" for="manufacturerInput">제조사</label>
+              <div class="control">
+                <input
+                  class="input"
+                  id="manufacturerInput"
+                  type="text"
+                  placeholder="OO의류제조(주)"
+                  autocomplete="on"
+                />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label" for="shortDescriptionInput">요약 설명</label>
+              <div class="control">
+                <textarea
+                  class="textarea"
+                  id="shortDescriptionInput"
+                  rows="3"
+                  placeholder="제품에 대한 1~2문장의 설명을 적어 주세요."
+                  autocomplete="on"
+                ></textarea>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label" for="detailDescriptionInput"
+                >상세 설명</label
+              >
+              <div class="control">
+                <textarea
+                  class="textarea"
+                  id="detailDescriptionInput"
+                  rows="8"
+                  placeholder="제품에 대한 상세 설명을 적어 주세요."
+                  autocomplete="on"
+                ></textarea>
+              </div>
+            </div>
+
+            <div class="field is-fullwidth">
+              <label class="label" for="imageInput">제품 사진</label>
+              <div class="file has-name is-fullwidth">
+                <label class="file-label">
+                  <input
+                    class="file-input"
+                    id="imageInput"
+                    type="file"
+                    name="image-file"
+                    accept=".png, .jpeg, .jpg"
+                  />
+                  <span class="file-cta">
+                    <span class="file-icon">
+                      <i class="fas fa-upload"></i>
+                    </span>
+                    <span class="file-label"> 사진 업로드 </span>
+                  </span>
+                  <span class="file-name" id="fileNameSpan">
+                    사진파일 (png, jpg, jpeg)
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label" for="inventoryInput">재고 수</label>
+              <div class="control">
+                <input
+                  class="input"
+                  id="inventoryInput"
+                  type="number"
+                  placeholder="10"
+                  autocomplete="on"
+                />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label" for="priceInput">가격</label>
+              <div class="field">
+                <div class="control has-icons-right">
+                  <input
+                    class="input"
+                    id="priceInput"
+                    type="number"
+                    placeholder="10000"
+                    autocomplete="on"
+                  />
+                  <span class="icon is-small is-right"> 원 </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label" for="searchKeywordInput">검색 키워드</label>
+              <div class="field has-addons">
+                <div class="control header-search-input is-flex-grow-1">
+                  <input
+                    class="input"
+                    id="searchKeywordInput"
+                    type="text"
+                    placeholder="남자옷"
+                  />
+                </div>
+                <div class="control">
+                  <button class="button is-primary" id="addKeywordButton">
+                    추가하기
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="field is-grouped is-grouped-multiline mt-3"
+              id="keywordContainer"
+            ></div>
+
+            <div class="mt-5">
+              <button class="button is-primary is-fullwidth" id="submitButton">
+                제품 판매하기
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

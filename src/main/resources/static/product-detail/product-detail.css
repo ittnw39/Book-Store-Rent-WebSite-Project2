@@ -1,0 +1,77 @@
+.header-search-input {
+  width: 20rem;
+}
+
+.navbar-menu .is-info:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.product-detail-card .product-image {
+  padding: 0;
+}
+
+.product-detail-card .box {
+  box-shadow: none;
+  max-width: 100%;
+}
+
+.product-detail {
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.product-detail .tag {
+  display: inline-block;
+  margin-left: 0.5rem;
+  margin-bottom: 1rem;
+  line-height: 1.5rem;
+}
+
+.detail-description {
+  margin-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.detail-description {
+  white-space: pre-line;
+}
+
+.buttons-container {
+  flex-grow: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+}
+
+.buttons-container button {
+  font-size: 1.3rem;
+  font-weight: 800;
+  width: 48%;
+  height: 4rem;
+  padding: 0rem;
+}
+
+.buttons-container button.is-warning {
+  line-height: 3rem;
+  padding-top: 0.3rem;
+}
+
+.content p:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+
+.content h1:not(:first-child) {
+  margin-top: 0;
+}
+
+@media only screen and (max-width: 500px) {
+  .product-detail-card .buttons-container button {
+    font-size: 1.3rem;
+    font-weight: 800;
+    width: 90%;
+    height: 4rem;
+    padding: 0rem;
+    margin: 0.3rem;
+    margin-left: 0 !important;
+  }
+}

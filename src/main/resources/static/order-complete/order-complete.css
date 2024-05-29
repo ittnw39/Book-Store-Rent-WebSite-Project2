@@ -1,0 +1,58 @@
+.header-search-input {
+  width: 20rem;
+}
+
+.navbar-menu .is-info:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.cart-header {
+  border-bottom: #dbdbdb solid 1px;
+  margin-bottom: 2rem;
+  display: flex;
+}
+
+.cart-header .title {
+  margin-bottom: 0;
+  padding-top: 1rem;
+}
+.subtitle:not(.is-spaced) + .title {
+  margin-top: -0.1rem;
+}
+
+.cart-header .subtitle {
+  padding: 1.5rem 1rem 0 1rem;
+  margin-bottom: 0;
+  line-height: 2.5rem;
+}
+
+.order-complete-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  font-size: 1.3rem;
+}
+
+.order-complete {
+  display: flex;
+  flex-direction: column;
+  padding: 3rem 5rem;
+}
+
+.order-complete .icon-text {
+  margin-bottom: 2rem;
+  font-size: 1.6rem;
+  flex-grow: 1;
+  justify-content: center;
+}
+
+.icon-text .icon {
+  margin-bottom: 1rem;
+}
+
+.order-complete .button:first-child {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}

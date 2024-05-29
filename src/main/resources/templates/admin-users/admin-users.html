@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shopping Mall</title>
+    <!-- 아이콘 -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/elice-rabbit-favicon.png"
+    />
+    <!-- bulma css -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+    />
+    <!-- 폰트 어썸: 아이콘 -->
+    <script
+      defer
+      src="https://kit.fontawesome.com/9daa42bcef.js"
+      crossorigin="anonymous"
+    ></script>
+    <!-- 커스텀 css, js -->
+    <link rel="stylesheet" href="/admin-users/admin-users.css" />
+    <script src="/admin-users/admin-users.js" type="module" defer></script>
+  </head>
+  <body>
+    <!-- 헤더 -->
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="container mt-3">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="/">
+            <img src="/elice-rabbit.png" width="30" height="30" />
+            <span class="has-text-link">Shopping Mall</span>
+          </a>
+
+          <a
+            role="button"
+            class="navbar-burger"
+            aria-label="menu"
+            aria-expanded="false"
+            data-target="navbarBasicExample"
+          >
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+
+        <div class="navbar-end breadcrumb my-auto" aria-label="breadcrumbs">
+          <ul id="navbar">
+            <li>
+              <a href="/cart" aria-current="page">
+                <span class="icon">
+                  <i class="fas fa-cart-shopping"></i>
+                </span>
+                <span>카트</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- 회원관리 -->
+    <section class="section">
+      <div class="container">
+        <!-- 제목 -->
+        <div class="block account-header">
+          <h1 class="subtitle is-4">회원관리</h1>
+        </div>
+
+        <!-- 총 요약 -->
+        <nav class="level">
+          <div class="level-item has-text-centered">
+            <div>
+              <p class="heading">총회원수</p>
+              <p class="title" id="usersCount">-</p>
+            </div>
+          </div>
+          <div class="level-item has-text-centered">
+            <div>
+              <p class="heading">관리자수</p>
+              <p class="title" id="adminCount">-</p>
+            </div>
+          </div>
+        </nav>
+
+        <!-- 회원 목록 -->
+        <div class="container orders-container" id="usersContainer">
+          <div
+            class="columns notification is-info is-light is-mobile orders-top"
+          >
+            <div class="column is-2">가입날짜</div>
+            <div class="column is-2">이메일</div>
+            <div class="column is-2">이름</div>
+            <div class="column is-2">권한</div>
+            <div class="column is-2">관리</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 회원정보를 정말 삭제할 지 묻는 Modal 창 -->
+    <div id="modal" class="modal">
+      <div class="modal-background" id="modalBackground"></div>
+      <div class="modal-content">
+        <div class="box">
+          <p class="mb-3">
+            회원정보 삭제 시 복구할 수 없습니다. 정말로 삭제하시겠습니까?
+          </p>
+
+          <div class="buttons">
+            <button
+              class="button mt-5"
+              id="deleteCompleteButton"
+              aria-label="close"
+            >
+              네
+            </button>
+            <button
+              class="button is-primary mt-5"
+              id="deleteCancelButton"
+              aria-label="close"
+            >
+              아니오
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button
+        class="modal-close is-large"
+        id="modalCloseButton"
+        aria-label="close"
+      ></button>
+    </div>
+  </body>
+</html>

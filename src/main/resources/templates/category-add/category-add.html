@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shopping Mall</title>
+    <!-- 아이콘 -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/elice-rabbit-favicon.png"
+    />
+    <!-- bulma css 관련 -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+    />
+    <!-- 폰트 어썸: 아이콘 -->
+    <script
+      defer
+      src="https://kit.fontawesome.com/9daa42bcef.js"
+      crossorigin="anonymous"
+    ></script>
+    <!-- AWS S3 사용하기 위한 파일 -->
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.410.0.min.js"></script>
+    <!-- 커스텀 css, js -->
+    <link rel="stylesheet" href="/category-add/category-add.css" />
+    <script src="/category-add/category-add.js" type="module" defer></script>
+  </head>
+  <body>
+    <!-- 헤더 -->
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="container mt-3">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="/">
+            <img src="/elice-rabbit.png" width="30" height="30" />
+            <span class="has-text-link">Shopping Mall</span>
+          </a>
+
+          <a
+            role="button"
+            class="navbar-burger"
+            aria-label="menu"
+            aria-expanded="false"
+            data-target="navbarBasicExample"
+          >
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+
+        <div id="navbarBasicExample" class="navbar-menu">
+          <div class="navbar-end breadcrumb my-auto" aria-label="breadcrumbs">
+            <ul id="navbar">
+              <li>
+                <a href="/cart" aria-current="page">
+                  <span class="icon">
+                    <i class="fas fa-cart-shopping"></i>
+                  </span>
+                  <span>카트</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- 카테고리 추가 폼(Form) -->
+    <section class="section">
+      <div class="container">
+        <div class="block account-header">
+          <h1 class="subtitle is-4">카테고리 추가</h1>
+        </div>
+        <div class="register-category-form-container">
+          <form
+            class="box register-category-form-box"
+            id="registerCategoryForm"
+          >
+            <p class="title is-5 has-text-primary">카테고리 추가하기</p>
+            <div class="field">
+              <label class="label" for="titleInput">카테고리 이름</label>
+              <div class="control">
+                <input
+                  class="input"
+                  id="titleInput"
+                  type="text"
+                  placeholder="Men Clothes"
+                  autocomplete="on"
+                />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label" for="descriptionInput">카테고리 설명</label>
+              <div class="control">
+                <input
+                  class="input"
+                  id="descriptionInput"
+                  type="text"
+                  placeholder="센세이셔널한 봄, 여름 코디"
+                  autocomplete="on"
+                />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label" for="themeSelectBox">카테고리 테마</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select id="themeSelectBox">
+                    <option value="">테마를 선택해 주세요.</option>
+
+                    <option
+                      value="is-primary is-light"
+                      style="background-color: #ebfffc; color: #00947e"
+                    >
+                      light skygreen
+                    </option>
+
+                    <option
+                      value="is-link is-light"
+                      style="background-color: #eff1fa; color: #3850b7"
+                    >
+                      light purple
+                    </option>
+
+                    <option
+                      value="is-info is-light"
+                      style="background-color: #eff5fb; color: #296fa8"
+                    >
+                      light blue
+                    </option>
+
+                    <option
+                      value="is-success is-light"
+                      style="background-color: #effaf5; color: #257953"
+                    >
+                      light green
+                    </option>
+
+                    <option
+                      value="is-warning is-light"
+                      style="background-color: #fffaeb; color: #946c00"
+                    >
+                      light yellow
+                    </option>
+
+                    <option
+                      value="is-danger is-light"
+                      style="background-color: #feecf0; color: #cc0f35"
+                    >
+                      light pink
+                    </option>
+
+                    <option
+                      value="is-primary"
+                      style="background-color: #00d1b2; color: #fff"
+                    >
+                      skygreen
+                    </option>
+
+                    <option
+                      value="is-link"
+                      style="background-color: #485fc7; color: #fff"
+                    >
+                      blue
+                    </option>
+
+                    <option
+                      value="is-info"
+                      style="background-color: #3e8ed0; color: #fff"
+                    >
+                      skyblue
+                    </option>
+
+                    <option
+                      value="is-success"
+                      style="background-color: #48c78e; color: #fff"
+                    >
+                      green
+                    </option>
+
+                    <option
+                      value="is-warning"
+                      style="
+                        background-color: #ffe08a;
+                        color: rgba(0, 0, 0, 0.7);
+                      "
+                    >
+                      yellow
+                    </option>
+
+                    <option
+                      value="is-danger"
+                      style="background-color: #f14668; color: #fff"
+                    >
+                      red
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="field is-fullwidth mb-5">
+              <label class="label" for="imageInput">카테고리 사진</label>
+              <div class="file has-name is-fullwidth">
+                <label class="file-label">
+                  <input
+                    class="file-input"
+                    id="imageInput"
+                    type="file"
+                    name="image-file"
+                    accept=".png, .jpeg, .jpg"
+                  />
+                  <span class="file-cta">
+                    <span class="file-icon">
+                      <i class="fas fa-upload"></i>
+                    </span>
+                    <span class="file-label"> 사진 업로드 </span>
+                  </span>
+                  <span class="file-name" id="fileNameSpan">
+                    사진파일 (png, jpg, jpeg)
+                  </span>
+                </label>
+              </div>
+            </div>
+            <button
+              class="button is-primary is-fullwidth"
+              id="addCategoryButton"
+            >
+              카테고리 추가하기
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
