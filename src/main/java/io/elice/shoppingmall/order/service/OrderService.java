@@ -1,14 +1,10 @@
 package io.elice.shoppingmall.order.service;
 
 import io.elice.shoppingmall.order.DTO.OrderDTO;
-import io.elice.shoppingmall.order.entity.OrderLine;
-import io.elice.shoppingmall.order.entity.OrderLineBook;
 import io.elice.shoppingmall.order.entity.Orders;
 import io.elice.shoppingmall.order.mapper.OrderMapper;
-import io.elice.shoppingmall.order.repository.OrderLineBookRepository;
-import io.elice.shoppingmall.order.repository.OrderLineRepository;
 import io.elice.shoppingmall.order.repository.OrderRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,67 +13,47 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import java.util.Optional;
-
 @Service
+@RequiredArgsConstructor
 public class OrderService {
 
-    @Autowired
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
+    private final OrderMapper orderMapper;
 
-    @Autowired
-    private OrderLineRepository orderLineRepository;
-
-    @Autowired
-    private OrderLineBookRepository orderLineBookRepository;
-
-    @Autowired
-    private OrderMapper orderMapper;
-
-    public Optional<Orders> getOrderById(Long id) {
-        return orderRepository.findById(id);
+    @Transactional //주문 생성
+    public Orders createOrder(OrderDTO orderDTO) {
+        Orders order = orderMapper.toOrderEntity(orderDTO);
+        return orderRepository.save(order);
     }
 
-    public Page<Orders> getAllOrders(Pageable pageable) {
-        return orderRepository.findAll(pageable);
+    public OrderDTO getOrderById(Long id) { //주문 아이디로 조회
+        Orders order = orderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+        return orderMapper.toOrderDTO(order);
+    }
+
+    public List<OrderDTO> getAllOrders() {
+        return orderRepository.findAll().stream()
+                .map(orderMapper::toOrderDTO)
+                .collect(Collectors.toList());
+    }
+
+    public Page<OrderDTO> getAllOrders(Pageable pageable) {
+        return orderRepository.findAll(pageable)
+                .map(orderMapper::toOrderDTO);
+    }
+
+    public Page<OrderDTO> getOrdersByUserId(Long userId, Pageable pageable) {
+        return orderRepository.findByUserId(userId, pageable)
+                .map(orderMapper::toOrderDTO);
     }
 
     @Transactional
-    public Orders createOrder(OrderDTO orderDTO) {
-        // OrderDTO를 Orders 엔티티로 변환
-        Orders order = orderMapper.toOrderEntity(orderDTO);
-
-        // Orders 엔티티 저장
-        Orders savedOrder = orderRepository.save(order);
-
-        // OrderLine DTO를 OrderLine 엔티티로 변환 및 저장
-        List<OrderLine> orderLines = orderDTO.getOrderLines().stream()
-                .map(orderLineDTO -> {
-                    OrderLine orderLine = orderMapper.toOrderLineEntity(orderLineDTO);
-                    orderLine.setOrders(savedOrder);
-
-                    // OrderLineBook DTO를 OrderLineBook 엔티티로 변환 및 설정
-                    List<OrderLineBook> orderLineBooks = orderLineDTO.getOrderLineBooks().stream()
-                            .map(orderLineBookDTO -> {
-                                OrderLineBook orderLineBook = orderMapper.toOrderLineBookEntity(orderLineBookDTO);
-                                orderLineBook.setOrderLine(orderLine);
-                                return orderLineBook;
-                            }).collect(Collectors.toList());
-
-                    orderLine.setOrderLineBooks(orderLineBooks);
-
-                    return orderLineRepository.save(orderLine);
-                })
-                .collect(Collectors.toList());
-
-        // OrderLineBook 엔티티 저장
-        for (OrderLine orderLine : orderLines) {
-            orderLine.getOrderLineBooks().forEach(orderLineBook -> {
-                orderLineBookRepository.save(orderLineBook);
-            });
-        }
-
-        return savedOrder;
+    public Orders updateOrder(Long id, OrderDTO orderDTO) {
+        Orders order = orderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+        orderMapper.updateOrderFromDTO(orderDTO, order);
+        return orderRepository.save(order);
     }
 
     @Transactional

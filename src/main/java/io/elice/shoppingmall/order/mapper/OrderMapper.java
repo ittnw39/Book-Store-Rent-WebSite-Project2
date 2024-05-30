@@ -7,6 +7,7 @@ import io.elice.shoppingmall.order.entity.OrderLine;
 import io.elice.shoppingmall.order.entity.OrderLineBook;
 import io.elice.shoppingmall.order.entity.Orders;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 import org.mapstruct.Mapping;
 
@@ -27,4 +28,7 @@ public interface OrderMapper {
     @Mapping(source = "book.id", target = "bookId")
     @Mapping(source = "orderLine.id", target = "orderLineId")
     OrderLineBookDTO toOrderLineBookDTO(OrderLineBook orderLineBook);
+
+    void updateOrderFromDTO(OrderDTO orderDTO, @MappingTarget Orders order);
+    void updateOrderLineFromDTO(OrderLineDTO orderLineDTO, @MappingTarget OrderLine orderLine);
 }

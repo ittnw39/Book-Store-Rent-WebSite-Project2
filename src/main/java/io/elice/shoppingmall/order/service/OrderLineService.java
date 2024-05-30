@@ -1,36 +1,31 @@
 package io.elice.shoppingmall.order.service;
 
+import io.elice.shoppingmall.order.DTO.OrderLineDTO;
 import io.elice.shoppingmall.order.entity.OrderLine;
+import io.elice.shoppingmall.order.mapper.OrderMapper;
 import io.elice.shoppingmall.order.repository.OrderLineRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-
 @Service
+@RequiredArgsConstructor
 public class OrderLineService {
 
-    @Autowired
-    private OrderLineRepository orderLineRepository;
+    private final OrderLineRepository orderLineRepository;
+    private final OrderMapper orderMapper;
 
-    public List<OrderLine> getOrderLinesByOrderId(Long orderId) {
-        return orderLineRepository.findByOrdersId(orderId);
-    }
-
-    public OrderLine getOrderLineById(Long id) {
-        return orderLineRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("OrderLine not found for id: " + id));
+    public OrderLineDTO getOrderLineById(Long orderId) {
+        OrderLine orderLine = orderLineRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("OrderLine not found"));
+        return orderMapper.toOrderLineDTO(orderLine);
     }
 
     @Transactional
-    public OrderLine createOrderLine(OrderLine orderLine) {
+    public OrderLine updateOrderLine(Long orderId, OrderLineDTO orderLineDTO) {
+        OrderLine orderLine = orderLineRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("OrderLine not found"));
+        orderMapper.updateOrderLineFromDTO(orderLineDTO, orderLine);
         return orderLineRepository.save(orderLine);
-    }
-
-    @Transactional
-    public void deleteOrderLine(Long id) {
-        orderLineRepository.deleteById(id);
     }
 }
