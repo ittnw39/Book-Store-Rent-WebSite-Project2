@@ -7,23 +7,14 @@ import io.elice.shoppingmall.etc.entity.Review;
 import io.elice.shoppingmall.order.entity.OrderLineBook;
 import io.elice.shoppingmall.user.entity.BookWishList;
 import io.elice.shoppingmall.user.entity.WishList;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -31,6 +22,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Book {
 
     @Id
@@ -73,11 +65,11 @@ public class Book {
     @OneToMany(mappedBy = "book")
     private List<BookWishList> bookWishList = new ArrayList<>();
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "author_id")
     private Author author;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 

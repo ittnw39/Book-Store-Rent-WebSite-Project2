@@ -1,20 +1,20 @@
 package io.elice.shoppingmall.category.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import io.elice.shoppingmall.product.entity.Book;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Table(name = "category")
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Category {
 
     @Id
@@ -23,4 +23,7 @@ public class Category {
 
     @Column(nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
+    private List<Book> books;
 }
