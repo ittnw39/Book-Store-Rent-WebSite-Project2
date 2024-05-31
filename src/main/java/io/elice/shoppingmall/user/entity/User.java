@@ -10,6 +10,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -22,6 +24,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "user")
 @Getter
@@ -76,4 +80,11 @@ public class User {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Cart cart;
+
+    @OneToOne(mappedBy = "user")
+    private RentalUser rentalUser;
+
+    @ManyToOne
+    @JoinColumn(name = "grade")
+    private Grade grade;
 }

@@ -1,4 +1,4 @@
-package io.elice.shoppingmall.cart.entity;
+package java.io.elice.shoppingmall.cart.entity;
 
 import io.elice.shoppingmall.order.entity.OrderOption;
 import io.elice.shoppingmall.product.entity.Book;
@@ -16,6 +16,8 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.lang.reflect.Member;
 
 @Entity
 @Table(name = "cart")
@@ -42,4 +44,11 @@ public class Cart {
     @OneToOne
     @JoinColumn(name = "book_id")
     private Book book;
+
+    public static Cart createCart(Member member) {
+        Cart cart = new Cart();
+        cart.setMember(member);
+        return cart;
+    }
+
 }
