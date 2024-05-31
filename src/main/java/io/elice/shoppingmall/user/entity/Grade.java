@@ -3,6 +3,7 @@ package io.elice.shoppingmall.user.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,4 +24,5 @@ public class Grade {
 
     @Column(nullable = false, name = "level_instruction")
     private String levelInstruction;
+
 }

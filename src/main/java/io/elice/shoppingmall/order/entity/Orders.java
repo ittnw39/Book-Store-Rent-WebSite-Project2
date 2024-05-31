@@ -7,6 +7,9 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
