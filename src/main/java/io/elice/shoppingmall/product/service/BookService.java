@@ -5,6 +5,8 @@ import io.elice.shoppingmall.product.entity.Book;
 import io.elice.shoppingmall.product.mapper.BookMapper;
 import io.elice.shoppingmall.product.repository.BookRepository;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,5 +33,14 @@ public class BookService {
         return bookRepository.findAll().stream()
                 .map(bookMapper::toBookDTO)
                 .collect(Collectors.toList());
+    }
+
+    public BookDTO getBookById(Long id) {
+        Optional<Book> book = bookRepository.findById(id);
+        if (book.isPresent()) {
+            return bookMapper.toBookDTO(book.get());
+        } else {
+            throw new NoSuchElementException("Book not found with id: " + id);
+        }
     }
 }
