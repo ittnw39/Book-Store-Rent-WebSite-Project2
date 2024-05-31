@@ -30,7 +30,7 @@ public class OrderController {
         return "order-complete/order-complete"; //주문 완료 페이지
     }
 
-    @GetMapping //사용자별 주문 내역 조회
+    @GetMapping("/temp") //사용자별 주문 내역 조회
     public String getAllOrders(@PathVariable Long userId, Model model, @RequestParam(name= "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) { //사용자별 주문내역 조회
         Pageable pageable = PageRequest.of(page, size);
         Page<OrderDTO> orders = orderService.getOrdersByUserId(userId, pageable);

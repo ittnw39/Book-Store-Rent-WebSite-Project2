@@ -11,9 +11,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @Table(name = "order_line")
-@Getter
-@Setter
-@AllArgsConstructor
 public class OrderLine {
 
     @Id
