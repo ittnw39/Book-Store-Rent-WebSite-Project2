@@ -2,6 +2,7 @@ package io.elice.shoppingmall.category.entity;
 
 import io.elice.shoppingmall.product.entity.Book;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @NotEmpty(message = "Name cannot be empty")
     private String name;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)

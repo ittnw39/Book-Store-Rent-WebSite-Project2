@@ -27,17 +27,22 @@ public class CategoryController {
         return "admin-categories";
     }
 
-    @GetMapping("/category/add")
-    public String addCategoryForm(Model model) {
-        model.addAttribute("category", new Category());
-        return "category-add";
-    }
-
     @PostMapping("/category")
-    public String addCategory(@ModelAttribute Category category) {
+    public String addCategory(@RequestBody Category category) {
         categoryService.addCategory(category);
         return "redirect:/admin/category";
     }
+
+    @PutMapping("/category/{categoryId}")
+    public String updateCategory(@PathVariable Long categoryId, @RequestBody Category updatedCategory) {
+        Category category = categoryService.getCategoryById(categoryId);
+        if(category != null) {
+            category.setName(updatedCategory.getName());
+            categoryService.updateCategory(category);
+        }
+        return "redirect:/admin/category";
+    }
+
 
     // 단일 카테고리 삭제
     @DeleteMapping("/category/{categoryId}")

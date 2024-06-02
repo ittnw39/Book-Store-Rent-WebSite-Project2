@@ -25,8 +25,16 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
+    public Category getCategoryById(Long categoryId) {
+        return categoryRepository.findById(categoryId).orElse(null);
+    }
+
     public Category addCategory(Category category) {
         return categoryRepository.save(category);
+    }
+
+    public void updateCategory(Category category) {
+        categoryRepository.save(category);
     }
 
     public void deleteCategory(Long categoryId) {
@@ -37,3 +45,4 @@ public class CategoryService {
         return bookRepository.findByCategoryId(categoryId);
     }
 }
+
