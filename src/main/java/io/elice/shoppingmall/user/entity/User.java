@@ -1,7 +1,7 @@
 package io.elice.shoppingmall.user.entity;
 
 import io.elice.shoppingmall.cart.entity.Cart;
-import io.elice.shoppingmall.etc.entity.Review;
+import io.elice.shoppingmall.product.entity.Review;
 import io.elice.shoppingmall.order.entity.Orders;
 import io.elice.shoppingmall.product.entity.RentalUser;
 import jakarta.persistence.CascadeType;

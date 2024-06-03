@@ -27,18 +27,7 @@ public class BookService {
 
     public BookDTO saveBook(BookDTO bookDTO) {
         Book book = bookMapper.toBookEntity(bookDTO);
-        Author author = book.getAuthor();
-        List<Author> authorList = authorService.searchAuthorByName(author.getName());
-
-        //동명이인을 구분하기 위한 메서드
-        if (authorList != null && !authorList.isEmpty()) {
-            for (int i = 0; i < authorList.size(); i++) {
-                Author searchedAuthor = authorList.get(i);
-                if (searchedAuthor.getBirthDate().equals(author.getBirthDate())) {
-                    book.setAuthor(searchedAuthor);
-                }
-            }
-        }
+        setAuthor(book);
 
         Book savedBook = bookRepository.save(book);
         return bookMapper.toBookDTO(savedBook);
@@ -47,10 +36,17 @@ public class BookService {
     public BookDTO modifyBookInfo(BookDTO bookDTO) {
         Book book = bookMapper.toBookEntity(bookDTO);
         book.setId(bookDTO.getId());
+        setAuthor(book);
+
+        Book updatedBook = bookRepository.save(book);
+        return bookMapper.toBookDTO(updatedBook);
+    }
+
+    //동명의 작가를 생일로 구분하는 메서드
+    private void setAuthor(Book book) {
         Author author = book.getAuthor();
         List<Author> authorList = authorService.searchAuthorByName(author.getName());
 
-        //동명이인을 구분하기 위한 메서드
         if (authorList != null && !authorList.isEmpty()) {
             for (int i = 0; i < authorList.size(); i++) {
                 Author searchedAuthor = authorList.get(i);
@@ -59,9 +55,6 @@ public class BookService {
                 }
             }
         }
-
-        Book updatedBook = bookRepository.save(book);
-        return bookMapper.toBookDTO(updatedBook);
     }
 
     public List<BookDTO> getAllBooks() {

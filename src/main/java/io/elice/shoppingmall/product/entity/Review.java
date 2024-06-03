@@ -1,4 +1,4 @@
-package io.elice.shoppingmall.etc.entity;
+package io.elice.shoppingmall.product.entity;
 
 import io.elice.shoppingmall.product.entity.Book;
 import io.elice.shoppingmall.user.entity.User;
@@ -32,7 +32,6 @@ public class Review {
     @Column(nullable = false)
     private String comment;
 
-    @Column(nullable = false)
     private int likes;
 
     @ManyToOne(fetch = FetchType.LAZY)
