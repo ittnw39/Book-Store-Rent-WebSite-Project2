@@ -4,9 +4,7 @@ import io.elice.shoppingmall.product.dto.BookDTO;
 import io.elice.shoppingmall.product.entity.Author;
 import io.elice.shoppingmall.product.entity.Book;
 import io.elice.shoppingmall.product.mapper.BookMapper;
-import io.elice.shoppingmall.product.repository.AuthorRepository;
 import io.elice.shoppingmall.product.repository.BookRepository;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -46,7 +44,7 @@ public class BookService {
         return bookMapper.toBookDTO(savedBook);
     }
 
-    public BookDTO moidfyBookInfo(BookDTO bookDTO) {
+    public BookDTO modifyBookInfo(BookDTO bookDTO) {
         Book book = bookMapper.toBookEntity(bookDTO);
         book.setId(bookDTO.getId());
         Author author = book.getAuthor();
@@ -74,7 +72,13 @@ public class BookService {
 
     public BookDTO searchBookById(Long id) {
         Book book = bookRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Book id is not exist : " + id));
+            .orElseThrow(() -> new NoSuchElementException("Book id is not exists : " + id));
         return bookMapper.toBookDTO(book);
+    }
+
+    public void removeBook(Long id) {
+        Book book = bookRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("Book id is not exists : " + id));
+        bookRepository.delete(book);
     }
 }

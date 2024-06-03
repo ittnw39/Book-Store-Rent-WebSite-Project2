@@ -91,7 +91,7 @@ public class Book {
     @OneToMany(mappedBy = "book")
     private List<BookWishList> bookWishList = new ArrayList<>();
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "author_id")
     private Author author;
 
