@@ -40,7 +40,7 @@ public class User {
     @Column(nullable = false)
     private int level;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true) //중복된 이메일 가입 방지
     private String email;
 
     @Column(nullable = false, name = "user_name")
