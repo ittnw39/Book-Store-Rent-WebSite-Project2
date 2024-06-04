@@ -1,8 +1,6 @@
 package io.elice.shoppingmall.order.entity;
 
-import io.elice.shoppingmall.order.DTO.OrderLineBookDTO;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -20,7 +18,6 @@ public class OrderLine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     private int quantity;
 
     private BigDecimal price;
@@ -30,9 +27,8 @@ public class OrderLine {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orders_id")
-    private Orders orderId;
+    private Orders orders;
 
     @OneToMany(mappedBy = "orderLine", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineBook> orderLineBooks;
-
 }

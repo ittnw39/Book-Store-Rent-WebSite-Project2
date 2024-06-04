@@ -1,4 +1,4 @@
-package java.io.elice.shoppingmall.cart.dto;
+package io.elice.shoppingmall.cart.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

@@ -11,7 +11,6 @@ import io.elice.shoppingmall.order.service.OrderService;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-
 @Controller
 @RequestMapping("/orders")
 @RequiredArgsConstructor
@@ -24,13 +23,13 @@ public class OrderController {
         return "order/order";
     }
 
-    @PostMapping // 상품 주문하기
-    public String createOrder(@ModelAttribute OrderDTO orderDTO) {
+    @PostMapping("/create") // 상품 주문하기
+    public String createOrder(@RequestBody OrderDTO orderDTO) {
         orderService.createOrder(orderDTO);
         return "order-complete/order-complete"; //주문 완료 페이지
     }
 
-    @GetMapping("/{orderId}") //사용자별 주문 내역 조회
+    @GetMapping("/{userId}") //사용자별 주문 내역 조회
     public String getAllOrders(@PathVariable Long userId, Model model, @RequestParam(name= "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) { //사용자별 주문내역 조회
         Pageable pageable = PageRequest.of(page, size);
         Page<OrderDTO> orders = orderService.getOrdersByUserId(userId, pageable);

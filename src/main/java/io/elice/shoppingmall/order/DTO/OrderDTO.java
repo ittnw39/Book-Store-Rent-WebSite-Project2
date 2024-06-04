@@ -1,9 +1,10 @@
 package io.elice.shoppingmall.order.DTO;
 
 import io.elice.shoppingmall.order.entity.OrderOption;
-
+import io.elice.shoppingmall.user.entity.User;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -32,7 +33,7 @@ public class OrderDTO {
     private OrderOption orderOption;
 
     @NotNull
-    private Long userId;
+    private User userId;
 
     private List<OrderLineDTO> orderLines;
 }

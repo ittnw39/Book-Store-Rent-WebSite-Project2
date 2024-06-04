@@ -1,7 +1,5 @@
 package io.elice.shoppingmall.order.DTO;
 
-import io.elice.shoppingmall.order.entity.OrderLineBook;
-import io.elice.shoppingmall.order.entity.Orders;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -23,7 +21,7 @@ public class OrderLineDTO {
     private BigDecimal discountRate;
 
     @NotNull
-    private Orders orderId;
+    private Long orderId;
 
-    private List<OrderLineBook> orderLineBooks;
+    private List<OrderLineBookDTO> orderLineBooks;
 }
