@@ -44,15 +44,12 @@ public class BookService {
 
     //동명의 작가를 생일로 구분하는 메서드
     private void setAuthor(Book book) {
-        Author author = book.getAuthor();
-        List<Author> authorList = authorService.searchAuthorByName(author.getName());
+        List<Author> authorList = authorService.searchAuthorByName(book.getAuthor().getName());
 
-        if (authorList != null && !authorList.isEmpty()) {
-            for (int i = 0; i < authorList.size(); i++) {
-                Author searchedAuthor = authorList.get(i);
-                if (searchedAuthor.getBirthDate().equals(author.getBirthDate())) {
-                    book.setAuthor(searchedAuthor);
-                }
+        for (Author existingAuthor : authorList) {
+            if (existingAuthor.getBirthDate().equals(book.getAuthor().getBirthDate())) {
+                book.setAuthor(existingAuthor);
+                return;
             }
         }
     }

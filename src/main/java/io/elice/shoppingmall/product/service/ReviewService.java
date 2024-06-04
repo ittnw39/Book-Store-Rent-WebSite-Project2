@@ -1,5 +1,6 @@
 package io.elice.shoppingmall.product.service;
 
+import io.elice.shoppingmall.product.dto.BookDTO;
 import io.elice.shoppingmall.product.dto.ReviewDTO;
 import io.elice.shoppingmall.product.entity.Book;
 import io.elice.shoppingmall.product.entity.Review;
@@ -8,6 +9,7 @@ import io.elice.shoppingmall.product.repository.ReviewRepository;
 import io.elice.shoppingmall.user.entity.User;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,23 +27,34 @@ public class ReviewService {
 
     public ReviewDTO saveReview(ReviewDTO reviewDTO) {
         Review review = reviewMapper.toReviewEntity(reviewDTO);
-
-        review = reviewRepository.save(review);
+        reviewRepository.save(review);
         return reviewMapper.toReviewDTO(review);
     }
 
-    public Review searchReviewById(Long id) {
+    public ReviewDTO modifyReview(ReviewDTO reviewDTO) {
+        ReviewDTO updatedReview = searchReviewById(reviewDTO.getId());
+        reviewDTO.setBookDTO(updatedReview.getBookDTO());
+        Review review = reviewMapper.toReviewEntity(reviewDTO);
+        reviewRepository.save(review);
+        return reviewMapper.toReviewDTO(review);
+    }
+
+    public ReviewDTO searchReviewById(Long id) {
         Review review = reviewRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException("Review id is not exists : " + id));
-        return review;
+        return reviewMapper.toReviewDTO(review);
     }
 
-    public List<Review> getReviewsByBook(Book book) {
-        return reviewRepository.findByBook(book);
+    public List<ReviewDTO> getReviewsByBook(Book book) {
+        return reviewRepository.findByBook(book).stream()
+                .map(reviewMapper::toReviewDTO)
+                .collect(Collectors.toList());
     }
 
-    public List<Review> getReviewsByUser(User user) {
-        return reviewRepository.findByUser(user);
+    public List<ReviewDTO> getReviewsByUser(User user) {
+        return reviewRepository.findByUser(user).stream()
+                .map(reviewMapper::toReviewDTO)
+                .collect(Collectors.toList());
     }
 
     public void removeReview(Long id) {
