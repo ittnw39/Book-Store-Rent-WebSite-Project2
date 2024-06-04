@@ -3,45 +3,35 @@ package io.elice.shoppingmall.cart.entity;
 import io.elice.shoppingmall.order.entity.OrderOption;
 import io.elice.shoppingmall.product.entity.Book;
 import io.elice.shoppingmall.user.entity.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.lang.reflect.Member;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "cart")
 @Getter
 @Setter
-@AllArgsConstructor
+@ToString //객체를 문자열로 출력
+
 public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private int quantity;
+    @OneToOne (fetch = FetchType.EAGER)
+    @JoinColumn(name="user_id")
+    private User user; //member
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, name = "order_option")
-    private OrderOption orderOption;
-
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @OneToOne
-    @JoinColumn(name = "book_id")
-    private Book book;
+    public static Cart createCart(User user) {
+        Cart cart = new Cart();
+        cart.setUser(user);
+        return cart;
+    }
 }
