@@ -1,9 +1,12 @@
 package io.elice.shoppingmall.user.service;
 
+
+
 import io.elice.shoppingmall.user.security.JwtUtil;
 import io.elice.shoppingmall.user.dto.UserDTO;
 import io.elice.shoppingmall.user.entity.User;
 import io.elice.shoppingmall.user.repository.UserRepository;
+import io.elice.shoppingmall.user.security.JwtUtil;
 import java.util.Collections;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -35,10 +39,8 @@ public class UserService {
         return userRepository.findByEmail(email).isPresent();
     }
 
-    public UserDTO createUser(UserDTO userDTO) {
-        if (!userDTO.getPassword().equals(userDTO.getPasswordConfirm())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-        }
+    public void createUser(UserDTO userDTO) {
+        validatePassword(userDTO.getPassword(), userDTO.getPasswordConfirm());
 
         User user = new User();
         user.setEmail(userDTO.getEmail());
@@ -47,15 +49,15 @@ public class UserService {
         user.setPhNum(userDTO.getPhNum());
         user.setAddress(userDTO.getAddress());
         user.setNickname(userDTO.getNickname());
-        user.setAdmin(false);
-        user.setTotalSpent(0L);
-        user.setLevel(1);
 
         userRepository.save(user);
-        return new UserDTO(user);
     }
 
-
+    private void validatePassword(String password, String passwordConfirm) {
+        if (!password.equals(passwordConfirm)) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+    }
     public String login(String email, String password) {
         User user = userRepository.findByEmail(email)
             .orElseThrow(
@@ -76,5 +78,26 @@ public class UserService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return jwtUtil.createToken(authentication);
+    }
+
+    @Transactional
+    public UserDTO updateUser(String email, UserDTO userDTO) {
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+        user.setUsername(userDTO.getUsername());
+        user.setPhNum(userDTO.getPhNum());
+        user.setAddress(userDTO.getAddress());
+        user.setNickname(userDTO.getNickname());
+
+        return new UserDTO(user);
+    }
+
+    @Transactional
+    public void deleteUser(String email) {
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+        userRepository.delete(user);
     }
 }

@@ -62,7 +62,7 @@ public class User {
     @Column(nullable = false, name = "admin")
     private boolean isAdmin;
 
-    @Column(nullable = false, name = "total_spent")
+    @Column(nullable = true, name = "total_spent")
     private Long totalSpent;
 
     @CreationTimestamp

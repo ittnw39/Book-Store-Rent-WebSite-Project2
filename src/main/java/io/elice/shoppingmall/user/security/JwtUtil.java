@@ -17,7 +17,7 @@ public class JwtUtil {
     // Secret key for signing JWT
     private static final SecretKey key = Keys.hmacShaKeyFor(generateRandomBytes());
 
-    // Expiration time in milliseconds (e.g., 10 hours)
+    // Expiration time in milliseconds (e.g., 10 hours) = 10시간
     private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 10;
 
     // Generate random bytes for secret key
@@ -28,6 +28,8 @@ public class JwtUtil {
         return keyBytes;
     }
 
+
+
     // Create JWT token
     public String createToken(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -35,18 +37,21 @@ public class JwtUtil {
             .setSubject(userDetails.getUsername())
             .setIssuedAt(new Date())
             .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-            .signWith(SignatureAlgorithm.HS512, key)
+            .signWith(key, SignatureAlgorithm.HS512)
             .compact();
     }
 
     // Validate JWT token
-    public boolean validateToken(String token) {
+    public Claims validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
+            return Jwts.parser()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
         } catch (Exception e) {
             System.out.println("Invalid JWT token: " + e.getMessage());
-            return false;
+            return null;
         }
     }
 

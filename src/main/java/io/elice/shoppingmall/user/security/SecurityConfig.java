@@ -1,5 +1,6 @@
 package io.elice.shoppingmall.user.security;
 import io.elice.shoppingmall.user.service.CustomUserDetailsService;
+import io.elice.shoppingmall.user.service.JwtBlacklistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,7 @@ public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final CustomUserDetailsService customUserDetailsService;
+    private final JwtBlacklistService jwtBlacklistService;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -32,7 +34,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtUtil, customUserDetailsService);
+        return new JwtAuthenticationFilter(jwtUtil, customUserDetailsService, jwtBlacklistService);
     }
 
     @Bean

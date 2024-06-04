@@ -11,8 +11,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class UserDTO {
-    private Long id;
-    private int level;
     @NotBlank(message = "이메일은 필수 입력 값입니다.")
     @Email(message = "이메일 형식에 맞지 않습니다.")
     private String email;
@@ -20,22 +18,18 @@ public class UserDTO {
     private String phNum;
     private String address;
     private String nickname;
-    private boolean isAdmin;
     private Long totalSpent;
     private String password;
     @NotBlank(message = "비밀번호 확인은 필수 입력 값입니다.")
     private String passwordConfirm;
 
     public UserDTO(User user) {
-        this.id = user.getId();
-        this.level = user.getLevel();
         this.email = user.getEmail();
         this.username = user.getUsername();
         this.phNum = user.getPhNum();
         this.address = user.getAddress();
         this.nickname = user.getNickname();
-        this.isAdmin = user.isAdmin();
-        this.totalSpent = user.getTotalSpent();
         this.password = user.getPassword();
+        this.totalSpent = user.getTotalSpent();
     }
 }
