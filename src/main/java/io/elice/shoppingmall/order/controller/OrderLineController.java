@@ -20,7 +20,7 @@ public class OrderLineController {
     public String getOrderDetail(@PathVariable Long orderId, Model model) {
         OrderLineDTO orderLineDTO = orderLineService.getOrderLineById(orderId);
         model.addAttribute("orderLine", orderLineDTO);
-        return "orders/order-detail/{orderId}";
+        return "order/order-detail/{orderId}";
     }
 
     @PutMapping //주문 정보 수정

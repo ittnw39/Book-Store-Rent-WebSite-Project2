@@ -18,10 +18,10 @@ public class OrderLineBook {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
-    private Book book;
+    private Book bookId;
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_line_id")
-    private OrderLine orderLine;
+    private OrderLine orderLineId;
 }

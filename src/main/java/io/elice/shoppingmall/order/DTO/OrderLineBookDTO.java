@@ -1,5 +1,7 @@
 package io.elice.shoppingmall.order.DTO;
 
+import io.elice.shoppingmall.order.entity.OrderLine;
+import io.elice.shoppingmall.product.entity.Book;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -10,8 +12,8 @@ public class OrderLineBookDTO {
     private int quantity;
 
     @NotNull
-    private Long bookId;
+    private Book bookId;
 
     @NotNull
-    private Long orderLineId;
+    private OrderLine orderLineId;
 }

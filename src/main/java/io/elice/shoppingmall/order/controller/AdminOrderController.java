@@ -25,20 +25,20 @@ public class AdminOrderController {
         return "admin-orders/admin-orders";
     }
 
-    @GetMapping("/{orderId}") //주문 상세 조회
+    @GetMapping("/{orderId}") //주문 아이디별 주문 상세 조회
     public String getOrderDetail(@PathVariable Long orderId, Model model) {
         OrderDTO orderDTO = orderService.getOrderById(orderId);
         model.addAttribute("order", orderDTO);
-        return "admin/order/{orderId}";
+        return "order/order-detail/{orderId}";
     }
 
-    @PutMapping("/{orderId}")
+    @PutMapping("/{orderId}") //주문 수정
     public ResponseEntity<Orders> updateOrder(@PathVariable Long orderId, @RequestBody OrderDTO orderDTO) {
         Orders updatedOrder = orderService.updateOrder(orderId, orderDTO);
         return ResponseEntity.ok(updatedOrder);
     }
 
-    @DeleteMapping("/{orderId}")
+    @DeleteMapping("/{orderId}") //주문 삭제
     public ResponseEntity<Void> deleteOrder(@PathVariable Long orderId) {
         orderService.deleteOrder(orderId);
         return ResponseEntity.noContent().build();
