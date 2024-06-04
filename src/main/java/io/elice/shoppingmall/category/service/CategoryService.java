@@ -3,7 +3,6 @@ package io.elice.shoppingmall.category.service;
 import io.elice.shoppingmall.category.repository.CategoryRepository;
 import io.elice.shoppingmall.category.entity.Category;
 import io.elice.shoppingmall.product.repository.BookRepository;
-import io.elice.shoppingmall.product.entity.Book;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,23 +25,29 @@ public class CategoryService {
     }
 
     public Category getCategoryById(Long categoryId) {
-        return categoryRepository.findById(categoryId).orElse(null);
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("Category not found with id " + categoryId));
+
     }
 
     public Category addCategory(Category category) {
         return categoryRepository.save(category);
     }
 
-    public void updateCategory(Category category) {
-        categoryRepository.save(category);
+    public Category updateCategory(Long categoryId, Category categoryDetails) {
+        Category category = getCategoryById(categoryId);
+        category.setName(categoryDetails.getName());
+        return categoryRepository.save(category);
     }
 
     public void deleteCategory(Long categoryId) {
         categoryRepository.deleteById(categoryId);
     }
 
-    public List<Book> getBooksByCategory(Long categoryId) {
-        return bookRepository.findByCategoryId(categoryId);
+    public void deleteCategories(List<Long> categoryIds) {
+        for(Long categoryId : categoryIds) {
+            deleteCategory(categoryId);
+        }
     }
 }
 

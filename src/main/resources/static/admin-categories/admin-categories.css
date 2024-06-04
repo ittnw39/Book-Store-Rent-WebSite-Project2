@@ -1,0 +1,25 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+#category-list {
+    margin-bottom: 20px;
+}
+
+.category-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.category-item input[type="text"] {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.category-item input[type="checkbox"] {
+    margin-left: 10px;
+}
