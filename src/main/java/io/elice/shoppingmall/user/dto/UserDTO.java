@@ -23,6 +23,7 @@ public class UserDTO {
     private boolean isAdmin;
     private Long totalSpent;
     private String password;
+    @NotBlank(message = "비밀번호 확인은 필수 입력 값입니다.")
     private String passwordConfirm;
 
     public UserDTO(User user) {
