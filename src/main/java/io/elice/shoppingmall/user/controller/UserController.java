@@ -35,7 +35,6 @@ public class UserController {
 //    }
 
 
-
     @GetMapping("/login")
     public String loginPage() {
         return "login/login";
@@ -104,17 +103,24 @@ public class UserController {
 
 
     @PutMapping("/mypage/update")
-    public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDTO, Principal principal) {
-        String email = principal.getName();
-        UserDTO updatedUser = userService.updateUser(email, userDTO);
-        return ResponseEntity.ok(updatedUser);
+    public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDTO, @RequestHeader("Authorization") String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            String jwt = token.substring(7);
+            String email = jwtUtil.getEmailFromToken(jwt);
+            if (email != null) {
+                UserDTO updatedUser = userService.updateUser(email, userDTO);
+                return ResponseEntity.ok(updatedUser);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @DeleteMapping("/mypage/delete")
-    public ResponseEntity<String> deleteUser(Principal principal) {
-        String email = principal.getName();
+    public ResponseEntity<String> deleteUser(@RequestHeader("Authorization") String token) {
+        String email = jwtUtil.getEmailFromToken(token.substring(7)); // "Bearer " 제거
         userService.deleteUser(email);
         return ResponseEntity.ok("회원탈퇴가 완료되었습니다.");
     }
+
 }
 

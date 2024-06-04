@@ -46,7 +46,7 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
-                    .requestMatchers("/users/login","/users/register").permitAll() // 로그인,회원가입 엔드포인트는 인증 없이 접근 가능하도록 설정
+                    .requestMatchers("users/mypage/delete","/users/mypage/update","/orders/create","/users/login","/users/register").permitAll() // 로그인,회원가입 엔드포인트는 인증 없이 접근 가능하도록 설정
                     .anyRequest().authenticated() // 나머지 요청은 인증 필요
             )
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

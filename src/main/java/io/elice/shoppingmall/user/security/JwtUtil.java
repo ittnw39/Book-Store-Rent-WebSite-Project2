@@ -50,6 +50,7 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody();
         } catch (Exception e) {
+            // 토큰 검증 실패 시 예외 처리
             System.out.println("Invalid JWT token: " + e.getMessage());
             return null;
         }
@@ -57,7 +58,12 @@ public class JwtUtil {
 
     // Extract email from JWT token
     public String getEmailFromToken(String token) {
-        Claims claims = Jwts.parser().setSigningKey(key).build().parseClaimsJws(token).getBody();
-        return claims.getSubject();
+        try {
+            Claims claims = Jwts.parser().setSigningKey(key).build().parseClaimsJws(token).getBody();
+            return claims.getSubject();
+        } catch (Exception e) {
+            // 토큰 파싱 또는 유효성 검사 실패 시 예외 처리
+            return null;
+        }
     }
 }

@@ -82,6 +82,9 @@ public class UserService {
 
     @Transactional
     public UserDTO updateUser(String email, UserDTO userDTO) {
+        if (email == null) {
+            throw new IllegalArgumentException("Invalid token");
+        }
         User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
