@@ -7,6 +7,7 @@ import io.elice.shoppingmall.user.repository.UserRepository;
 import java.util.Collections;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.core.Authentication;
@@ -57,14 +58,21 @@ public class UserService {
 
     public String login(String email, String password) {
         User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+            .orElseThrow(
+                () -> new UsernameNotFoundException("User not found with email: " + email));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("Invalid email or password");
         }
 
+        UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
+            .username(user.getEmail())
+            .password(user.getPassword())
+            .authorities(Collections.emptyList())
+            .build();
+
         Authentication authentication = new UsernamePasswordAuthenticationToken(
-            email, password, Collections.emptyList());
+            userDetails, null, userDetails.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return jwtUtil.createToken(authentication);

@@ -3,8 +3,8 @@ package io.elice.shoppingmall.user.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import java.security.SecureRandom;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -15,13 +15,18 @@ import java.util.Date;
 @Component
 public class JwtUtil {
     // Secret key for signing JWT
-    private static final SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(
-        "jwtpassword123jwtpassword123jwtpassword123jwtpassword123jwtpassword"
-    ));
+    private static final SecretKey key = Keys.hmacShaKeyFor(generateRandomBytes());
 
     // Expiration time in milliseconds (e.g., 10 hours)
     private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 10;
 
+    // Generate random bytes for secret key
+    private static byte[] generateRandomBytes() {
+        byte[] keyBytes = new byte[64]; // 64 bytes = 512 bits
+        SecureRandom secureRandom = new SecureRandom();
+        secureRandom.nextBytes(keyBytes);
+        return keyBytes;
+    }
 
     // Create JWT token
     public String createToken(Authentication authentication) {

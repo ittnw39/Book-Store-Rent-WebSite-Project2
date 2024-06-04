@@ -1,6 +1,6 @@
 package io.elice.shoppingmall.user.security;
 
-import io.elice.shoppingmall.user.security.JwtUtil;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
