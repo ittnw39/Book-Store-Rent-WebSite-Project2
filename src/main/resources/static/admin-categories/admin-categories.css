@@ -38,11 +38,6 @@ h1 {
     margin: 0 10px;
 }
 
-
-#categoryList li span.updatedAt {
-    color: #1a8cff;
-}
-
 #categoryList li:last-child {
     border-bottom: none;
 }

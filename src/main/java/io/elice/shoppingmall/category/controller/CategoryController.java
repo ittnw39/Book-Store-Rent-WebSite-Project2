@@ -27,7 +27,7 @@ public class CategoryController {
     public String getCategoryPage(Model model) {
         List<CategoryDto> categories = categoryService.getAllCategories();
         model.addAttribute("categories", categories);
-        return "admin-categories/admin-categories";
+        return "admin-categories/admin-categories.html";
     }
 
     @GetMapping("/all")

@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <input type="checkbox" class="categoryCheckbox" data-id="${category.id}">
                             <span>${category.name}</span>
                             <span><small>생성</small>${category.createdAt}</span>
-                            <span class="updatedAt"><small>수정</small>${category.updatedAt}</span>
+                            <span><small>수정</small>${category.updatedAt}</span>
                             <button type="button" onclick="editCategory(${category.id}, '${category.name}')">수정</button>
                             <button type="button" onclick="deleteCategory(${category.id})">삭제</button>
                         </li>`).join('') + '</ul>';
