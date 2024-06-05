@@ -25,11 +25,11 @@ public class AdminOrderController {
         return "admin-orders/admin-orders";
     }
 
-    @GetMapping("/{orderId}") //주문 아이디별 주문 상세 조회
+    @GetMapping("/{orderId}/{orderLineId}") //주문 아이디별 주문 상세 조회
     public String getOrderDetail(@PathVariable Long orderId, Model model) {
         OrderDTO orderDTO = orderService.getOrderById(orderId);
         model.addAttribute("order", orderDTO);
-        return "order/order-detail/{orderId}";
+        return "order/order-detail";
     }
 
     @PutMapping("/{orderId}") //주문 수정

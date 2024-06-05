@@ -38,6 +38,12 @@ public class OrderController {
         return "account-orders/account-orders"; //마이페이지->주문정보조회 페이지
     }
 
+    @PutMapping("/{orderId}") //주문 정보 수정
+    public ResponseEntity<Orders> updateOrder(@PathVariable Long orderId, @RequestBody OrderDTO orderDTO) {
+        Orders updatedOrder = orderService.updateOrder(orderId, orderDTO);
+        return ResponseEntity.ok(updatedOrder);
+    }
+
     @DeleteMapping("/{orderId}") //주문 내역 삭제
     public ResponseEntity<Void> deleteOrder(@PathVariable Long orderId) {
         orderService.deleteOrder(orderId);
