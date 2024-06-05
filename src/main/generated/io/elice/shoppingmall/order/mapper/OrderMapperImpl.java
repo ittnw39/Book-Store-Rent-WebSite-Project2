@@ -23,31 +23,37 @@ import javax.annotation.processing.Generated;
 public class OrderMapperImpl implements OrderMapper {
 
     @Override
-    public Orders toOrderEntity(OrderDTO orderDTO) {
+    public Orders toOrderEntity(OrderDTO orderDTO, User user) {
         if ( orderDTO == null ) {
             return null;
         }
 
-        Long id = null;
-        Date orderDate = null;
-        String orderStatus = null;
-        BigDecimal totalAmount = null;
-        BigDecimal discountRate = null;
-        String userAddress = null;
-        OrderOption orderOption = null;
+//        Long id = null;
+//        Date orderDate = null;
+//        String orderStatus = null;
+//        BigDecimal totalAmount = null;
+//        BigDecimal discountRate = null;
+//        String userAddress = null;
+//        OrderOption orderOption = null;
+//
+//        id = orderDTO.getId();
+//        orderDate = orderDTO.getOrderDate();
+//        orderStatus = orderDTO.getOrderStatus();
+//        totalAmount = orderDTO.getTotalAmount();
+//        discountRate = orderDTO.getDiscountRate();
+//        userAddress = orderDTO.getUserAddress();
+//        orderOption = orderDTO.getOrderOption();
 
-        id = orderDTO.getId();
-        orderDate = orderDTO.getOrderDate();
-        orderStatus = orderDTO.getOrderStatus();
-        totalAmount = orderDTO.getTotalAmount();
-        discountRate = orderDTO.getDiscountRate();
-        userAddress = orderDTO.getUserAddress();
-        orderOption = orderDTO.getOrderOption();
-
-        User user = null;
-        List<OrderLine> orderLine = null;
-
-        Orders orders = new Orders( id, orderDate, orderStatus, totalAmount, discountRate, userAddress, orderOption, user, orderLine );
+        Orders orders = new Orders();
+        orders.setId(orderDTO.getId());
+        orders.setOrderDate(orderDTO.getOrderDate());
+        orders.setOrderStatus(orderDTO.getOrderStatus());
+        orders.setTotalAmount(orderDTO.getTotalAmount());
+        orders.setDiscountRate(orderDTO.getDiscountRate());
+        orders.setUserAddress(orderDTO.getUserAddress());
+        orders.setOrderOption(orderDTO.getOrderOption());
+        orders.setUser(user); // User 객체 설정
+        orders.setOrderLine(new ArrayList<>()); // 빈 리스트 설정 또는 필요한 경우 설정
 
         return orders;
     }
@@ -67,6 +73,7 @@ public class OrderMapperImpl implements OrderMapper {
         orderDTO.setDiscountRate( order.getDiscountRate() );
         orderDTO.setUserAddress( order.getUserAddress() );
         orderDTO.setOrderOption( order.getOrderOption() );
+        orderDTO.setUserId(order.getUser().getId());
 
         return orderDTO;
     }

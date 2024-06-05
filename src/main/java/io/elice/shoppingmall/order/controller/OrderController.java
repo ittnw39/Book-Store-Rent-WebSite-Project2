@@ -4,7 +4,6 @@ import io.elice.shoppingmall.order.DTO.OrderDTO;
 import io.elice.shoppingmall.order.entity.Orders;
 import io.elice.shoppingmall.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class OrderController {
 
-    @Autowired
     private final OrderService orderService;
 
     @GetMapping // 주문 정보 입력 페이지로 이동
@@ -28,7 +26,6 @@ public class OrderController {
 
     @PostMapping("/create") // 상품 주문하기
     public ResponseEntity<Orders> createOrder(@RequestBody OrderDTO orderDTO) {
-        orderService.createOrder(orderDTO);
         Orders createdOrder = orderService.createOrder(orderDTO);
         return ResponseEntity.ok(createdOrder); //주문 완료 페이지
     }
