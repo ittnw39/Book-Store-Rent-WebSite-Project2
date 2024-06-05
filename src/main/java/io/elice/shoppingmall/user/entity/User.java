@@ -1,5 +1,6 @@
 package io.elice.shoppingmall.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.elice.shoppingmall.cart.entity.Cart;
 import io.elice.shoppingmall.etc.entity.Review;
 import io.elice.shoppingmall.order.entity.Orders;
@@ -62,6 +63,7 @@ public class User {
     private WishList wishList;
 
     @OneToMany(mappedBy ="user")
+    @JsonIgnore
     private List<Orders> orders;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)

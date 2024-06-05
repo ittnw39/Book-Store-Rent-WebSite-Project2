@@ -53,7 +53,6 @@ public class OrderMapperImpl implements OrderMapper {
         orders.setUserAddress(orderDTO.getUserAddress());
         orders.setOrderOption(orderDTO.getOrderOption());
         orders.setUser(user); // User 객체 설정
-        orders.setOrderLine(new ArrayList<>()); // 빈 리스트 설정 또는 필요한 경우 설정
 
         return orders;
     }

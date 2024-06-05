@@ -24,8 +24,8 @@ public class OrderController {
         return "order/order";
     }
 
-    @PostMapping("/create") // 상품 주문하기
-    public ResponseEntity<Orders> createOrder(@RequestBody OrderDTO orderDTO) {
+    @PostMapping(path= "/create",  consumes = "application/json") // 상품 주문하기
+    public ResponseEntity<?> createOrder(@RequestBody OrderDTO orderDTO) {
         Orders createdOrder = orderService.createOrder(orderDTO);
         return ResponseEntity.ok(createdOrder); //주문 완료 페이지
     }

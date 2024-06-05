@@ -1,5 +1,6 @@
 package io.elice.shoppingmall.order.DTO;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -21,6 +22,8 @@ public class OrderLineDTO {
     private BigDecimal discountRate;
 
     @NotNull
+
+    @JsonBackReference
     private Long orderId;
 
     private List<OrderLineBookDTO> orderLineBooks;
