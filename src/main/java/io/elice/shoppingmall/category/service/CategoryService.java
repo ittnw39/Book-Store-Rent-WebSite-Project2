@@ -1,43 +1,53 @@
 package io.elice.shoppingmall.category.service;
 
+import io.elice.shoppingmall.category.dto.CategoryDto;
 import io.elice.shoppingmall.category.repository.CategoryRepository;
 import io.elice.shoppingmall.category.entity.Category;
-import io.elice.shoppingmall.product.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final BookRepository bookRepository;
+
 
     @Autowired
-    public CategoryService(CategoryRepository categoryRepository, BookRepository bookRepository) {
+    public CategoryService(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
-        this.bookRepository = bookRepository;
     }
 
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    public List<CategoryDto> getAllCategories() {
+        return categoryRepository.findAll().stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
-    public Category getCategoryById(Long categoryId) {
-        return categoryRepository.findById(categoryId)
+    public CategoryDto getCategoryById(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Category not found with id " + categoryId));
 
+        return convertToDto(category);
     }
 
-    public Category addCategory(Category category) {
-        return categoryRepository.save(category);
+    public CategoryDto addCategory(CategoryDto categoryDto) {
+        Category category = new Category();
+        category.setName(categoryDto.getName());
+        Category savedCategory = categoryRepository.save(category);
+        return convertToDto(savedCategory);
     }
 
-    public Category updateCategory(Long categoryId, Category categoryDetails) {
-        Category category = getCategoryById(categoryId);
+    public CategoryDto updateCategory(Long categoryId, CategoryDto categoryDetails) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("Category not found with id " + categoryId));
         category.setName(categoryDetails.getName());
-        return categoryRepository.save(category);
+        Category updatedCategory = categoryRepository.save(category);
+        return convertToDto(updatedCategory);
     }
 
     public void deleteCategory(Long categoryId) {
@@ -48,6 +58,16 @@ public class CategoryService {
         for(Long categoryId : categoryIds) {
             deleteCategory(categoryId);
         }
+    }
+
+    private CategoryDto convertToDto(Category category) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return new CategoryDto(
+                category.getId(),
+                category.getName(),
+                category.getCreatedAt() != null ? formatter.format(category.getCreatedAt()) : null,
+                category.getUpdatedAt() != null ? formatter.format(category.getUpdatedAt()) : null
+        );
     }
 }
 

@@ -1,25 +1,80 @@
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center;
+/* admin-categories.css */
+body {
+    font-family: Arial, sans-serif;
 }
 
-#category-list {
+.container {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 70px;
+}
+
+#categoryList {
+    margin-bottom: 80px;
+}
+
+#categoryList ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#categoryList li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+#categoryList li span {
+    flex: 1;
+    text-align: center;
+    margin: 0 10px;
+}
+
+
+#categoryList li span.updatedAt {
+    color: #1a8cff;
+}
+
+#categoryList li:last-child {
+    border-bottom: none;
+}
+
+form {
     margin-bottom: 20px;
 }
 
-.category-item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-}
-
-.category-item input[type="text"] {
-    flex: 1;
+form label {
     margin-right: 10px;
 }
 
-.category-item input[type="checkbox"] {
-    margin-left: 10px;
+form input[type="text"] {
+    margin-right: 10px;
+    padding: 5px;
+}
+
+button {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #6fb8f6;
+}
+
+small {
+    font-size: 0.8em;
+    color: #888;
+    margin-right: 10px;
+}
+
+.date {
+    margin-left: 5px;
 }

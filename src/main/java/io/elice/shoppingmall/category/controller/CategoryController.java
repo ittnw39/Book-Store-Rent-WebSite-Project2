@@ -1,16 +1,19 @@
 package io.elice.shoppingmall.category.controller;
 
-import io.elice.shoppingmall.category.entity.Category;
+import io.elice.shoppingmall.category.dto.CategoryDto;
 import io.elice.shoppingmall.category.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/admin")
-@CrossOrigin(origins = "http://localhost:3000")
+@Controller
+@RequestMapping("/admin/category")
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -20,31 +23,48 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("/category")
-    public List<Category> getAllCategories() {
-        return categoryService.getAllCategories();
+    @GetMapping
+    public String getCategoryPage(Model model) {
+        List<CategoryDto> categories = categoryService.getAllCategories();
+        model.addAttribute("categories", categories);
+        return "admin-categories/admin-categories";
     }
 
-    @PostMapping("/category")
-    public Category addCategory(@Valid @RequestBody Category category) {
-        return categoryService.addCategory(category);
+    @GetMapping("/all")
+    @ResponseBody
+    public ResponseEntity<List<CategoryDto>> getAllCategories() {
+        List<CategoryDto> categories = categoryService.getAllCategories();
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
-    @PutMapping("/category/{categoryId}")
-    public Category updateCategory(@PathVariable Long categoryId, @Valid @RequestBody Category categoryDetails) {
-        return categoryService.updateCategory(categoryId, categoryDetails);
+    @PostMapping
+    @ResponseBody
+    public ResponseEntity<CategoryDto> addCategory(@Valid @RequestBody CategoryDto categoryDto) {
+        CategoryDto createdCategory = categoryService.addCategory(categoryDto);
+        return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
     }
 
+    @PutMapping("/{categoryId}")
+    @ResponseBody
+    public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long categoryId, @Valid @RequestBody CategoryDto categoryDetails) {
+        CategoryDto updatedCategory = categoryService.updateCategory(categoryId, categoryDetails);
+        return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
+    }
 
     // 단일 카테고리 삭제
-    @DeleteMapping("/category/{categoryId}")
-    public void deleteCategory(@PathVariable Long categoryId) {
+    @DeleteMapping("/{categoryId}")
+    @ResponseBody
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
         categoryService.deleteCategory(categoryId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     // 선택된 카테고리 삭제
-    @DeleteMapping("/category")
-    public void deleteCategories(@RequestBody List<Long> categoryIds) {
+    @DeleteMapping
+    @ResponseBody
+    public ResponseEntity<Void> deleteCategories(@RequestBody List<Long> categoryIds) {
         categoryService.deleteCategories(categoryIds);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
+
