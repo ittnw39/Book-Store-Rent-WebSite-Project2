@@ -26,6 +26,9 @@ public class SecurityConfig {
         );
 
 
+        /*http.authorizeHttpRequests(authorizeRequests ->
+            authorizeRequests.anyRequest().permitAll() // 모든 요청에 대해 인증 없이 접근 가능하도록 설정
+        );*/
         http.authorizeHttpRequests((authorize) ->
             authorize.requestMatchers("/**").permitAll()
         );

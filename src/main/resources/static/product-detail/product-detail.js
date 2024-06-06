@@ -12,11 +12,11 @@ import { addToDb, putToDb } from "../../indexed-db.js";
 const productImageTag = document.querySelector("#productImageTag");
 const manufacturerTag = document.querySelector("#manufacturerTag");
 const titleTag = document.querySelector("#titleTag");
-const detailDescriptionTag = document.querySelector("#detailDescriptionTag");
+const descriptionTag = document.querySelector("#descriptionTag");
 const addToCartButton = document.querySelector("#addToCartButton");
 const purchaseButton = document.querySelector("#purchaseButton");
 
-checkUrlParams("id");
+//checkUrlParams("id");
 addAllElements();
 addAllEvents();
 
@@ -29,25 +29,32 @@ function addAllElements() {
 // addEventListener들을 묶어주어서 코드를 깔끔하게 하는 역할임.
 function addAllEvents() {}
 
+function getPathParams() {
+  const pathname = window.location.pathname;
+  const pathParts = pathname.split('/');
+  return { id: pathParts[pathParts.length - 1] };
+}
+
 async function insertProductData() {
-  const { id } = getUrlParams();
-  const product = await Api.get(`/products/${id}`);
+  const { id } = getPathParams();
+  console.log(id);
+  const product = await Api.get(`/api/book/${id}`);
 
   // 객체 destructuring
   const {
     title,
-    detailDescription,
-    menufacturer,
-    imageKey,
+    description,
+    publisher,
     isRecommended,
-    price,
+    imageURL,
+    price
   } = product;
-  const imageUrl = await getImageUrl(imageKey);
+  const imageUrl = await getImageUrl(imageURL);
 
   productImageTag.src = imageUrl;
   titleTag.innerText = title;
-  detailDescriptionTag.innerText = detailDescription;
-  manufacturerTag.innerText = menufacturer;
+  descriptionTag.innerText = description;
+  publisherTag.innerText = publisher;
   priceTag.innerText = `${addCommas(price)}원`;
 
   if (isRecommended) {

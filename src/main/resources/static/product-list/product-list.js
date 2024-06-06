@@ -12,7 +12,7 @@ import {
 // 요소(element), input 혹은 상수
 const productItemContainer = document.querySelector("#producItemContainer");
 
-checkUrlParams("category");
+//checkUrlParams("category");
 addAllElements();
 addAllEvents();
 
@@ -28,13 +28,13 @@ function addAllEvents() {}
 async function addProductItemsToContainer() {
   const { category } = getUrlParams();
   console.log(category)
-  const products = await Api.get(`/products/lists?categoryTitle=${category}`);
+  const products = await Api.get(`/api/books`);
 
   for (const product of products) {
     // 객체 destructuring
-    const { id, title, shortDescription, imageKey, isRecommended, price } =
+    const { id, title, description, imageURL, isRecommended, price, publisher, publishedDate, totalStockQuantity, page } =
       product;
-    const imageUrl = await getImageUrl(imageKey);
+    const imageUrl = await getImageUrl(imageURL);
     const random = randomId();
 
     productItemContainer.insertAdjacentHTML(
@@ -59,8 +59,10 @@ async function addProductItemsToContainer() {
                   : ""
               }
             </p>
-            <p class="description">${shortDescription}</p>
-            <p class="price">${addCommas(price)}원</p>
+            <p class="description">${description}</p>
+            <p>출판사 : ${publisher} / 출간일 : ${publishedDate}</p>
+            <p>페이지 : ${page}쪽</p>
+            <p class="price">${addCommas(price)}원 (재고 : ${totalStockQuantity}개)</p>
           </div>
         </div>
       </div>
@@ -70,7 +72,7 @@ async function addProductItemsToContainer() {
     const productItem = document.querySelector(`#a${random}`);
     productItem.addEventListener(
       "click",
-      navigate(`/product/detail?id=${id}`)
+      navigate(`/book/${id}`)
     );
   }
 }
