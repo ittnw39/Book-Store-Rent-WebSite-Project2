@@ -10,7 +10,6 @@ import { addToDb, putToDb } from "../../indexed-db.js";
 
 // 요소(element), input 혹은 상수
 const productImageTag = document.querySelector("#productImageTag");
-const manufacturerTag = document.querySelector("#manufacturerTag");
 const titleTag = document.querySelector("#titleTag");
 const descriptionTag = document.querySelector("#descriptionTag");
 const addToCartButton = document.querySelector("#addToCartButton");
@@ -45,6 +44,7 @@ async function insertProductData() {
     title,
     description,
     publisher,
+    publishedDate,
     isRecommended,
     imageURL,
     price
@@ -55,7 +55,16 @@ async function insertProductData() {
   titleTag.innerText = title;
   descriptionTag.innerText = description;
   publisherTag.innerText = publisher;
+  publishedDateTag.innerText = formatPublishedDate(publishedDate);
   priceTag.innerText = `${addCommas(price)}원`;
+
+  function formatPublishedDate(dateString) {
+    const date = new Date(dateString);
+    const year = String(date.getFullYear()).slice(2);
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
 
   if (isRecommended) {
     titleTag.insertAdjacentHTML(

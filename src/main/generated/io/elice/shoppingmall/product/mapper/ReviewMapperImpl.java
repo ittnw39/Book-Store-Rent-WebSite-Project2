@@ -4,12 +4,11 @@ import io.elice.shoppingmall.product.dto.BookDTO;
 import io.elice.shoppingmall.product.dto.ReviewDTO;
 import io.elice.shoppingmall.product.entity.Book;
 import io.elice.shoppingmall.product.entity.Review;
-import io.elice.shoppingmall.user.entity.User;
 import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-06-03T18:19:25+0900",
+    date = "2024-06-06T17:42:28+0900",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.10 (Azul Systems, Inc.)"
 )
 public class ReviewMapperImpl implements ReviewMapper {
@@ -20,20 +19,12 @@ public class ReviewMapperImpl implements ReviewMapper {
             return null;
         }
 
-        Book book = null;
-        Long id = null;
-        double rating = 0.0d;
-        String comment = null;
+        Review review = new Review();
 
-        book = bookDTOToBook( reviewDTO.getBookDTO() );
-        id = reviewDTO.getId();
-        rating = reviewDTO.getRating();
-        comment = reviewDTO.getComment();
-
-        int likes = 0;
-        User user = null;
-
-        Review review = new Review( id, rating, comment, likes, user, book );
+        review.setBook( bookDTOToBook( reviewDTO.getBookDTO() ) );
+        review.setId( reviewDTO.getId() );
+        review.setRating( reviewDTO.getRating() );
+        review.setComment( reviewDTO.getComment() );
 
         return review;
     }

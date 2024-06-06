@@ -36,9 +36,13 @@
   font-size: 1.2rem;
 }
 
-.product-item p.price {
+.product-item span.price {
   font-size: 2rem;
-  margin-top: 3.5rem;
+  margin-top: 2rem;
+}
+
+.product-item span.stock {
+  font-size: 1.5rem;
 }
 
 .media + .media {
