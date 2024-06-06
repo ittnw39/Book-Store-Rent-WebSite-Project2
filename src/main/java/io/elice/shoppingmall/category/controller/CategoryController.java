@@ -2,6 +2,7 @@ package io.elice.shoppingmall.category.controller;
 
 import io.elice.shoppingmall.category.dto.CategoryDto;
 import io.elice.shoppingmall.category.service.CategoryService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -24,10 +26,8 @@ public class CategoryController {
     }
 
     @GetMapping
-    public String getCategoryPage(Model model) {
-        List<CategoryDto> categories = categoryService.getAllCategories();
-        model.addAttribute("categories", categories);
-        return "admin-categories/admin-categories.html";
+    public String getCategoryPage() {
+        return "/admin-categories/admin-categories.html";
     }
 
     @GetMapping("/all")
@@ -66,5 +66,6 @@ public class CategoryController {
         categoryService.deleteCategories(categoryIds);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 }
 
