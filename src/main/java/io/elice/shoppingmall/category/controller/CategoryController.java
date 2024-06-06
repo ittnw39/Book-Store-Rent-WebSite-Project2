@@ -2,17 +2,14 @@ package io.elice.shoppingmall.category.controller;
 
 import io.elice.shoppingmall.category.dto.CategoryDto;
 import io.elice.shoppingmall.category.service.CategoryService;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -28,7 +25,8 @@ public class CategoryController {
 
     @GetMapping
     public String getCategoryPage() {
-        return "admin-categories/admin-categories.html";
+        // /static/admin-categories/admin-categories.html 경로의 파일을 반환
+        return "forward:/admin-categories/admin-categories.html";
     }
 
     @GetMapping("/all")
