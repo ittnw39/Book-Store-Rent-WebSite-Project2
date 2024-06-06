@@ -46,11 +46,41 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
-                    .requestMatchers("users/mypage/delete","/users/mypage/update","/orders/create","/users/login","/users/register").permitAll() // 로그인,회원가입 엔드포인트는 인증 없이 접근 가능하도록 설정
-                    .anyRequest().authenticated() // 나머지 요청은 인증 필요
+                    .requestMatchers("/**").permitAll() // 로그인,회원가입 엔드포인트는 인증 없이 접근 가능하도록 설정
+                    .anyRequest().authenticated() // 나머지 요청은 인증 필요.formLogin((form) -> form
+
             )
+//            .formLogin((form) -> form
+//                .loginPage("/users/login")
+//                .defaultSuccessUrl("/", true)
+//                .permitAll()
+//            )
+//            .logout((logout) -> logout
+//                .logoutSuccessUrl("/")
+//                .permitAll()
+//            )
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+
 
         return http.build();
     }
+
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http
+//            .csrf(csrf -> csrf.disable()) // CSRF 비활성화
+//            .sessionManagement(sessionManagement ->
+//                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 관리 설정
+//            )
+//            .authorizeHttpRequests(authorizeRequests ->
+//                authorizeRequests
+//                    .anyRequest().permitAll() // 모든 요청에 대해 인증 없이 접근 가능하도록 설정
+//            )
+//            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+//
+//
+//
+//        return http.build();
+//    }
+
 }

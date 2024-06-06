@@ -23,6 +23,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
@@ -43,19 +44,19 @@ public class User {
     @Column(nullable = false, unique = true) //중복된 이메일 가입 방지
     private String email;
 
-    @Column(nullable = false, name = "user_name")
+    @Column(nullable = true, name = "user_name")
     private String username;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, name = "phone_number")
+    @Column(nullable = true, name = "phone_number")
     private String phNum;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String address;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String nickname;
 
     @Column(nullable = false, name = "admin")

@@ -41,6 +41,15 @@ public class JwtUtil {
             .compact();
     }
 
+    public String createLogoutToken(String email) {
+        return Jwts.builder()
+            .setSubject(email)
+            .setIssuedAt(new Date())
+            .setExpiration(new Date()) // 만료 시간을 현재 시간으로 설정하여 즉시 만료되도록 함
+            .signWith(key, SignatureAlgorithm.HS512)
+            .compact();
+    }
+
     // Validate JWT token
     public Claims validateToken(String token) {
         try {

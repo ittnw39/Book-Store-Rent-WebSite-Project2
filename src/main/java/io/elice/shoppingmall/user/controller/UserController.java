@@ -4,16 +4,13 @@ import io.elice.shoppingmall.user.dto.UserDTO;
 import io.elice.shoppingmall.user.security.JwtUtil;
 import io.elice.shoppingmall.user.service.JwtBlacklistService;
 import io.elice.shoppingmall.user.service.UserService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import jakarta.servlet.http.HttpServletRequest;
-import java.security.Principal;
-import java.util.Date;
+import java.util.Collections;
+import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,81 +23,68 @@ public class UserController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
-    private final JwtBlacklistService blacklistService;
 
-//    public UserController(UserService userService, JwtUtil jwtUtil, JwtBlacklistService blacklistService) {
-//        this.userService = userService;
-//        this.jwtUtil = jwtUtil;
-//        this.blacklistService = blacklistService;
-//    }
+
 
 
     @GetMapping("/login")
     public String loginPage() {
-        return "login/login";
+        return "/login/login.html"; // 정적 파일로 리디렉션
     }
+
+
 
     @GetMapping("/register")
     public String registerPage() {
-        return "register/register";
+        return "/register/register.html";
     }
+
 
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody UserDTO userDTO) {
-        if (userService.isEmailDuplicate(userDTO.getEmail())) {
-            return ResponseEntity.badRequest().body("이미 존재하는 이메일입니다.");
-        }
-
+    public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
         try {
             userService.createUser(userDTO);
-            return ResponseEntity.ok("회원 가입이 완료되었습니다.");
+            return ResponseEntity.ok(Collections.singletonMap("message", "회원 가입이 완료되었습니다."));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest()
+                .body(Collections.singletonMap("reason", e.getMessage()));
         }
     }
 
+
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Map<String, String> userData) {
+    public ResponseEntity<?> login(@RequestBody Map<String, String> userData) {
         String email = userData.get("email");
         String password = userData.get("password");
 
         try {
             String token = userService.login(email, password);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(token); // 토큰을 응답 헤더에 포함
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "로그인되었습니다.");
+
             return ResponseEntity.ok()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .body("로그인 성공");
+                .headers(headers)
+                .body(response);
+        } catch (UsernameNotFoundException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "잘못된 이메일 또는 비밀번호입니다.");
+            return ResponseEntity.badRequest().body(error);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "잘못된 이메일 또는 비밀번호입니다.");
+            return ResponseEntity.badRequest().body(error);
         }
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader("Authorization");
-
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String jwt = authorizationHeader.substring(7);
-
-            // JwtUtil의 메서드 사용
-            Claims claims = jwtUtil.validateToken(jwt);
-            if (claims != null) {
-                Date expirationDate = claims.getExpiration();
-
-                // 블랙리스트에 추가
-                blacklistService.blacklist(jwt, expirationDate);
-            }
-        }
-
-        // 세션 무효화
-        request.getSession().invalidate();
-
-        // SecurityContextHolder에서 인증 정보 제거
-        SecurityContextHolder.clearContext();
-
-        return ResponseEntity.ok("로그아웃 되었습니다.");
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
+        String message = userService.logout(token);
+        return ResponseEntity.ok(message);
     }
-
 
     @PutMapping("/mypage/update")
     public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDTO, @RequestHeader("Authorization") String token) {

@@ -27,12 +27,16 @@ async function post(endpoint, data) {
   console.log(`%cPOST 요청: ${apiUrl}`, "color: #296aba;");
   console.log(`%cPOST 요청 데이터: ${bodyData}`, "color: #296aba;");
 
-  // 토큰이 있으면 Authorization 헤더를 포함, 없으면 포함하지 않음
-  const token = sessionStorage.getItem("token");
   const headers = {
-    "Content-Type": "application/json",
-    ...(token && { Authorization: `Bearer ${token}` }),
-  };
+      "Content-Type": "application/json",
+    };
+
+  // 토큰이 있으면 Authorization 헤더를 포함, 없으면 포함하지 않음
+//  const token = sessionStorage.getItem("token");
+//  const headers = {
+//    "Content-Type": "application/json",
+//    ...(token && { Authorization: `Bearer ${token}` }),
+//  };
 
   const res = await fetch(apiUrl, {
     method: "POST",

@@ -1,7 +1,4 @@
 package io.elice.shoppingmall.user.security;
-
-
-//import io.elice.shoppingmall.user.service.JwtBlacklistService;
 import io.elice.shoppingmall.user.service.JwtBlacklistService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -26,12 +23,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
     private final JwtBlacklistService blacklistService;
-
-//    public JwtAuthenticationFilter(JwtUtil jwtUtil, UserDetailsService userDetailsService ,JwtBlacklistService blacklistService) {
-//        this.jwtUtil = jwtUtil;
-//        this.userDetailsService = userDetailsService;
-//        this.blacklistService = blackListService;
-//    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
