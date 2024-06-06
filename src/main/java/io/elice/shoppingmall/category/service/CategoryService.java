@@ -36,6 +36,9 @@ public class CategoryService {
     }
 
     public CategoryDto addCategory(CategoryDto categoryDto) {
+        if(categoryDto.getName() == null || categoryDto.getName().isEmpty()) {
+            throw new IllegalArgumentException("Category name cannot be null or empty");
+        }
         Category category = new Category();
         category.setName(categoryDto.getName());
         Category savedCategory = categoryRepository.save(category);
@@ -43,6 +46,9 @@ public class CategoryService {
     }
 
     public CategoryDto updateCategory(Long categoryId, CategoryDto categoryDetails) {
+        if(categoryDetails.getName() == null || categoryDetails.getName().isEmpty()) {
+            throw new IllegalArgumentException("Category name cannot be null or empty");
+        }
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Category not found with id " + categoryId));
         category.setName(categoryDetails.getName());
@@ -51,11 +57,17 @@ public class CategoryService {
     }
 
     public void deleteCategory(Long categoryId) {
+        if(!categoryRepository.existsById(categoryId)) {
+            throw new IllegalArgumentException("Category not found with id " + categoryId);
+        }
         categoryRepository.deleteById(categoryId);
     }
 
     public void deleteCategories(List<Long> categoryIds) {
         for(Long categoryId : categoryIds) {
+            if(!categoryRepository.existsById(categoryId)) {
+                throw new IllegalArgumentException("Category not found with id " + categoryId);
+            }
             deleteCategory(categoryId);
         }
     }

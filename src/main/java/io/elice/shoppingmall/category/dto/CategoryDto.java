@@ -18,4 +18,14 @@ public class CategoryDto {
     private String name;
     private String createdAt;
     private String updatedAt;
+
+    @Override
+    public String toString() {
+        return "CategoryDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", updatedAt='" + updatedAt + '\'' +
+                '}';
+    }
 }

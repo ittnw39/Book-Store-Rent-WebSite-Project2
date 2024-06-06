@@ -27,7 +27,7 @@ public class CategoryController {
 
     @GetMapping
     public String getCategoryPage() {
-        return "/admin-categories/admin-categories.html";
+        return "admin-categories/admin-categories.html";
     }
 
     @GetMapping("/all")
