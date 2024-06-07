@@ -11,12 +11,6 @@ java {
 	sourceCompatibility = '17'
 }
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-}
-
 repositories {
 	mavenCentral()
 }
@@ -28,13 +22,19 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+	testImplementation 'org.mockito:mockito-core:4.0.0'
+	// testImplementation 'org.springframework.security:spring-security-test'
 	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
-	implementation 'org.springframework.security:spring-security-config:6.2.0'
+	implementation 'com.auth0:java-jwt:4.4.0'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
 	implementation 'io.jsonwebtoken:jjwt-gson:0.12.5'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.5'
@@ -42,7 +42,7 @@ dependencies {
 
 }
 
-tasks.named('test') {
+test {
 	useJUnitPlatform()
 }
 
