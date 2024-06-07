@@ -44,7 +44,7 @@ public class ProductAdminController {
     @PutMapping("/book/{bookId}")
     public ResponseEntity<BookDTO> updateBook(@PathVariable("bookId") Long id, @RequestBody BookDTO bookDTO) {
         bookDTO.setId(id);
-        BookDTO selectedBook = bookService.modifyBookInfo(bookDTO);
+        BookDTO selectedBook = bookService.saveBook(bookDTO);
         return new ResponseEntity<>(selectedBook, HttpStatus.OK);
     }
 

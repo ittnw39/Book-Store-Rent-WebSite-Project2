@@ -77,7 +77,7 @@ async function handleSubmit(e) {
       title,
       categoryId,
       publisher,
-//      publishedDate,
+      publishedDate,
       description,
       imageKey,
       totalStockQuantity,
