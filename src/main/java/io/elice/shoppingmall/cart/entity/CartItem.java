@@ -14,6 +14,8 @@ import java.util.Date;
 @Setter
 public class CartItem {
 
+    //장바구니에 담을 상품 엔티티
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -53,6 +55,10 @@ public class CartItem {
 
     public void addQuantity(int quantity){
         this.quantity += quantity;
+    }
+
+    public void updateQuantity(int quantity){
+        this.quantity = quantity;
     }
 
 }

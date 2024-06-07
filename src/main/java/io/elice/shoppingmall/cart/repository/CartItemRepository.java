@@ -13,22 +13,16 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
-    // 특정 장바구니의 모든 장바구니 항목을 찾는 메서드
-    List<CartItem> findByCart(Cart cart);
+    //카트 아이디와 상품 아이디를 이용해서 상품이 장바구니에 들어있는지 조회
 
-    // 특정 장바구니와 책으로 장바구니 항목을 찾는 메서드 (옵션)
     Optional<CartItem> findByCartAndBook(Cart cart, Book book);
 
-    @Query("select new io.elice.shoppingmall.cart.dto.CartDetailDto(ci.id, i.title, i.price, ci.quantity, im.imgUrl) " +
-            "from CartItem ci, ItemImg im " +
-            "join ci.book i " +
-            //"join ItemImg im on im.book.id = i.id " +
+    @Query("select new io.elice.shoppingmall.cart.dto.CartDetailDto(ci.id, b.title, b.price, ci.quantity, b.imageURL) " +
+            "from CartItem ci " +
+            "join ci.book b " +
             "where ci.cart.id = :cartId " +
-            "and im.repimgYn = 'Y' " +
             "order by ci.createdDate desc")
-
     List<CartDetailDto> findCartDetailDtoList(@Param("cartId") Long cartId);
 }

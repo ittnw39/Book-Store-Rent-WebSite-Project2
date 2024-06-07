@@ -21,6 +21,8 @@ import java.util.List;
 
 public class Cart {
 
+    //장바구니 생성
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

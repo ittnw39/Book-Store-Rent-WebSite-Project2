@@ -10,13 +10,13 @@ public class CartDetailDto {
     private String title;
     private int price;
     private int quantity;
-    private String imgUrl;
+    private String imageURL;
 
-    public CartDetailDto(Long bookDetailId, String title, int price, int quantity, String imgUrl){
+    public CartDetailDto(Long bookDetailId, String title, int price, int quantity, String imageURL) {
         this.bookDetailId = bookDetailId;
         this.title = title;
         this.price = price;
         this.quantity = quantity;
-        this.imgUrl = imgUrl;
+        this.imageURL = imageURL;
     }
 }
