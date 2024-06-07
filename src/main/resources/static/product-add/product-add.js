@@ -5,6 +5,7 @@ import { checkLogin, randomId, createNavbar } from "../../useful-functions.js";
 // 요소(element)들과 상수들
 const titleInput = document.querySelector("#titleInput");
 const categorySelectBox = document.querySelector("#categorySelectBox");
+const authorInput = document.querySelector("#authorInput");
 const publisherInput = document.querySelector("#publisherInput");
 const publishedDateInput = document.querySelector("#publishedDateInput");
 const descriptionInput = document.querySelector(
@@ -41,6 +42,7 @@ async function handleSubmit(e) {
 
   const title = titleInput.value;
   const categoryId = categorySelectBox.value;
+  const authorName = authorInput.value;
   const publisher = publisherInput.value;
   const publishedDate = publishedDateInput.value;
   const description = descriptionInput.value;
@@ -53,6 +55,7 @@ async function handleSubmit(e) {
   if (
     !title ||
     !categoryId ||
+    !authorName ||
     !publisher ||
     !publishedDate ||
     !description ||
@@ -70,12 +73,15 @@ async function handleSubmit(e) {
   // S3 에 이미지가 속할 폴더 이름은 카테고리명으로 함.
   const index = categorySelectBox.selectedIndex;
   const categoryName = categorySelectBox[index].text;
+  const category = {name : categoryName};
+  const author = {name : authorName};
 
   try {
     const imageKey = await addImageToS3(imageInput, categoryName);
     const data = {
       title,
-      categoryId,
+      category,
+      author,
       publisher,
       publishedDate,
       description,
@@ -113,11 +119,8 @@ function handleImageUpload() {
 
 // 선택할 수 있는 카테고리 종류를 api로 가져와서, 옵션 태그를 만들어 삽입함.
 async function addOptionsToSelectBox() {
-  const categorys = await Api.get("/admin/category/all");
-
-  console.log(categorys);
-
-  categorys.forEach((category) => {
+  const categories = await Api.get("/admin/category/all");
+  categories.forEach((category) => {
     // 객체 destructuring
     const { id, name } = category;
 

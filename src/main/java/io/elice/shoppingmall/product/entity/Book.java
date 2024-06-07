@@ -54,7 +54,7 @@ public class Book {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false, name = "image_url")
+    @Column(name = "image_url")
     private String imageURL;
 
     @Column(nullable = false, name = "total_stock_quantity")

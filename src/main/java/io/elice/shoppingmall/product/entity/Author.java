@@ -37,7 +37,6 @@ public class Author {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
     private String description;
 
     @Temporal(TemporalType.TIMESTAMP)
