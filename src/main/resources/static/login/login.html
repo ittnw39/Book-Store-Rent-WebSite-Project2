@@ -23,8 +23,8 @@
       crossorigin="anonymous"
   ></script>
   <!-- 커스텀 css, js -->
-  <link rel="stylesheet" href="/register/register.css" />
-  <script src="/register/register.js" type="module" defer></script>
+  <link rel="stylesheet" href="/login/login.css" />
+  <script src="/login/login.js" type="module" defer></script>
 </head>
 <body>
 <!-- 헤더 -->
@@ -66,29 +66,17 @@
   </div>
 </nav>
 
-<!-- 회원가입 폼(Form) -->
-<div class="register-user-form-container">
-  <form class="box register-user-form-box" id="registerUserForm">
-    <p class="title is-5 has-text-primary">환영합니다!</p>
-    <div class="field">
-      <label class="label" for="fullNameInput">이름</label>
-      <div class="control">
-        <input
-            class="input"
-            id="fullNameInput"
-            type="text"
-            placeholder="유재석"
-            autocomplete="on"
-        />
-      </div>
-    </div>
-
+<!-- 로그인 폼(Form) -->
+<div class="login-form-container">
+  <form class="box login-form-box" id="loginForm">
+    <p class="title is-5 has-text-info">어서오세요!</p>
     <div class="field">
       <label class="label" for="emailInput">이메일</label>
       <div class="control">
         <input
             class="input"
             id="emailInput"
+            name="email"
             type="email"
             placeholder="abc@example.com"
             autocomplete="on"
@@ -96,34 +84,22 @@
       </div>
     </div>
 
-    <div class="field">
+    <div class="field mb-5">
       <label class="label" for="passwordInput">비밀번호</label>
       <div class="control">
         <input
             class="input"
             id="passwordInput"
+            name="password"
             type="password"
             placeholder="********"
-            autocomplete="off"
+            autocomplete="on"
         />
       </div>
     </div>
 
-    <div class="field mb-5">
-      <label class="label" for="passwordConfirmInput">비밀번호 확인</label>
-      <div class="control">
-        <input
-            class="input"
-            id="passwordConfirmInput"
-            type="password"
-            placeholder="********"
-            autocomplete="off"
-        />
-      </div>
-    </div>
-
-    <button class="button is-primary is-fullwidth" id="submitButton">
-      회원가입하기
+    <button class="button is-info is-fullwidth" id="submitButton">
+      로그인하기
     </button>
   </form>
 </div>

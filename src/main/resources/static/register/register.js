@@ -25,13 +25,13 @@ function addAllEvents() {
 async function handleSubmit(e) {
   e.preventDefault();
 
-  const fullName = fullNameInput.value;
+  const username = fullNameInput.value;
   const email = emailInput.value;
   const password = passwordInput.value;
   const passwordConfirm = passwordConfirmInput.value;
 
   // 잘 입력했는지 확인
-  const isFullNameValid = fullName.length >= 2;
+  const isFullNameValid = username.length >= 2;
   const isEmailValid = validateEmail(email);
   const isPasswordValid = password.length >= 4;
   const isPasswordSame = password === passwordConfirm;
@@ -49,14 +49,15 @@ async function handleSubmit(e) {
   }
 
   // 회원가입 api 요청
-  try {
-    const data = { fullName, email, password };
 
-    await Api.post("/register", data);
+try {
+    const data = { username, email, password,passwordConfirm };
+
+    await Api.post("/users/register", data);
 
     alert(`정상적으로 회원가입되었습니다.`);
     // 로그인 페이지 이동
-    window.location.href = "/login";
+    window.location.href = "/users/login";
   } catch (err) {
     console.error(err.stack);
     alert(`문제가 발생하였습니다. 확인 후 다시 시도해 주세요: ${err.message}`);
