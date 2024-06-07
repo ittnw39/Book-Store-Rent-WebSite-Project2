@@ -36,7 +36,6 @@ function getPathParams() {
 
 async function insertProductData() {
   const { id } = getPathParams();
-  console.log(id);
   const product = await Api.get(`/api/book/${id}`);
 
   // 객체 destructuring

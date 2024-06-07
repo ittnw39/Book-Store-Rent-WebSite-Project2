@@ -12,7 +12,8 @@ const descriptionInput = document.querySelector(
 );
 const imageInput = document.querySelector("#imageInput");
 const totalStockQuantityInput = document.querySelector("#totalStockQuantityInput");
-const priceInput = document.querySelector("#priceInput")``;
+const priceInput = document.querySelector("#priceInput");
+const pageInput = document.querySelector("#pageInput");
 
 const submitButton = document.querySelector("#submitButton");
 const registerProductForm = document.querySelector("#registerProductForm");
@@ -46,6 +47,7 @@ async function handleSubmit(e) {
   const image = imageInput.files[0];
   const totalStockQuantity = parseInt(totalStockQuantityInput.value);
   const price = parseInt(priceInput.value);
+  const page = parseInt(pageInput.value);
 
   // 입력 칸이 비어 있으면 진행 불가
   if (
@@ -55,7 +57,8 @@ async function handleSubmit(e) {
     !publishedDate ||
     !description ||
     !totalStockQuantity ||
-    !price
+    !price ||
+    !page
   ) {
     return alert("빈 칸 및 0이 없어야 합니다.");
   }
@@ -74,11 +77,12 @@ async function handleSubmit(e) {
       title,
       categoryId,
       publisher,
-      publishedDate,
+//      publishedDate,
       description,
       imageKey,
       totalStockQuantity,
       price,
+      page
     };
 
     await Api.post("/admin/api/book", data);
@@ -109,15 +113,18 @@ function handleImageUpload() {
 
 // 선택할 수 있는 카테고리 종류를 api로 가져와서, 옵션 태그를 만들어 삽입함.
 async function addOptionsToSelectBox() {
-  const categorys = await Api.get("/categories");
+  const categorys = await Api.get("/admin/category/all");
+
+  console.log(categorys);
+
   categorys.forEach((category) => {
     // 객체 destructuring
-    const { _id, title, themeClass } = category;
+    const { id, name } = category;
 
     categorySelectBox.insertAdjacentHTML(
       "beforeend",
       `
-      <option value=${_id} class="notification ${themeClass}"> ${title} </option>`
+      <option value=${id}> ${name} </option>`
     );
   });
 }
