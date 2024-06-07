@@ -68,8 +68,8 @@ const addNavElements = (keyString) => {
 
   // 로그인 안 된 상태에서만 보이게 될 navbar 요소들
   const itemsBeforeLogin = {
-    register: '<li><a href="/register">회원가입</a></li>',
-    login: '<li><a href="/login">로그인</a></li>',
+    register: '<li><a href="/users/register">회원가입</a></li>',
+    login: '<li><a href="/users/login">로그인</a></li>',
   };
 
   // 로그인 완료된 상태에서만 보이게 될 navbar 요소들

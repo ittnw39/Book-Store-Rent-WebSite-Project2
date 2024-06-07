@@ -1,4 +1,3 @@
-
 async function get(endpoint, params = "") {
   const apiUrl = params ? `${endpoint}/${params}` : endpoint;
   console.log(`%cGET 요청: ${apiUrl} `, "color: #a25cd1;");
@@ -27,16 +26,12 @@ async function post(endpoint, data) {
   console.log(`%cPOST 요청: ${apiUrl}`, "color: #296aba;");
   console.log(`%cPOST 요청 데이터: ${bodyData}`, "color: #296aba;");
 
+  //토큰이 있으면 Authorization 헤더를 포함, 없으면 포함하지 않음
+  const token = sessionStorage.getItem("token");
   const headers = {
-      "Content-Type": "application/json",
-    };
-
-  // 토큰이 있으면 Authorization 헤더를 포함, 없으면 포함하지 않음
-//  const token = sessionStorage.getItem("token");
-//  const headers = {
-//    "Content-Type": "application/json",
-//    ...(token && { Authorization: `Bearer ${token}` }),
-//  };
+    "Content-Type": "application/json",
+    ...(token && { Authorization: `Bearer ${token}` }),
+  };
 
   const res = await fetch(apiUrl, {
     method: "POST",
@@ -53,12 +48,9 @@ async function post(endpoint, data) {
   }
 
   const result = await res.json();
-
   return result;
 }
 
-
-// api 로 PATCH 요청 (/endpoint/params 로, JSON 데이터 형태로 요청함)
 async function patch(endpoint, params = "", data) {
   const apiUrl = params ? `${endpoint}/${params}` : endpoint;
 
@@ -88,8 +80,6 @@ async function patch(endpoint, params = "", data) {
   return result;
 }
 
-// 아래 함수명에 관해, delete 단어는 자바스크립트의 reserved 단어이기에,
-// 여기서는 우선 delete 대신 del로 쓰고 아래 export 시에 delete로 alias 함.
 async function del(endpoint, params = "", data = {}) {
   const apiUrl = `${endpoint}/${params}`;
   const bodyData = JSON.stringify(data);

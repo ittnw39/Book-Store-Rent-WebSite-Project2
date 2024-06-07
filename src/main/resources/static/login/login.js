@@ -47,19 +47,20 @@ async function handleSubmit(e) {
     const data = { email, password };
 
     const result = await Api.post("/users/login", data);
-    const { token, isAdmin } = result;
 
-    // 로그인 성공, 토큰을 세션 스토리지에 저장
-    sessionStorage.setItem("token", token);
+    const { message, token , roles} = result;
 
-    alert(`정상적으로 로그인되었습니다.`);
+        if (token) {
+          sessionStorage.setItem("token", token);
+        }
+    alert(message);
 
     // 로그인 성공
-
-    // admin(관리자) 일 경우, sessionStorage에 기록함
-    if (isAdmin) {
-      sessionStorage.setItem("admin", "admin");
-    }
+    // 역할 정보에 따라 admin 여부 판단
+    const isAdmin = roles.includes("ROLE_ADMIN");
+        if (isAdmin) {
+          sessionStorage.setItem("admin", "isAdmin");
+        }
 
     // 기존 다른 페이지에서 이 로그인 페이지로 온 경우, 다시 돌아가도록 해 줌.
     const { previouspage } = getUrlParams();

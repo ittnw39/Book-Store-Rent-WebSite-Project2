@@ -7,10 +7,15 @@ import io.elice.shoppingmall.user.dto.UserDTO;
 import io.elice.shoppingmall.user.entity.User;
 import io.elice.shoppingmall.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
+import jakarta.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,6 +39,15 @@ public class UserService {
         return userRepository.findByEmail(email).isPresent();
     }
 
+    @Transactional
+    public void createAdminUser(String email, String password) {
+        User adminUser = new User();
+        adminUser.setEmail(email);
+        adminUser.setPassword(passwordEncoder.encode(password));
+        adminUser.setAdmin(true);
+        userRepository.save(adminUser);
+    }
+
     public void createUser(UserDTO userDTO) {
         if (isEmailDuplicate(userDTO.getEmail())) {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
@@ -49,8 +63,11 @@ public class UserService {
         user.setAddress(userDTO.getAddress());
         user.setNickname(userDTO.getNickname());
 
+
+
         userRepository.save(user);
     }
+
 
     private void validatePassword(String password, String passwordConfirm) {
         if (!password.equals(passwordConfirm)) {
@@ -59,26 +76,38 @@ public class UserService {
     }
     public String login(String email, String password) {
         User user = userRepository.findByEmail(email)
-            .orElseThrow(
-                () -> new UsernameNotFoundException("가입되지 않은 이메일이거나 회원 탈퇴로 인해 로그인할 수 없습니다."));
+            .orElseThrow(() -> new UsernameNotFoundException("가입되지 않은 이메일이거나 회원 탈퇴로 인해 로그인할 수 없습니다."));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        if (user.isAdmin()) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        } else {
+            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        }
+
         UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
             .username(user.getEmail())
             .password(user.getPassword())
-            .authorities(Collections.emptyList())
+            .authorities(authorities)
             .build();
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(
-            userDetails, null, userDetails.getAuthorities());
-
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtUtil.createToken(authentication); // JWT 토큰 생성
-        return token; // 토큰만 반환
+
+        String token = jwtUtil.createToken(authentication);
+        return token;
     }
+
+//    public boolean isAdmin(String email) {
+//        User user = userRepository.findByEmail(email)
+//            .orElseThrow(
+//                () -> new UsernameNotFoundException("가입되지 않은 이메일이거나 회원 탈퇴로 인해 로그인할 수 없습니다."));
+//         return user.isAdmin();
+//    }
 
 
     public String logout(String token) {

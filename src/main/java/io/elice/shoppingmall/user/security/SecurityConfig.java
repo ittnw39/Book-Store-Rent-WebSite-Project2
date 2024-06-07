@@ -23,7 +23,8 @@ public class SecurityConfig {
     private final JwtBlacklistService jwtBlacklistService;
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig)
+        throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
@@ -31,6 +32,8 @@ public class SecurityConfig {
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -46,41 +49,14 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
-                    .requestMatchers("/**").permitAll() // 로그인,회원가입 엔드포인트는 인증 없이 접근 가능하도록 설정
+                    .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                    .requestMatchers("/**").permitAll()// 모든 페이지 인증 없이 접근 가능하도록 설정
                     .anyRequest().authenticated() // 나머지 요청은 인증 필요.formLogin((form) -> form
 
             )
-//            .formLogin((form) -> form
-//                .loginPage("/users/login")
-//                .defaultSuccessUrl("/", true)
-//                .permitAll()
-//            )
-//            .logout((logout) -> logout
-//                .logoutSuccessUrl("/")
-//                .permitAll()
-//            )
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
 
         return http.build();
     }
-
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//            .csrf(csrf -> csrf.disable()) // CSRF 비활성화
-//            .sessionManagement(sessionManagement ->
-//                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 관리 설정
-//            )
-//            .authorizeHttpRequests(authorizeRequests ->
-//                authorizeRequests
-//                    .anyRequest().permitAll() // 모든 요청에 대해 인증 없이 접근 가능하도록 설정
-//            )
-//            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-//
-//
-//
-//        return http.build();
-//    }
-
 }
+
