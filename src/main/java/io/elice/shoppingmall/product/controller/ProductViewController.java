@@ -9,20 +9,23 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class ProductViewController {
 
     @GetMapping("/books")
-    public String viewBookList() {
+    public String viewBookListPage() {
         return "/product-list/product-list.html";
     }
 
     @GetMapping("/book/{id}")
-    public String viewBook() {
+    public String viewBookPage() {
         return "/product-detail/product-detail.html";
     }
 
     //관리자 페이지
     @GetMapping("/admin/books")
-    public String adminBookList() {
+    public String adminBookListPage() {
         return "/admin-product-list/admin-product-list.html";
     }
 
-
+    @GetMapping("/admin/book")
+    public String createBookPage() {
+        return "/product-add/product-add.html";
+    }
 }

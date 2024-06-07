@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/admin/api")
 public class ProductAdminController {
 
     private final BookService bookService;
@@ -27,7 +27,7 @@ public class ProductAdminController {
     }
 
     //상품 목록 조회 페이지(관리자 전용)
-    @GetMapping("/api/books")
+    @GetMapping("/books")
     public ResponseEntity<List<BookDTO>> viewBookList() {
         List<BookDTO> bookList = bookService.getAllBooks();
         return new ResponseEntity<>(bookList, HttpStatus.OK);

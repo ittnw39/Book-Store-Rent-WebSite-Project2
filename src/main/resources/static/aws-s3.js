@@ -1,7 +1,7 @@
 import { randomId } from "./useful-functions.js";
 
 // aws-s3 사이트에서의 설정값들
-const s3BucketName = "elice-shoppingmall";
+const s3BucketName = "elice-shoppingmall-8";
 const bucketRegion = "ap-northeast-2"; // 한국은 항상 ap-northeast-2임.
 const IdentityPoolId = "ap-northeast-2:5e7a5d7d-e6ed-462c-b302-f5663eb5fb0d";
 
