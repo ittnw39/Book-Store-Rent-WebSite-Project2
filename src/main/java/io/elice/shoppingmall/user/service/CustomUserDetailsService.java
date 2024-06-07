@@ -1,37 +1,3 @@
-//package io.elice.shoppingmall.user.service;
-//
-//import io.elice.shoppingmall.user.entity.User;
-//import io.elice.shoppingmall.user.repository.UserRepository;
-//import org.springframework.security.core.userdetails.UserDetails;
-//import org.springframework.security.core.userdetails.UserDetailsService;
-//import org.springframework.security.core.userdetails.UsernameNotFoundException;
-//import org.springframework.stereotype.Service;
-//
-//@Service
-//
-//public class CustomUserDetailsService implements UserDetailsService {
-//
-//    private final UserRepository userRepository;
-//
-//    public CustomUserDetailsService(UserRepository userRepository) {
-//        this.userRepository = userRepository;
-//    }
-//
-//    @Override
-//    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-//        User user = userRepository.findByEmail(email)
-//            .orElseThrow(
-//                () -> new UsernameNotFoundException("User not found with email: " + email));
-//
-//        return org.springframework.security.core.userdetails.User.builder()
-//            .username(user.getEmail())
-//            .password(user.getPassword())
-//            .authorities("USER") // 여기서는 간단히 "USER" 권한만 부여
-//            .build();
-//    }
-//}
-
-
 package io.elice.shoppingmall.user.service;
 
 import io.elice.shoppingmall.user.entity.User;
@@ -64,9 +30,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         List<GrantedAuthority> authorities = new ArrayList<>();
         if (user.isAdmin()) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            authorities.add(new SimpleGrantedAuthority("ADMIN"));     //괜히 햇갈릴 수 있구만 역할이 아니라 권한인데 role 은 역할 그래서 등급이 나 point 같은거 하고싶으면 enum 써서 롤ㄹ ~~ 로 구분하시오~~
         } else {
-            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+            authorities.add(new SimpleGrantedAuthority("USER"));
         }
 
         UserDetails detail = org.springframework.security.core.userdetails.User.builder()

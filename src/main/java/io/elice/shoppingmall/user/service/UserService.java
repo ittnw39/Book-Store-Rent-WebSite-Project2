@@ -7,9 +7,7 @@ import io.elice.shoppingmall.user.dto.UserDTO;
 import io.elice.shoppingmall.user.entity.User;
 import io.elice.shoppingmall.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
-import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -62,8 +60,7 @@ public class UserService {
         user.setPhNum(userDTO.getPhNum());
         user.setAddress(userDTO.getAddress());
         user.setNickname(userDTO.getNickname());
-
-
+        user.setAdmin(userDTO.isAdmin());
 
         userRepository.save(user);
     }
@@ -74,9 +71,11 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
     }
+
     public String login(String email, String password) {
         User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new UsernameNotFoundException("가입되지 않은 이메일이거나 회원 탈퇴로 인해 로그인할 수 없습니다."));
+            .orElseThrow(
+                () -> new UsernameNotFoundException("가입되지 않은 이메일이거나 회원 탈퇴로 인해 로그인할 수 없습니다."));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
@@ -84,9 +83,9 @@ public class UserService {
 
         List<GrantedAuthority> authorities = new ArrayList<>();
         if (user.isAdmin()) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            authorities.add(new SimpleGrantedAuthority("ADMIN"));
         } else {
-            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+            authorities.add(new SimpleGrantedAuthority("USER"));
         }
 
         UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()

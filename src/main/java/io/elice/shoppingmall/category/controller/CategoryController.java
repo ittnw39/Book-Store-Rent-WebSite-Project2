@@ -23,10 +23,10 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping
+    @GetMapping("/")
     public String getCategoryPage() {
         // /static/admin-categories/admin-categories.html 경로의 파일을 반환
-        return "forward:/admin-categories/admin-categories.html";
+        return "/admin-categories/admin-categories.html";
     }
 
     @GetMapping("/all")

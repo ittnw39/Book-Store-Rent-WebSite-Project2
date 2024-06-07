@@ -64,7 +64,7 @@ const addNavElements = (keyString) => {
 
   const container = document.querySelector("#navbar");
   const isLogin = sessionStorage.getItem("token") ? true : false;
-  const isAdmin = sessionStorage.getItem("admin") ? true : false;
+  const isAdmin = sessionStorage.getItem("ADMIN") ? true : false;
 
   // 로그인 안 된 상태에서만 보이게 될 navbar 요소들
   const itemsBeforeLogin = {
@@ -81,7 +81,7 @@ const addNavElements = (keyString) => {
   };
 
   const itemsForAdmin = {
-    admin: '<li><a href="/admin">페이지관리</a></li>',
+    ADMIN: '<li><a href="/admin">관리자 페이지</a></li>',
   };
 
   // 로그아웃 요소만 유일하게, 클릭 이벤트를 필요로 함 (나머지는 href로 충분함)
@@ -92,7 +92,7 @@ const addNavElements = (keyString) => {
       if (logoutElem) {
         logoutElem.addEventListener('click', () => {
           sessionStorage.removeItem('token');
-          sessionStorage.removeItem('admin');
+          sessionStorage.removeItem('ADMIN');
 
           window.location.href = '/';
         });

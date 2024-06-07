@@ -1,13 +1,15 @@
-package io.elice.shoppingmall;
+package io.elice.shoppingmall.user.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class TestController {
+public class MainPageController {
 
     @GetMapping("/")
-    public String getPage() {
+    public String getMainPage() {
         return "/home/home.html";
     }
 }
+
+

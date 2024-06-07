@@ -23,6 +23,7 @@ public class UserDTO {
     private String password;
     @NotBlank(message = "비밀번호 확인은 필수 입력 값입니다.")
     private String passwordConfirm;
+    private boolean admin;
 
     public UserDTO(User user) {
         this.email = user.getEmail();
@@ -32,5 +33,6 @@ public class UserDTO {
         this.nickname = user.getNickname();
         this.password = user.getPassword();
         this.totalSpent = user.getTotalSpent();
+        this.admin = user.isAdmin();
     }
 }
