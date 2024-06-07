@@ -4,6 +4,8 @@ import io.elice.shoppingmall.order.DTO.OrderDTO;
 import io.elice.shoppingmall.order.entity.Orders;
 import io.elice.shoppingmall.order.mapper.OrderMapper;
 import io.elice.shoppingmall.order.repository.OrderRepository;
+import io.elice.shoppingmall.user.entity.User;
+import io.elice.shoppingmall.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,11 +20,13 @@ import java.util.stream.Collectors;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
     private final OrderMapper orderMapper;
 
     @Transactional //주문 생성
     public Orders createOrder(OrderDTO orderDTO) {
-        Orders order = orderMapper.toOrderEntity(orderDTO);
+        User user = userRepository.findById(orderDTO.getUserId()).orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + orderDTO.getUserId()));
+        Orders order = OrderMapper.INSTANCE.toOrderEntity(orderDTO, user);
         return orderRepository.save(order);
     }
 

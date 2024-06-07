@@ -4,9 +4,10 @@ import io.elice.shoppingmall.product.dto.BookDTO;
 import io.elice.shoppingmall.product.entity.Book;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BookMapper {
 
     BookMapper INSTANCE = Mappers.getMapper(BookMapper.class);

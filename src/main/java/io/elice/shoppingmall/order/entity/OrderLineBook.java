@@ -24,4 +24,5 @@ public class OrderLineBook {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_line_id")
     private OrderLine orderLine;
+
 }

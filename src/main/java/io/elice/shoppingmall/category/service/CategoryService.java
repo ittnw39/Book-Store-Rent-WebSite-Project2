@@ -3,6 +3,8 @@ package io.elice.shoppingmall.category.service;
 import io.elice.shoppingmall.category.dto.CategoryDto;
 import io.elice.shoppingmall.category.repository.CategoryRepository;
 import io.elice.shoppingmall.category.entity.Category;
+import io.elice.shoppingmall.product.repository.BookRepository;
+import io.elice.shoppingmall.product.entity.Book;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

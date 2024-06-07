@@ -11,9 +11,7 @@ import java.util.List;
 public interface OrderLineBookRepository extends JpaRepository<OrderLineBook, OrderLineBookKey> {
 
     // 특정 주문 라인 ID로 주문 라인 도서를 찾는 메소드
-    List<OrderLineBook> findByOrderLineId(Long orderLineId);
+    OrderLineBook findByOrderLineId(Long orderLineId);
 
-    // 특정 도서 ID로 주문 라인 도서를 찾는 메소드
-    List<OrderLineBook> findByBookId(Long bookId);
 }
 

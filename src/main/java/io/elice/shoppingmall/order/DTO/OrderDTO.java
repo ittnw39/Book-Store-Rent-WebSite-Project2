@@ -1,7 +1,7 @@
 package io.elice.shoppingmall.order.DTO;
 
 import io.elice.shoppingmall.order.entity.OrderOption;
-import io.elice.shoppingmall.user.entity.User;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -32,8 +32,8 @@ public class OrderDTO {
     @NotNull
     private OrderOption orderOption;
 
-    @NotNull
-    private User userId;
+    @Column(nullable = false)
+    private Long userId;
 
     private List<OrderLineDTO> orderLines;
 }

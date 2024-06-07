@@ -1,30 +1,20 @@
 package io.elice.shoppingmall.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.elice.shoppingmall.cart.entity.Cart;
 import io.elice.shoppingmall.etc.entity.Review;
 import io.elice.shoppingmall.order.entity.Orders;
 import io.elice.shoppingmall.product.entity.RentalUser;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import java.util.Date;
-import java.util.List;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
+
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -73,7 +63,8 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private WishList wishList;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy ="user")
+    @JsonIgnore
     private List<Orders> orders;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
