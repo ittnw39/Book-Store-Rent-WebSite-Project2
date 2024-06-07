@@ -17,4 +17,12 @@ public class ProductViewController {
     public String viewBook() {
         return "/product-detail/product-detail.html";
     }
+
+    //관리자 페이지
+    @GetMapping("/admin/books")
+    public String adminBookList() {
+        return "/admin-product-list/admin-product-list.html";
+    }
+
+
 }
