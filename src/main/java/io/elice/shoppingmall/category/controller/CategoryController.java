@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
-@RequestMapping("/admin/category")
+@RestController
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -23,20 +22,23 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping
-    public String getCategoryPage() {
-        // /static/admin-categories/admin-categories.html 경로의 파일을 반환
-        return "forward:/admin-categories/admin-categories.html";
-    }
-
-    @GetMapping("/all")
+    // 일반 API
+    @GetMapping("/categories")
     @ResponseBody
     public ResponseEntity<List<CategoryDto>> getAllCategories() {
         List<CategoryDto> categories = categoryService.getAllCategories();
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
-    @PostMapping
+    // 관리자 API
+    @GetMapping("/admin/categories")
+    @ResponseBody
+    public ResponseEntity<List<CategoryDto>> getAllAdminCategories() {
+        List<CategoryDto> categories = categoryService.getAllCategories();
+        return new ResponseEntity<>(categories, HttpStatus.OK);
+    }
+
+    @PostMapping("/admin/category")
     @ResponseBody
     public ResponseEntity<?> addCategory(@Valid @RequestBody CategoryDto categoryDto, BindingResult result) {
         if (result.hasErrors()) {
@@ -46,7 +48,7 @@ public class CategoryController {
         return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{categoryId}")
+    @PutMapping("/admin/category/{categoryId}")
     @ResponseBody
     public ResponseEntity<?> updateCategory(@PathVariable Long categoryId, @Valid @RequestBody CategoryDto categoryDetails, BindingResult result) {
         if (result.hasErrors()) {
@@ -57,7 +59,7 @@ public class CategoryController {
     }
 
     // 단일 카테고리 삭제
-    @DeleteMapping("/{categoryId}")
+    @DeleteMapping("/admin/category/{categoryId}")
     @ResponseBody
     public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
         categoryService.deleteCategory(categoryId);
@@ -65,7 +67,7 @@ public class CategoryController {
     }
 
     // 선택된 카테고리 삭제
-    @DeleteMapping
+    @DeleteMapping("/admin/category")
     @ResponseBody
     public ResponseEntity<Void> deleteCategories(@RequestBody List<Long> categoryIds) {
         categoryService.deleteCategories(categoryIds);
