@@ -73,9 +73,9 @@ async function insertProductsfromCart() {
           <div class="content">
             <p id="title-${_id}">${compressString(title)}</p>
             <div class="quantity">
-              <button 
-                class="button is-rounded" 
-                id="minus-${_id}" 
+              <button
+                class="button is-rounded"
+                id="minus-${_id}"
                 ${quantity <= 1 ? "disabled" : ""}
                 ${isSelected ? "" : "disabled"}
               >
@@ -92,8 +92,8 @@ async function insertProductsfromCart() {
                 value="${quantity}"
                 ${isSelected ? "" : "disabled"}
               />
-              <button 
-                class="button is-rounded" 
+              <button
+                class="button is-rounded"
                 id="plus-${_id}"
                 ${quantity >= 99 ? "disabled" : ""}
                 ${isSelected ? "" : "disabled"}

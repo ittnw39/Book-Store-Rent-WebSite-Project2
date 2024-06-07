@@ -1,6 +1,7 @@
 package io.elice.shoppingmall.product.entity;
 
 import io.elice.shoppingmall.cart.entity.Cart;
+import io.elice.shoppingmall.cart.entity.CartItem;
 import io.elice.shoppingmall.category.entity.Category;
 import io.elice.shoppingmall.etc.entity.Event;
 import io.elice.shoppingmall.etc.entity.Review;
@@ -99,8 +100,7 @@ public class Book {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToOne(mappedBy = "book", cascade = CascadeType.REMOVE)
-    private Cart cart;
+
 
     @OneToOne(mappedBy = "book")
     private Event event;
@@ -110,4 +110,5 @@ public class Book {
 
     @OneToMany(mappedBy = "book")
     private List<Review> review;
+
 }
