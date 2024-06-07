@@ -32,30 +32,30 @@ public class OrderService {
 
     public OrderDTO getOrderById(Long id) { //주문 아이디로 조회
         Orders order = orderRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+            .orElseThrow(() -> new IllegalArgumentException("Order not found"));
         return orderMapper.toOrderDTO(order);
     }
 
     public List<OrderDTO> getAllOrders() {
         return orderRepository.findAll().stream()
-                .map(orderMapper::toOrderDTO)
-                .collect(Collectors.toList());
+            .map(orderMapper::toOrderDTO)
+            .collect(Collectors.toList());
     }
 
     public Page<OrderDTO> getAllOrders(Pageable pageable) {
         return orderRepository.findAll(pageable)
-                .map(orderMapper::toOrderDTO);
+            .map(orderMapper::toOrderDTO);
     }
 
     public Page<OrderDTO> getOrdersByUserId(Long userId, Pageable pageable) {
         return orderRepository.findByUserId(userId, pageable)
-                .map(orderMapper::toOrderDTO);
+            .map(orderMapper::toOrderDTO);
     }
 
     @Transactional
     public Orders updateOrder(Long id, OrderDTO orderDTO) {
         Orders order = orderRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+            .orElseThrow(() -> new IllegalArgumentException("Order not found"));
         orderMapper.updateOrderFromDTO(orderDTO, order);
         return orderRepository.save(order);
     }

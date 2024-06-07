@@ -1,16 +1,19 @@
 package io.elice.shoppingmall.category.controller;
 
-import io.elice.shoppingmall.category.entity.Category;
+import io.elice.shoppingmall.category.dto.CategoryDto;
 import io.elice.shoppingmall.category.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/admin/category")
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -20,39 +23,54 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("/category")
-    public String getAllCategories(Model model) {
-        List<Category> categories = categoryService.getAllCategories();
-        model.addAttribute("categories", categories);
-        return "admin-categories";
+    @GetMapping
+    public String getCategoryPage() {
+        // /static/admin-categories/admin-categories.html 경로의 파일을 반환
+        return "forward:/admin-categories/admin-categories.html";
     }
 
-    @GetMapping("/category/add")
-    public String addCategoryForm(Model model) {
-        model.addAttribute("category", new Category());
-        return "category-add";
+    @GetMapping("/all")
+    @ResponseBody
+    public ResponseEntity<List<CategoryDto>> getAllCategories() {
+        List<CategoryDto> categories = categoryService.getAllCategories();
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
-    @PostMapping("/category")
-    public String addCategory(@ModelAttribute Category category) {
-        categoryService.addCategory(category);
-        return "redirect:/admin/category";
+    @PostMapping
+    @ResponseBody
+    public ResponseEntity<?> addCategory(@Valid @RequestBody CategoryDto categoryDto, BindingResult result) {
+        if (result.hasErrors()) {
+            return new ResponseEntity<>(result.getAllErrors(), HttpStatus.BAD_REQUEST);
+        }
+        CategoryDto createdCategory = categoryService.addCategory(categoryDto);
+        return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{categoryId}")
+    @ResponseBody
+    public ResponseEntity<?> updateCategory(@PathVariable Long categoryId, @Valid @RequestBody CategoryDto categoryDetails, BindingResult result) {
+        if (result.hasErrors()) {
+            return new ResponseEntity<>(result.getAllErrors(), HttpStatus.BAD_REQUEST);
+        }
+        CategoryDto updatedCategory = categoryService.updateCategory(categoryId, categoryDetails);
+        return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
     }
 
     // 단일 카테고리 삭제
-    @DeleteMapping("/category/{categoryId}")
-    public String deleteCategory(@PathVariable Long categoryId) {
+    @DeleteMapping("/{categoryId}")
+    @ResponseBody
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
         categoryService.deleteCategory(categoryId);
-        return "redirect:/admin/category";
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     // 선택된 카테고리 삭제
-    @DeleteMapping("/category")
-    @ResponseBody // 클라이언트로부터 받은 JSON 배열을 List<Long> 타입으로 변환하기 위함
-    public String deleteCategories(@RequestBody List<Long> categoryIds) {
-        for (Long categoryId : categoryIds) {
-            categoryService.deleteCategory(categoryId);
-        }
-        return "Categories deleted successfully";
+    @DeleteMapping
+    @ResponseBody
+    public ResponseEntity<Void> deleteCategories(@RequestBody List<Long> categoryIds) {
+        categoryService.deleteCategories(categoryIds);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 }
+
