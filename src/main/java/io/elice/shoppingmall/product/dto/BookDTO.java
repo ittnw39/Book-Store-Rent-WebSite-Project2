@@ -23,9 +23,9 @@ public class BookDTO {
     private int page;
 
 
-    @JsonManagedReference(value = "authorReference")
+//    @JsonManagedReference(value = "authorReference")
     private Author author;
 
-    @JsonBackReference(value = "categoryReference")
+//    @JsonBackReference(value = "categoryReference")
     private Category category;
 }

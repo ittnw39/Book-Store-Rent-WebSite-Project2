@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
-public class BookController {
+public class ProductController {
 
     private final BookService bookService;
 
     @Autowired
-    public BookController(BookService bookService) {
+    public ProductController(BookService bookService) {
         this.bookService = bookService;
     }
 
@@ -38,27 +38,5 @@ public class BookController {
     public ResponseEntity<BookDTO> viewBook(@PathVariable("bookId") Long id) {
         BookDTO bookDTO = bookService.searchBookById(id);
         return new ResponseEntity<>(bookDTO, HttpStatus.OK);
-    }
-
-    //상품 추가 페이지(관리자 전용)
-    @PostMapping("/admin/book")
-    public ResponseEntity<BookDTO> createBook(@RequestBody BookDTO bookDTO) {
-        BookDTO newBook = bookService.saveBook(bookDTO);
-        return new ResponseEntity<>(newBook, HttpStatus.CREATED);
-    }
-
-    //상품 수정 페이지(관리자 전용)
-    @PutMapping("/admin/book/{bookId}")
-    public ResponseEntity<BookDTO> updateBook(@PathVariable("bookId") Long id, @RequestBody BookDTO bookDTO) {
-        bookDTO.setId(id);
-        BookDTO selectedBook = bookService.modifyBookInfo(bookDTO);
-        return new ResponseEntity<>(selectedBook, HttpStatus.OK);
-    }
-
-    //상품 삭제 페이지(관리자 전용)
-    @DeleteMapping("/admin/book/{bookId}")
-    public ResponseEntity<Void> deleteBook(@PathVariable("bookId") Long id) {
-        bookService.removeBook(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
