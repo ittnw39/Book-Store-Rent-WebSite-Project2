@@ -6,14 +6,17 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api")
 public class BookController {
 
     private final BookService bookService;
@@ -48,7 +51,14 @@ public class BookController {
     @PutMapping("/admin/book/{bookId}")
     public ResponseEntity<BookDTO> updateBook(@PathVariable("bookId") Long id, @RequestBody BookDTO bookDTO) {
         bookDTO.setId(id);
-        BookDTO selectedBook = bookService.moidfyBookInfo(bookDTO);
+        BookDTO selectedBook = bookService.modifyBookInfo(bookDTO);
         return new ResponseEntity<>(selectedBook, HttpStatus.OK);
+    }
+
+    //상품 삭제 페이지(관리자 전용)
+    @DeleteMapping("/admin/book/{bookId}")
+    public ResponseEntity<Void> deleteBook(@PathVariable("bookId") Long id) {
+        bookService.removeBook(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

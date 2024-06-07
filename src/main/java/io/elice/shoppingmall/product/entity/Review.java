@@ -1,4 +1,4 @@
-package io.elice.shoppingmall.etc.entity;
+package io.elice.shoppingmall.product.entity;
 
 import io.elice.shoppingmall.product.entity.Book;
 import io.elice.shoppingmall.user.entity.User;
@@ -13,6 +13,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -20,6 +21,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Review {
 
     @Id
@@ -32,7 +34,6 @@ public class Review {
     @Column(nullable = false)
     private String comment;
 
-    @Column(nullable = false)
     private int likes;
 
     @ManyToOne(fetch = FetchType.LAZY)

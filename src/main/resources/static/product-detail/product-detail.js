@@ -10,13 +10,12 @@ import { addToDb, putToDb } from "../../indexed-db.js";
 
 // 요소(element), input 혹은 상수
 const productImageTag = document.querySelector("#productImageTag");
-const manufacturerTag = document.querySelector("#manufacturerTag");
 const titleTag = document.querySelector("#titleTag");
-const detailDescriptionTag = document.querySelector("#detailDescriptionTag");
+const descriptionTag = document.querySelector("#descriptionTag");
 const addToCartButton = document.querySelector("#addToCartButton");
 const purchaseButton = document.querySelector("#purchaseButton");
 
-checkUrlParams("id");
+//checkUrlParams("id");
 addAllElements();
 addAllEvents();
 
@@ -29,26 +28,43 @@ function addAllElements() {
 // addEventListener들을 묶어주어서 코드를 깔끔하게 하는 역할임.
 function addAllEvents() {}
 
+function getPathParams() {
+  const pathname = window.location.pathname;
+  const pathParts = pathname.split('/');
+  return { id: pathParts[pathParts.length - 1] };
+}
+
 async function insertProductData() {
-  const { id } = getUrlParams();
-  const product = await Api.get(`/products/${id}`);
+  const { id } = getPathParams();
+  console.log(id);
+  const product = await Api.get(`/api/book/${id}`);
 
   // 객체 destructuring
   const {
     title,
-    detailDescription,
-    menufacturer,
-    imageKey,
+    description,
+    publisher,
+    publishedDate,
     isRecommended,
-    price,
+    imageURL,
+    price
   } = product;
-  const imageUrl = await getImageUrl(imageKey);
+  const imageUrl = await getImageUrl(imageURL);
 
   productImageTag.src = imageUrl;
   titleTag.innerText = title;
-  detailDescriptionTag.innerText = detailDescription;
-  manufacturerTag.innerText = menufacturer;
+  descriptionTag.innerText = description;
+  publisherTag.innerText = publisher;
+  publishedDateTag.innerText = formatPublishedDate(publishedDate);
   priceTag.innerText = `${addCommas(price)}원`;
+
+  function formatPublishedDate(dateString) {
+    const date = new Date(dateString);
+    const year = String(date.getFullYear()).slice(2);
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
 
   if (isRecommended) {
     titleTag.insertAdjacentHTML(
