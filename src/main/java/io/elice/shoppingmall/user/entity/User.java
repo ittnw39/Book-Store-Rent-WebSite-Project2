@@ -21,16 +21,17 @@ import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "user")
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
     @Id
@@ -40,28 +41,28 @@ public class User {
     @Column(nullable = false)
     private int level;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true) //중복된 이메일 가입 방지
     private String email;
 
-    @Column(nullable = false, name = "user_name")
+    @Column(nullable = true, name = "user_name")
     private String username;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, name = "phone_number")
+    @Column(nullable = true, name = "phone_number")
     private String phNum;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String address;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String nickname;
 
     @Column(nullable = false, name = "admin")
     private boolean isAdmin;
 
-    @Column(nullable = false, name = "total_spent")
+    @Column(nullable = true, name = "total_spent")
     private Long totalSpent;
 
     @CreationTimestamp

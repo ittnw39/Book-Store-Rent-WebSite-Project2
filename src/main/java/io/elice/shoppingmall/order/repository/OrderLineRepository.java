@@ -13,7 +13,7 @@ public interface OrderLineRepository extends JpaRepository<OrderLine, Long> {
     Optional<OrderLine> findById(Long id);
 
     // 주문 ID에 따라 주문 라인을 찾는 메소드
-    List<OrderLine> findByOrderId(Long orderId);
+    List<OrderLine> findByOrdersId(Long orderId);
 
 }
 
