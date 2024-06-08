@@ -11,13 +11,17 @@ const publishedDateInput = document.querySelector("#publishedDateInput");
 const descriptionInput = document.querySelector(
   "#descriptionInput"
 );
-const imageInput = document.querySelector("#imageInput");
+//const imageInput = document.querySelector("#imageInput");
 const totalStockQuantityInput = document.querySelector("#totalStockQuantityInput");
 const priceInput = document.querySelector("#priceInput");
 const pageInput = document.querySelector("#pageInput");
 
 const submitButton = document.querySelector("#submitButton");
 const registerProductForm = document.querySelector("#registerProductForm");
+
+/*추가수정*/
+const params = new URLSearchParams(window.location.search);
+const bookId = params.get('id');
 
 //checkLogin();
 addAllElements();
@@ -27,11 +31,12 @@ addAllEvents();
 function addAllElements() {
   createNavbar();
   addOptionsToSelectBox();
+  fillBookInfo();
 }
 
 // addEventListener들을 묶어주어서 코드를 깔끔하게 하는 역할임.
 function addAllEvents() {
-  imageInput.addEventListener("change", handleImageUpload);
+//  imageInput.addEventListener("change", handleImageUpload);
   submitButton.addEventListener("click", handleSubmit);
   categorySelectBox.addEventListener("change", handleCategoryChange);
 }
@@ -46,7 +51,7 @@ async function handleSubmit(e) {
   const publisher = publisherInput.value;
   const publishedDate = publishedDateInput.value;
   const description = descriptionInput.value;
-  const image = imageInput.files[0];
+//  const image = imageInput.files[0];
   const totalStockQuantity = parseInt(totalStockQuantityInput.value);
   const price = parseInt(priceInput.value);
   const page = parseInt(pageInput.value);
@@ -66,9 +71,9 @@ async function handleSubmit(e) {
     return alert("빈 칸 및 0이 없어야 합니다.");
   }
 
-  if (image.size > 3e6) {
+  /*if (image.size > 3e6) {
     return alert("사진은 최대 2.5MB 크기까지 가능합니다.");
-  }
+  }*/
 
   // S3 에 이미지가 속할 폴더 이름은 카테고리명으로 함.
   const index = categorySelectBox.selectedIndex;
@@ -77,7 +82,7 @@ async function handleSubmit(e) {
   const author = {name : authorName};
 
   try {
-    const imageKey = await addImageToS3(imageInput, categoryName);
+//    const imageKey = await addImageToS3(imageInput, categoryName);
     const data = {
       title,
       category,
@@ -85,15 +90,19 @@ async function handleSubmit(e) {
       publisher,
       publishedDate,
       description,
-      imageKey,
+//      imageKey,
       totalStockQuantity,
       price,
       page
     };
 
-    await Api.post("/admin/api/book", data);
+    if(bookId) {
+      await Api.put("/admin/api/book", data, bookId);
+    } else {
+      await Api.post("/admin/api/book", data);
+    }
 
-    alert(`정상적으로 ${title} 제품이 등록되었습니다.`);
+    alert(`정상적으로 ${title} 제품이 ${bookId ? '업데이트' : '등록'} 되었습니다.`);
 
     // 폼 초기화
     registerProductForm.reset();
@@ -108,14 +117,14 @@ async function handleSubmit(e) {
 }
 
 // 사용자가 사진을 업로드했을 때, 파일 이름이 화면에 나타나도록 함.
-function handleImageUpload() {
+/*function handleImageUpload() {
   const file = imageInput.files[0];
   if (file) {
     fileNameSpan.innerText = file.name;
   } else {
     fileNameSpan.innerText = "";
   }
-}
+}*/
 
 // 선택할 수 있는 카테고리 종류를 api로 가져와서, 옵션 태그를 만들어 삽입함.
 async function addOptionsToSelectBox() {
@@ -137,4 +146,20 @@ function handleCategoryChange() {
   const index = categorySelectBox.selectedIndex;
 
   categorySelectBox.className = categorySelectBox[index].className;
+}
+
+//관리자 페이지에서 수정 버튼으로 접근 시 실행
+async function fillBookInfo() {
+  const bookInfo = await Api.get(`/api/book/${bookId}`);
+
+  // 가져온 책 정보를 각 필드에 채움
+  titleInput.value = bookInfo.title;
+  categorySelectBox.value = bookInfo.category.id;
+  authorInput.value = bookInfo.author.name;
+  publisherInput.value = bookInfo.publisher;
+  publishedDateInput.value = bookInfo.publishedDate.split("T")[0];
+  descriptionInput.value = bookInfo.description;
+  totalStockQuantityInput.value = bookInfo.totalStockQuantity;
+  priceInput.value = bookInfo.price;
+  pageInput.value = bookInfo.page;
 }
