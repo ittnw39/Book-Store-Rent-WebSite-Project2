@@ -27,7 +27,6 @@ function addAllEvents() {}
 
 async function addProductItemsToContainer() {
   const { category } = getUrlParams();
-  console.log(category)
   const products = await Api.get(`/admin/api/books`);
 
   for (const product of products) {
@@ -42,7 +41,7 @@ async function addProductItemsToContainer() {
       "beforeend",
       `
       <div class="message media product-item" id="a${random}">
-        <div class="media-left">
+        <div class="media-left" onclick="location.href='/book/${id}';">
           <figure class="image">
             <img
               src="${imageUrl}"
@@ -74,10 +73,39 @@ async function addProductItemsToContainer() {
       `
     );
 
+
     const productItem = document.querySelector(`#a${random}`);
-    productItem.addEventListener(
-      "click",
-      navigate(`/book/${id}`)
-    );
+
+    // 제품 항목 클릭 이벤트
+    productItem.addEventListener('click', (event) => {
+      navigate(`/book/${id}`);
+    });
+
+    // 삭제 버튼 클릭 이벤트
+    const deleteButton = productItem.querySelector('.button-delete');
+    deleteButton.addEventListener('click', async () => {
+      const confirmation = confirm('정말로 삭제하시겠습니까?');
+      if (!confirmation) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`/admin/api/book/${id}`, {
+          method: 'DELETE',
+        });
+        if (!response.ok) {
+          throw new Error('Failed to delete book');
+        }
+        productItem.remove();
+      } catch (error) {
+        alert('Failed to delete book');
+      }
+    });
+
+    // 수정 버튼 클릭 이벤트
+    const modifyButton = productItem.querySelector('.button-modify');
+    modifyButton.addEventListener('click', () => {
+      location.href = '/admin/book';
+    });
   }
 }
