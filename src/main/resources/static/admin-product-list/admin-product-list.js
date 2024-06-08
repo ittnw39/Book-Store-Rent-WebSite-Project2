@@ -102,16 +102,9 @@ async function addProductItemsToContainer() {
       }
     });
 
-    // 수정 버튼 클릭 이벤트
-    /*const modifyButton = productItem.querySelector('.button-modify');
-    modifyButton.addEventListener('click', () => {
-      location.href = '/admin/book';
-    });*/
-
     const modifyButton = productItem.querySelector('.button-modify');
     modifyButton.addEventListener('click', () => {
       location.href = `/admin/book?id=${id}`;
     });
-
   }
 }
