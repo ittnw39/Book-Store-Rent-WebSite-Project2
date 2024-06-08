@@ -1,5 +1,7 @@
 package io.elice.shoppingmall.product.service;
 
+import io.elice.shoppingmall.category.entity.Category;
+import io.elice.shoppingmall.category.service.CategoryService;
 import io.elice.shoppingmall.product.dto.BookDTO;
 import io.elice.shoppingmall.product.entity.Author;
 import io.elice.shoppingmall.product.entity.Book;
@@ -16,42 +18,32 @@ public class BookService {
 
     private final BookRepository bookRepository;
     private final AuthorService authorService;
+    private final CategoryService categoryService;
     private final BookMapper bookMapper;
 
     @Autowired
-    public BookService(BookRepository bookRepository, AuthorService authorService, BookMapper bookMapper) {
+    public BookService(BookRepository bookRepository, AuthorService authorService, CategoryService categoryService, BookMapper bookMapper) {
         this.bookRepository = bookRepository;
         this.authorService = authorService;
+        this.categoryService = categoryService;
         this.bookMapper = bookMapper;
     }
 
     public BookDTO saveBook(BookDTO bookDTO) {
         Book book = bookMapper.toBookEntity(bookDTO);
-        setAuthor(book);
+
+        Author author = authorService.searchAuthorByName(book.getAuthor().getName()).orElse(null);
+        if (author != null) {
+            book.setAuthor(author);
+        }
+
+        Category category = categoryService.searchCategoryByName(book.getCategory().getName()).orElse(null);
+        if (category != null) {
+            book.setCategory(category);
+        }
 
         Book savedBook = bookRepository.save(book);
         return bookMapper.toBookDTO(savedBook);
-    }
-
-    public BookDTO modifyBookInfo(BookDTO bookDTO) {
-        Book book = bookMapper.toBookEntity(bookDTO);
-        book.setId(bookDTO.getId());
-        setAuthor(book);
-
-        Book updatedBook = bookRepository.save(book);
-        return bookMapper.toBookDTO(updatedBook);
-    }
-
-    //동명의 작가를 생일로 구분하는 메서드
-    private void setAuthor(Book book) {
-        List<Author> authorList = authorService.searchAuthorByName(book.getAuthor().getName());
-
-        for (Author existingAuthor : authorList) {
-            if (existingAuthor.getBirthDate().equals(book.getAuthor().getBirthDate())) {
-                book.setAuthor(existingAuthor);
-                return;
-            }
-        }
     }
 
     public List<BookDTO> getAllBooks() {
@@ -62,13 +54,29 @@ public class BookService {
 
     public BookDTO searchBookById(Long id) {
         Book book = bookRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Book id is not exists : " + id));
+                .orElseThrow(() -> new NoSuchElementException("Book id is not exists : " + id));
         return bookMapper.toBookDTO(book);
+    }
+
+    //책 검색 기능
+    public List<BookDTO> searchBooks(String keyword) {
+        return bookRepository.findByTitleOrAuthor(keyword)
+                .stream()
+                .map(bookMapper::toBookDTO)
+                .collect(Collectors.toList());
+    }
+
+    //카테고리별 목록
+    public List<BookDTO> getBooksByCategory(Long categoryId) {
+        return bookRepository.findByCategoryId(categoryId)
+                .stream()
+                .map(bookMapper::toBookDTO)
+                .collect(Collectors.toList());
     }
 
     public void removeBook(Long id) {
         Book book = bookRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Book id is not exists : " + id));
+                .orElseThrow(() -> new NoSuchElementException("Book id is not exists : " + id));
         bookRepository.delete(book);
     }
 }

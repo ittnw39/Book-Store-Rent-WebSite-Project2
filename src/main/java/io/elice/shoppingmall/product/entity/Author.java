@@ -37,9 +37,6 @@ public class Author {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, name = "birth_date")
-    private LocalDate birthDate;
-
     private String description;
 
     @Temporal(TemporalType.TIMESTAMP)

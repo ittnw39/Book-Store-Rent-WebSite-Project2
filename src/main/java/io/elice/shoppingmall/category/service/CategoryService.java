@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,6 +35,10 @@ public class CategoryService {
                 .orElseThrow(() -> new IllegalArgumentException("Category not found with id " + categoryId));
 
         return convertToDto(category);
+    }
+
+    public Optional<Category> searchCategoryByName(String name) {
+        return categoryRepository.findByName(name);
     }
 
     public CategoryDto addCategory(CategoryDto categoryDto) {

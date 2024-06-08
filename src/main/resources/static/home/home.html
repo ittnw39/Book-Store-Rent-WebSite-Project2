@@ -46,6 +46,26 @@
         </div>
       </div>
 
+      <form id="search-form" class="navbar-item ml-2" action="/product/list" method="get">
+        <div class="field has-addons">
+          <div class="control">
+            <input
+                    class="input"
+                    type="text"
+                    name="search"
+                    placeholder="저자 또는 책 제목을 입력하세요."
+            />
+          </div>
+          <div class="control">
+            <button class="button is-link" type="submit">
+              <span class="icon">
+                <i class="fas fa-search"></i>
+              </span>
+            </button>
+          </div>
+        </div>
+      </form>
+
       <a
               role="button"
               class="navbar-burger"
@@ -58,7 +78,6 @@
         <span aria-hidden="true"></span>
       </a>
     </div>
-
     <div class="navbar-end breadcrumb my-auto" aria-label="breadcrumbs">
       <ul id="navbar">
         <li>
@@ -73,12 +92,5 @@
     </div>
   </div>
 </nav>
-
-<!-- 슬라이드 이미지 -->
-<section class="section">
-  <div class="container is-clipped">
-    <div id="slider"></div>
-  </div>
-</section>
 </body>
 </html>
