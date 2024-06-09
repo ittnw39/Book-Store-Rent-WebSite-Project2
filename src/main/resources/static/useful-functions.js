@@ -47,29 +47,48 @@ export const checkLogin = () => {
 
   // 관리자 토큰 여부 확인
   export const checkAdmin = async () => {
-    const token = sessionStorage.getItem("token");
-    if (!token) {
-      const pathname = window.location.pathname;
-      const search = window.location.search;
-      window.location.replace(`/login?previouspage=${pathname + search}`);
-      return;
-    }
+      const token = sessionStorage.getItem("token");
+      if (!token) {
+          const pathname = window.location.pathname;
+          const search = window.location.search;
+          window.location.replace(`/login?previouspage=${pathname + search}`);
+          return;
+      }
 
-    const res = await fetch("/users/admin-check", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      try {
+          const res = await fetch("/users/admin-check", {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              },
+          });
 
-    const { result } = await res.json();
+          if (res.status === 401) {
+              // 토큰이 만료된 경우 로그아웃 처리 후 로그인 페이지로 이동
+              sessionStorage.removeItem("token");
+              sessionStorage.removeItem("isAdmin");
+              alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+              window.location.replace("users/login");
+              return;
+          }
 
-    if (result === "success") {
-      window.document.body.style.display = "block";
-    } else {
-      alert("관리자 전용 페이지입니다.");
-      window.location.replace("/");
-    }
+          if (res.ok) {
+              const { result } = await res.json();
+              if (result === "success") {
+                 //renderAdminPage();  이거 뭐지? 대체 왜있는거지???? 주석처리가 하니까 해결 ㅡ3ㅡ
+                  window.document.body.style.display = "block";
+              } else {
+                  alert("관리자 전용 페이지입니다.");
+                  window.location.replace("/");
+              }
+          } else {
+              throw new Error("관리자 인증 실패");
+          }
+      } catch (error) {
+          console.error(error);
+          alert("관리자 인증 과정에서 오류가 발생했습니다.");
+      }
   };
+
 
 // 로그인 상태일 때에는 접근 불가한 페이지로 만듦. (회원가입 페이지 등)
 export const blockIfLogin = () => {

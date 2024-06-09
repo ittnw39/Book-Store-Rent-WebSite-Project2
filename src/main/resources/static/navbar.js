@@ -1,6 +1,8 @@
 export const createNavbar = () => {
   const pathname = window.location.pathname;
 
+  const container = document.querySelector("#navbar");
+
   switch (pathname) {
     case "/":
       addNavElements("admin register login account logout");
@@ -63,9 +65,11 @@ export const createNavbar = () => {
 const addNavElements = (keyString) => {
   const keys = keyString.split(" ");
 
+
   const container = document.querySelector("#navbar");
   const isLogin = sessionStorage.getItem("token") ? true : false;
   const isAdmin = sessionStorage.getItem("isAdmin") ? true : false;
+
 
   // 로그인 안 된 상태에서만 보이게 될 navbar 요소들
   const itemsBeforeLogin = {

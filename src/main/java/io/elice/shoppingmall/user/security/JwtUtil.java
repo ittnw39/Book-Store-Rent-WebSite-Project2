@@ -31,7 +31,7 @@ public class JwtUtil {
     private static final String SECRET_KEY = "jwtpassword123jwtpassword123jwtpassword123jwtpassword123jwtpassword123jwtpassword123jwtpassword123jwtpassword123jwtpassword123jwtpassword123";
 
     // 토큰 유효 기간 (예: 10시간)
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 10;
+    private static final long EXPIRATION_TIME = 1000L * 60 * 60 * 10;
 
     public String createToken(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -42,20 +42,16 @@ public class JwtUtil {
         claims.put("sub", userDetails.getUsername()); // 주체(subject) 클레임
         claims.put("iat", new Date()); // 발행 시간(issued at) 클레임
         claims.put("exp", new Date(System.currentTimeMillis() + EXPIRATION_TIME)); // 만료 시간(expiration) 클레임
-
-        SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
-        // 선택적 클레임 설정 (예시)
         claims.put("roles", userDetails.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.toList()));
+
+        SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
         return Jwts.builder()
             .setClaims(claims) // 클레임 설정
             .signWith(key, SignatureAlgorithm.HS512) // 서명 키 설정
             .compact(); // 토큰 문자열 생성
-
-
-
 
     }
 
@@ -79,6 +75,7 @@ public class JwtUtil {
         try {
             return Jwts.parser()
                 .setSigningKey(key)
+                .setAllowedClockSkewSeconds(30)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();

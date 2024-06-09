@@ -119,5 +119,23 @@ public class UserController {
         return ResponseEntity.ok("회원탈퇴가 완료되었습니다.");
     }
 
+    @GetMapping("/admin-check")
+    public ResponseEntity<?> checkAdmin(@RequestHeader("Authorization") String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            String jwt = token.substring(7);
+            String email = jwtUtil.getEmailFromToken(jwt);
+            if (email != null) {
+                UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+                Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+                boolean isAdmin = authorities.stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ADMIN"));
+                if (isAdmin) {
+                    return ResponseEntity.ok(Collections.singletonMap("result", "success"));
+                }
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("result", "fail"));
+    }
+
 }
 

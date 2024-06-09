@@ -52,9 +52,11 @@ async function handleSubmit(e) {
 
 
         if (token) {
+          const expirationTime = Date.now() + 10 * 60 * 60 * 1000; // 10시간 후 만료
           sessionStorage.setItem("token", token);
+          sessionStorage.setItem("expirationTime", expirationTime);
         }
-    alert(message);
+ alert(message);
 
     // 로그인 성공
     // 역할 정보에 따라 admin 여부 판단
