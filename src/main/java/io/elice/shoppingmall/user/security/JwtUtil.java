@@ -4,6 +4,7 @@ package io.elice.shoppingmall.user.security;
 import io.elice.shoppingmall.user.repository.UserRepository;
 import io.elice.shoppingmall.user.service.UserService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -19,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.security.core.GrantedAuthority;
+import io.jsonwebtoken.Claims;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -79,6 +81,11 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+
+        } catch (ExpiredJwtException e) {
+            // 토큰이 만료된 경우 예외 처리
+            System.out.println("Token has expired: " + e.getMessage());
+            return null;
         } catch (Exception e) {
             // 토큰 검증 실패 시 예외 처리
             System.out.println("Invalid JWT token: " + e.getMessage());

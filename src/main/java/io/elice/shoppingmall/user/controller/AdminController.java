@@ -26,6 +26,11 @@ public class AdminController {
     }
 
 
+    @GetMapping("/users")
+    public String adminUsers() {
+        return "/admin-users/admin-users.html";
+    }
+
 }
 
 

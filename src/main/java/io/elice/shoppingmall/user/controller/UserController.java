@@ -14,12 +14,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
 
 @Controller
@@ -93,6 +93,7 @@ public class UserController {
     }
 
 
+
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
         String message = userService.logout(token);
@@ -137,5 +138,10 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("result", "fail"));
     }
 
+
+    @GetMapping("/users/all")
+    public List<UserDTO> getAllUsers() {
+        return userService.getAllUsers();
+    }
 }
 

@@ -9,6 +9,7 @@ import io.elice.shoppingmall.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -31,6 +33,7 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final JwtBlacklistService blacklistService;
+
 
 
     public boolean isEmailDuplicate(String email) {
@@ -151,5 +154,15 @@ public class UserService {
 
         blacklistService.blacklistUserId(user.getId()); // userId를 블랙리스트에 추가
         userRepository.delete(user);
+    }
+
+
+    public List<UserDTO> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user : users) {
+            userDTOs.add(new UserDTO(user));
+        }
+        return userDTOs;
     }
 }
