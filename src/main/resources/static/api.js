@@ -6,6 +6,8 @@ async function get(endpoint, params = "") {
   const token = sessionStorage.getItem("token");
   const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
+
+
   const res = await fetch(apiUrl, { headers });
 
   // 응답 코드가 4XX 계열일 때 (400, 403 등)
