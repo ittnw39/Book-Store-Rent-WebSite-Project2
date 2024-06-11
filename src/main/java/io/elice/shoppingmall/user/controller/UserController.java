@@ -5,6 +5,8 @@ import io.elice.shoppingmall.user.security.JwtUtil;
 import io.elice.shoppingmall.user.service.CustomUserDetailsService;
 import io.elice.shoppingmall.user.service.JwtBlacklistService;
 import io.elice.shoppingmall.user.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,12 +16,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
 
 @Controller
@@ -55,36 +57,70 @@ public class UserController {
             return ResponseEntity.ok(Collections.singletonMap("message", "회원 가입이 완료되었습니다."));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
-                .body(Collections.singletonMap("reason", e.getMessage()));
+                    .body(Collections.singletonMap("reason", e.getMessage()));
         }
     }
 
 
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@RequestBody Map<String, String> userData) {
+//        String email = userData.get("email");
+//        String password = userData.get("password");
+//
+//        try {
+//            String token = userService.login(email, password);
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setBearerAuth(token);
+//
+//            // 사용자의 역할 정보 가져오기
+//            UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+//            Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+//            List<String> roles = authorities.stream()
+//                .map(GrantedAuthority::getAuthority)
+//                .collect(Collectors.toList());
+//
+//            Map<String, Object> response = new HashMap<>();
+//            response.put("message", "로그인되었습니다.");
+//            response.put("token", token);
+//            response.put("roles", roles);
+//
+//            return ResponseEntity.ok()
+//                .headers(headers)
+//                .body(response);
+//        } catch (UsernameNotFoundException | IllegalArgumentException e) {
+//            Map<String, String> error = new HashMap<>();
+//            error.put("error", "잘못된 이메일 또는 비밀번호입니다.");
+//            return ResponseEntity.badRequest().body(error);
+//        }
+//    }
+
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> userData) {
+    public ResponseEntity<?> login(@RequestBody Map<String, String> userData, HttpServletResponse response) {
         String email = userData.get("email");
         String password = userData.get("password");
 
         try {
             String token = userService.login(email, password);
-            HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(token);
+
+            // 쿠키에 토큰 저장
+            Cookie cookie = new Cookie("jwtToken", token);
+            cookie.setMaxAge(60 * 60 * 24); // 쿠키 유효기간 설정 (예: 24시간)
+            cookie.setPath("/"); // 쿠키 경로 설정
+            response.addCookie(cookie);
 
             // 사용자의 역할 정보 가져오기
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
             Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
             List<String> roles = authorities.stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
 
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "로그인되었습니다.");
-            response.put("token", token);
-            response.put("roles", roles);
+            Map<String, Object> responseData = new HashMap<>();
+            responseData.put("message", "로그인되었습니다.");
+            responseData.put("token", token); // 응답 바디에 토큰 포함
+            responseData.put("roles", roles);
 
-            return ResponseEntity.ok()
-                .headers(headers)
-                .body(response);
+            return ResponseEntity.ok(responseData);
         } catch (UsernameNotFoundException | IllegalArgumentException e) {
             Map<String, String> error = new HashMap<>();
             error.put("error", "잘못된 이메일 또는 비밀번호입니다.");
@@ -119,5 +155,28 @@ public class UserController {
         return ResponseEntity.ok("회원탈퇴가 완료되었습니다.");
     }
 
+    @GetMapping("/admin-check")
+    public ResponseEntity<?> checkAdmin(@RequestHeader("Authorization") String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            String jwt = token.substring(7);
+            String email = jwtUtil.getEmailFromToken(jwt);
+            if (email != null) {
+                UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+                Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+                boolean isAdmin = authorities.stream()
+                        .anyMatch(auth -> auth.getAuthority().equals("ADMIN"));
+                if (isAdmin) {
+                    return ResponseEntity.ok(Collections.singletonMap("result", "success"));
+                }
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("result", "fail"));
+    }
+
+
+    @GetMapping("/users/all")
+    public List<UserDTO> getAllUsers() {
+        return userService.getAllUsers();
+    }
 }
 

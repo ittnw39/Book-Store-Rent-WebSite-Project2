@@ -11,6 +11,8 @@ import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -63,8 +65,6 @@ public class UserService {
         user.setAddress(userDTO.getAddress());
         user.setNickname(userDTO.getNickname());
 
-
-
         userRepository.save(user);
     }
 
@@ -84,9 +84,9 @@ public class UserService {
 
         List<GrantedAuthority> authorities = new ArrayList<>();
         if (user.isAdmin()) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            authorities.add(new SimpleGrantedAuthority("ADMIN"));
         } else {
-            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+            authorities.add(new SimpleGrantedAuthority("USER"));
         }
 
         UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
@@ -153,4 +153,18 @@ public class UserService {
         blacklistService.blacklistUserId(user.getId()); // userId를 블랙리스트에 추가
         userRepository.delete(user);
     }
+
+    public List<UserDTO> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user : users) {
+            userDTOs.add(new UserDTO(user));
+        }
+        return userDTOs;
+    }
+
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("User not found with email: " + email));
+    }
+
 }

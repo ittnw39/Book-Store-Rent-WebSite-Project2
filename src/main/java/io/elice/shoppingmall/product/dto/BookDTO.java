@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.elice.shoppingmall.category.entity.Category;
 import io.elice.shoppingmall.product.entity.Author;
+import io.elice.shoppingmall.product.entity.Book;
+import io.elice.shoppingmall.product.mapper.BookMapper;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.ManyToOne;
 import java.util.Date;
@@ -28,4 +30,5 @@ public class BookDTO {
 
     //    @JsonBackReference(value = "categoryReference")
     private Category category;
+
 }
