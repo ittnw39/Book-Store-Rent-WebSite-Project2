@@ -21,13 +21,13 @@ public class OrderController {
 
     @GetMapping // 주문 정보 입력 페이지로 이동
     public String showOrderForm() {
-        return "order/order";
+        return "/order/order.html";
     }
 
     @PostMapping(path= "/create",  consumes = "application/json") // 상품 주문하기
-    public ResponseEntity<?> createOrder(@RequestBody OrderDTO orderDTO) {
+    public String createOrder(@RequestBody OrderDTO orderDTO) {
         Orders createdOrder = orderService.createOrder(orderDTO);
-        return ResponseEntity.ok(createdOrder); //주문 완료 페이지
+        return "/order-complete/order-complete.html"; //주문 완료 페이지
     }
 
     @GetMapping("/{userId}") //사용자별 주문 내역 조회
@@ -35,16 +35,23 @@ public class OrderController {
         Pageable pageable = PageRequest.of(page, size);
         Page<OrderDTO> orders = orderService.getOrdersByUserId(userId, pageable);
         model.addAttribute("orders", orders);
-        return "account-orders/account-orders"; //마이페이지->주문정보조회 페이지
+        return "/account-orders/account-orders.html"; //마이페이지->주문정보조회 페이지
     }
 
-    @PutMapping("/{orderId}") //주문 정보 수정
+    @GetMapping("/{orderId}") //주문 아이디별 주문 상세 조회
+    public String getOrderDetail(@PathVariable Long orderId, Model model) {
+        OrderDTO orderDTO = orderService.getOrderById(orderId);
+        model.addAttribute("order", orderDTO);
+        return "/order/order-detail.html";
+    }
+
+    @PutMapping("/{orderId}") //주문 수정
     public ResponseEntity<Orders> updateOrder(@PathVariable Long orderId, @RequestBody OrderDTO orderDTO) {
         Orders updatedOrder = orderService.updateOrder(orderId, orderDTO);
         return ResponseEntity.ok(updatedOrder);
     }
 
-    @DeleteMapping("/{orderId}") //주문 내역 삭제
+    @DeleteMapping("/{orderId}") //주문 삭제
     public ResponseEntity<Void> deleteOrder(@PathVariable Long orderId) {
         orderService.deleteOrder(orderId);
         return ResponseEntity.noContent().build();

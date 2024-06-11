@@ -30,37 +30,41 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public OrderDTO getOrderById(Long id) { //주문 아이디로 조회
+    public OrderDTO getOrderById(Long id) { //관리자 - 주문 아이디로 조회
         Orders order = orderRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+        order.getOrderLine().forEach(line -> line.getOrderLineBooks().size());
         return orderMapper.toOrderDTO(order);
     }
 
-    public List<OrderDTO> getAllOrders() {
-        return orderRepository.findAll().stream()
-            .map(orderMapper::toOrderDTO)
-            .collect(Collectors.toList());
-    }
-
-    public Page<OrderDTO> getAllOrders(Pageable pageable) {
+    public Page<OrderDTO> getAllOrders(Pageable pageable) { //관리자 - 모든 주문조회
         return orderRepository.findAll(pageable)
-            .map(orderMapper::toOrderDTO);
+                .map(orderMapper::toOrderDTO);
     }
 
-    public Page<OrderDTO> getOrdersByUserId(Long userId, Pageable pageable) {
-        return orderRepository.findByUserId(userId, pageable)
-            .map(orderMapper::toOrderDTO);
+    public Page<OrderDTO> getOrdersByUserId(Long userId, Pageable pageable) { //사용자 - 사용자 아이디별 주문 조회
+        Page<Orders> orders = orderRepository.findByUserId(userId, pageable);
+        orders.getContent().forEach(order -> order.getOrderLine().forEach(line -> line.getOrderLineBooks().size()));
+        return orders.map(orderMapper::toOrderDTO);
+    }
+
+    public OrderDTO getOrderDetails(Long orderId) { // 관리자,사용자 - 주문 아이디로 주문 상세 조회
+        Orders order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+        // Hibernate의 Lazy Loading을 강제로 초기화
+        order.getOrderLine().forEach(line -> line.getOrderLineBooks().size());
+        return orderMapper.toOrderDTO(order);
     }
 
     @Transactional
-    public Orders updateOrder(Long id, OrderDTO orderDTO) {
+    public Orders updateOrder(Long id, OrderDTO orderDTO) { //관리자, 사용자 - 주문 수정
         Orders order = orderRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
         orderMapper.updateOrderFromDTO(orderDTO, order);
         return orderRepository.save(order);
     }
 
-    @Transactional
+    @Transactional //관리자, 사용자 - 주문 삭제
     public void deleteOrder(Long id) {
         orderRepository.deleteById(id);
     }
