@@ -34,7 +34,6 @@ async function addProductItemsToContainer() {
     // 객체 destructuring
     const { id, title, description, imageURL, isRecommended, price, publisher, totalStockQuantity, author } =
       product;
-    console.log(author);
     const imageUrl = await getImageUrl(imageURL);
     const random = randomId();
 
@@ -45,7 +44,7 @@ async function addProductItemsToContainer() {
         <div class="media-left">
           <figure class="image">
             <img
-              src="${imageUrl}"
+              src="${imageURL}"
               alt="제품 이미지"
             />
           </figure>
@@ -60,8 +59,8 @@ async function addProductItemsToContainer() {
                   : ""
               }
             </p>
-            <p class="description">${description}</p>
             <p class="description">저자 : ${author.name}</p>
+            <p class="description">${description}</p>
             <span class="price">${addCommas(price)}원</span>
             <span class="stock"> (재고 : ${totalStockQuantity}개)</span>
           </div>

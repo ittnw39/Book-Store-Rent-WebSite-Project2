@@ -33,8 +33,6 @@ async function addProductItemsToContainer() {
     // 객체 destructuring
     const { id, title, description, imageURL, isRecommended, price, publisher, totalStockQuantity, author } =
       product;
-    console.log(author);
-    const imageUrl = await getImageUrl(imageURL);
     const random = randomId();
 
     productItemContainer.insertAdjacentHTML(
@@ -44,7 +42,7 @@ async function addProductItemsToContainer() {
         <div class="media-left" onclick="location.href='/book/${id}';">
           <figure class="image">
             <img
-              src="${imageUrl}"
+              src="${imageURL}"
               alt="제품 이미지"
             />
           </figure>
@@ -102,6 +100,7 @@ async function addProductItemsToContainer() {
       }
     });
 
+    //수정 버튼 클릭 이벤트
     const modifyButton = productItem.querySelector('.button-modify');
     modifyButton.addEventListener('click', () => {
       location.href = `/admin/book?id=${id}`;

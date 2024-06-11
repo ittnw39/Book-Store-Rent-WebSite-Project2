@@ -28,7 +28,7 @@ public class ImageUploadController {
                                             @RequestParam("fileName") String fileName) {
         try {
             String url = s3Service.upload(file, fileName);
-            return ResponseEntity.ok("File upload success. URL: " + url);
+            return ResponseEntity.ok(url);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("File upload fail. Error: " + e.getMessage());
