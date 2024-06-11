@@ -32,7 +32,7 @@ public class BookService {
     public BookDTO saveBook(BookDTO bookDTO) {
         Book book = bookMapper.toBookEntity(bookDTO);
 
-        Author author = authorService.searchAuthorByName(book.getAuthor().getName()).orElse(null);
+        Author author = authorService.searchAuthorByName(book.getAuthor().getName()).orElseThrow(null);
         if (author != null) {
             book.setAuthor(author);
         }
