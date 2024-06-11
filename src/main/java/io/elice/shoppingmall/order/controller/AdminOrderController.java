@@ -26,14 +26,14 @@ public class AdminOrderController {
         Pageable pageable = PageRequest.of(page, size);
         Page<OrderDTO> orders = orderService.getAllOrders(pageable);
         model.addAttribute("orders", orders);
-        return "admin-orders/admin-orders";
+        return "/admin-orders/admin-orders.html";
     }
 
-    @GetMapping("/{orderId}/{orderLineId}") //주문 아이디별 주문 상세 조회
+    @GetMapping("/{orderId}") //주문 아이디별 주문 상세 조회
     public String getOrderDetail(@PathVariable Long orderId, Model model) {
         OrderDTO orderDTO = orderService.getOrderById(orderId);
         model.addAttribute("order", orderDTO);
-        return "order/order-detail";
+        return "/order/order-detail.html";
     }
 
     @PutMapping("/{orderId}") //주문 수정
