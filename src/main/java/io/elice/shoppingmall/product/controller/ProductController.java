@@ -30,21 +30,21 @@ public class ProductController {
         this.reviewService = reviewService;
     }
 
-    //상품 목록 조회 페이지
+    //상품 목록 조회 API
     @GetMapping("/books")
     public ResponseEntity<List<BookDTO>> viewBookList() {
         List<BookDTO> bookList = bookService.getAllBooks();
         return new ResponseEntity<>(bookList, HttpStatus.OK);
     }
 
-    //상품 상세 조회 페이지
+    //상품 상세 조회 API
     @GetMapping("/book/{bookId}")
     public ResponseEntity<BookDTO> viewBook(@PathVariable("bookId") Long id) {
         BookDTO bookDTO = bookService.searchBookById(id);
         return new ResponseEntity<>(bookDTO, HttpStatus.OK);
     }
 
-    //상품 리뷰 작성
+    //상품 리뷰 작성 API
     @PostMapping("/book/review/{bookId}")
     public ResponseEntity<ReviewDTO> createReview(@PathVariable("bookId") Long id, @RequestBody ReviewDTO reviewDTO) {
         BookDTO bookDTO = bookService.searchBookById(id);
@@ -55,7 +55,7 @@ public class ProductController {
         return new ResponseEntity<>(newReview, HttpStatus.CREATED);
     }
 
-    //상품 리뷰 수정
+    //상품 리뷰 수정 API
     @PutMapping("/book/review/{reviewId}")
     public ResponseEntity<ReviewDTO> updateReview(@PathVariable("reviewId") Long id, @RequestBody ReviewDTO reviewDTO) {
         reviewDTO.setId(id);
@@ -63,7 +63,7 @@ public class ProductController {
         return new ResponseEntity<>(selectedReview, HttpStatus.OK);
     }
 
-    //상품 리뷰 삭제
+    //상품 리뷰 삭제 API
     @DeleteMapping("/book/review/{reviewId}")
     public ResponseEntity<ReviewDTO> deleteReview(@PathVariable("reviewId") Long id) {
         reviewService.removeReview(id);
