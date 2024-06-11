@@ -212,16 +212,16 @@ async function editReview(reviewId) {
 async function deleteReview(reviewId) {
     if (confirm("정말로 이 리뷰를 삭제하시겠습니까?")) {
         try {
-        await Api.delete(`/api/book/review/${reviewId}`);
+            await Api.delete(`/api/book/review/${reviewId}`);
 
-        // DOM에서 해당 리뷰 요소 제거
-        const reviewElement = document.querySelector(`.review[data-id="${reviewId}"]`);
-        if (reviewElement) {
-            reviewElement.remove();
-        }
-        // 삭제 후 리뷰 목록 다시 불러오기
-        await fetchAndDisplayReviews();
-    } catch (error) {
+            // DOM에서 해당 리뷰 요소 제거
+            const reviewElement = document.querySelector(`.review[data-id="${reviewId}"]`);
+            if (reviewElement) {
+                reviewElement.remove();
+            }
+            // 삭제 후 리뷰 목록 다시 불러오기
+            await fetchAndDisplayReviews();
+        } catch (error) {
             console.error("리뷰 삭제 오류:", error);
         }
     }
@@ -281,3 +281,4 @@ function parseJwt(token) {
 
 // 페이지 로드 시 리뷰를 기본 정렬 옵션으로 가져오는 함수
 document.addEventListener("DOMContentLoaded", insertProductData);
+

@@ -1,6 +1,5 @@
 package io.elice.shoppingmall.product.service;
 
-import io.elice.shoppingmall.product.dto.BookDTO;
 import io.elice.shoppingmall.product.dto.ReviewDTO;
 import io.elice.shoppingmall.product.entity.Book;
 import io.elice.shoppingmall.product.entity.Review;
@@ -70,12 +69,6 @@ public class ReviewService {
                 .map(reviewMapper::toReviewDTO)
                 .collect(Collectors.toList());
     }
-
-//    public List<ReviewDTO> getReviewsByUser(User user) {
-//        return reviewRepository.findByUser(user).stream()
-//                .map(reviewMapper::toReviewDTO)
-//                .collect(Collectors.toList());
-//    }
 
     public void removeReview(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)

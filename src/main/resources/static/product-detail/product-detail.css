@@ -75,3 +75,14 @@
     margin-left: 0 !important;
   }
 }
+.select.is-small select {
+  font-size: 1.25em; /* 글씨 크기를 키우기 위해 font-size를 설정합니다 */
+}
+.select.is-small {
+  margin-bottom: 20px; /* 여백을 조정하여 겹치지 않도록 합니다 */
+}
+/* 리뷰 작성 폼과 리스트의 크기 조정 */
+.review-container {
+  max-width: 600px; /* 현재 너비의 50%에서 두 배로 조정 */
+  margin-left: 0; /* 왼쪽 정렬 */
+}
