@@ -108,7 +108,8 @@ async function insertProductData() {
       }
 
       console.log(err);
-    }
+      }
+    });
 
     addToCartButton.addEventListener("click", async () => {
         try {
@@ -149,6 +150,7 @@ async function insertProductData() {
     // 리뷰 데이터 불러오기
     await fetchAndDisplayReviews();
 }
+
 
 // IndexedDB에 제품을 추가하는 함수
 async function insertDb(product) {

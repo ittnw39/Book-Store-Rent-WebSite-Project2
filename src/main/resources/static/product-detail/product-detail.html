@@ -6,21 +6,21 @@
   <title>Shopping Mall</title>
   <!-- 아이콘 -->
   <link
-          rel="icon"
-          type="image/png"
-          sizes="16x16"
-          href="/elice-rabbit-favicon.png"
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/elice-rabbit-favicon.png"
   />
   <!-- bulma css 관련 -->
   <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
   />
   <!-- 폰트 어썸: 아이콘 -->
   <script
-          defer
-          src="https://kit.fontawesome.com/9daa42bcef.js"
-          crossorigin="anonymous"
+      defer
+      src="https://kit.fontawesome.com/9daa42bcef.js"
+      crossorigin="anonymous"
   ></script>
   <!-- AWS S3 사용하기 위한 파일 -->
   <script src="https://sdk.amazonaws.com/js/aws-sdk-2.410.0.min.js"></script>
@@ -39,11 +39,11 @@
       </a>
 
       <a
-              role="button"
-              class="navbar-burger"
-              aria-label="menu"
-              aria-expanded="false"
-              data-target="navbarBasicExample"
+          role="button"
+          class="navbar-burger"
+          aria-label="menu"
+          aria-expanded="false"
+          data-target="navbarBasicExample"
       >
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
@@ -84,34 +84,15 @@
               <li id="publisherTag"></li>
               <li>&nbsp;/&nbsp;</li>
               <li id="publishedDateTag"></li>
+              <li>&nbsp;/&nbsp;</li>
+              <li id="categoryTag"></li>
             </ul>
           </div>
-          <div class="tile is-parent is-vertical">
-            <div class="tile is-child box product-detail">
-              <div class="tabs">
-                <ul>
-                  <li id="publisherTag"></li>
-                  <li>&nbsp;/&nbsp;</li>
-                  <li id="publishedDateTag"></li>
-                  <li>&nbsp;/&nbsp;</li>
-                  <li id="categoryTag"></li>
-                </ul>
-              </div>
-              <div class="content">
-                <p class="subtitle is-3 is-family-monospace" id="titleTag"></p>
-                <p class="subtitle is-3 is-family-monospace" id="authorTag"></p>
-                <h1 id="priceTag"></h1>
-                <p class="detail-description" id="descriptionTag"></p>
-              </div>
-            </div>
-            <div class="tile is-child box buttons-container">
-              <button class="button is-warning" id="addToCartButton">
-                장바구니 추가하기
-              </button>
-              <button class="button is-info ml-2" id="purchaseButton">
-                바로 구매하기
-              </button>
-            </div>
+          <div class="content">
+            <p class="subtitle is-3 is-family-monospace" id="titleTag"></p>
+            <p class="subtitle is-3 is-family-monospace" id="authorTag"></p>
+            <h1 id="priceTag"></h1>
+            <p class="detail-description" id="descriptionTag"></p>
           </div>
         </div>
         <div class="tile is-child box buttons-container">
