@@ -1,6 +1,7 @@
 package io.elice.shoppingmall.cart.entity;
 
 import io.elice.shoppingmall.product.entity.Book;
+import io.elice.shoppingmall.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +29,10 @@ public class CartItem {
     @JoinColumn(name = "book_id")
     private Book book; //item = book
 
+    @ManyToOne // 사용자와의 연관관계
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Column(nullable = false)
     private int quantity; //count
 
@@ -39,9 +44,10 @@ public class CartItem {
     public CartItem() {}
 
     // 매개변수를 받는 생성자
-    public CartItem(Cart cart, Book book, int quantity) {
+    public CartItem(Cart cart, Book book, User user, int quantity) {
         this.cart = cart;
         this.book = book;
+        this.user = user; // 사용자 추가
         this.quantity = quantity;
     }
 
@@ -49,6 +55,7 @@ public class CartItem {
         CartItem cartItem = new CartItem();
         cartItem.setCart(cart);
         cartItem.setBook(book);
+
         cartItem.setQuantity(quantity);
         return cartItem;
     }
@@ -62,4 +69,3 @@ public class CartItem {
     }
 
 }
-
