@@ -1,7 +1,9 @@
 package io.elice.shoppingmall.user.controller;
 import io.elice.shoppingmall.user.dto.UserDTO;
 import io.elice.shoppingmall.user.service.UserService;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -9,9 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
@@ -40,17 +40,29 @@ public class AdminController {
         return ResponseEntity.ok(users);
     }
 
-    @PatchMapping("/users/{email}")
-    public ResponseEntity<UserDTO> updateUserRole(@PathVariable String email, @RequestBody UserDTO userDTO) {
+    @PatchMapping("/users")
+    public ResponseEntity<Map<String, Object>> updateUserRole(@RequestBody Map<String, Object> requestBody) {
+        String email = (String) requestBody.get("email");
+        Boolean admin = (Boolean) requestBody.get("admin");
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setEmail(email);
+        userDTO.setAdmin(admin);
+
         UserDTO updatedUser = userService.updateUserRole(email, userDTO);
-        return ResponseEntity.ok(updatedUser);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "권한이 성공적으로 변경되었습니다.");
+        response.put("updatedUser", updatedUser);
+        return ResponseEntity.ok(response);
     }
 
-
     @DeleteMapping("/users/{email}")
-    public ResponseEntity<String> deleteUser(@PathVariable String email) {
+    public ResponseEntity<Map<String, String>> deleteUser(@PathVariable String email) {
         userService.deleteUser(email);
-        return ResponseEntity.ok("회원 삭제가 완료되었습니다.");
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "회원 삭제가 완료되었습니다.");
+        return ResponseEntity.ok(response);
     }
 
 

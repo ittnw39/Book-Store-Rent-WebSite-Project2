@@ -21,7 +21,7 @@ public class OrderController {
 
     @GetMapping // 주문 정보 입력 페이지로 이동
     public String showOrderForm() {
-        return "order/order";
+        return "/order/order.html";
     }
 
     @PostMapping(path= "/create",  consumes = "application/json") // 상품 주문하기

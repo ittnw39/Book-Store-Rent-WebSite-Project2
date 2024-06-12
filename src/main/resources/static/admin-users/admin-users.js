@@ -90,20 +90,42 @@ async function insertUsers() {
    const index = roleSelectBox.selectedIndex;
    roleSelectBox.className = roleSelectBox[index].className;
 
-   // 이벤트 - 권한관리 박스 수정 시 바로 db 반영
-   roleSelectBox.addEventListener("change", async () => {
-     const newRole = roleSelectBox.value === "ADMIN";
-     const data = { admin: newRole };
 
-     // 선택한 옵션의 배경색 반영
-     const index = roleSelectBox.selectedIndex;
-     roleSelectBox.className = roleSelectBox[index].className;
+// 이벤트 - 권한관리 박스 수정 시 바로 db 반영
+roleSelectBox.addEventListener("change", async () => {
+  const newRole = roleSelectBox.value === "ADMIN";
+  const data = {
+    email: email,
+    admin: newRole
+  };
 
-     // api 요청
-     await Api.patch(`/admin/users/${email}`, data);
-   });
+  try {
+    // api 요청
+    const response = await Api.patch("/admin/users", data);
 
-   // 이벤트 - 삭제버튼 클릭 시 Modal 창 띄우고, 동시에, 전역변수에 해당 주문의 id 할당
+    // 선택한 옵션의 배경색 반영
+    const index = roleSelectBox.selectedIndex;
+    roleSelectBox.className = roleSelectBox[index].className;
+
+    console.log(response); // 서버 응답 확인용 로그
+
+    if (response.success) {
+      alert(response.message);
+    } else {
+      throw new Error("권한 변경에 실패했습니다.");
+    }
+  } catch (err) {
+    console.error(err);
+    alert(`권한 변경 과정에서 오류가 발생하였습니다: ${err.message}`);
+
+    // 오류 발생 시 이전 선택 옵션으로 되돌리기
+    roleSelectBox.value = user.admin ? "ADMIN" : "USER";
+    const index = roleSelectBox.selectedIndex;
+    roleSelectBox.className = roleSelectBox[index].className;
+  }
+});
+
+ //이벤트 - 삭제버튼 클릭 시 Modal 창 띄우고, 동시에, 전역변수에 해당 주문의 id 할당
    deleteButton.addEventListener("click", () => {
      userEmailToDelete = email;
      openModal();
@@ -117,29 +139,29 @@ async function insertUsers() {
 
 // db에서 회원정보 삭제
 async function deleteUserData(e) {
- e.preventDefault();
+  e.preventDefault();
 
- try {
-   await Api.delete(`/admin/users/${userEmailToDelete}`);
+  try {
+    const response = await Api.delete(`/admin/users/${userEmailToDelete}`);
 
-   // 삭제 성공
-   alert("회원 정보가 삭제되었습니다.");
+    // 삭제 성공
+    alert(response.message);
 
-   // 삭제한 아이템 화면에서 지우기
-   const deletedItem = document.querySelector(`#user-${userEmailToDelete.replace(/[^a-zA-Z0-9]/g, '')}`);
-   deletedItem.remove();
+    // 삭제한 아이템 화면에서 지우기
+    const deletedItem = document.querySelector(`#user-${userEmailToDelete.replace(/[^a-zA-Z0-9]/g, '')}`);
+    deletedItem.remove();
 
-   // 전역변수 초기화
-   userEmailToDelete = "";
+    // 전역변수 초기화
+    userEmailToDelete = "";
 
-   closeModal();
-
-   // 삭제 후 카운트 업데이트
-   updateUserCount();
-   updateAdminCount();
- } catch (err) {
-   alert(`회원정보 삭제 과정에서 오류가 발생하였습니다: ${err}`);
- }
+    // 삭제 후 카운트 업데이트
+    updateUserCount();
+    updateAdminCount();
+  } catch (err) {
+    alert(`회원정보 삭제 과정에서 오류가 발생하였습니다: ${err}`);
+  } finally {
+    closeModal(); // 삭제 요청 처리 후 모달창 닫기
+  }
 }
 
 // Modal 창에서 아니오 클릭할 시, 전역 변수를 다시 초기화함.
@@ -175,6 +197,6 @@ function updateUserCount() {
 // 관리자 수 업데이트
 function updateAdminCount() {
  const adminElements = document.querySelectorAll("option[value='ADMIN']:checked");
- const adminCount = adminElements.length;
- adminCount.innerText = addCommas(adminCount);
+ const adminCountValue = adminElements.length;
+ adminCount.innerText = addCommas(adminCountValue);
 }
