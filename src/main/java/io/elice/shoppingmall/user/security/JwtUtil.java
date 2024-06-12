@@ -53,7 +53,7 @@ public class JwtUtil {
         return Jwts.builder()
             .setClaims(claims) // 클레임 설정
             .signWith(key, SignatureAlgorithm.HS512) // 서명 키 설정
-            .compact(); // 토큰 문자열 생성
+            .compact(); // 토큰 문자열 생성//
 
     }
 
