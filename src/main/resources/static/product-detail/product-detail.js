@@ -56,41 +56,58 @@ function getPathParams() {
 
 // 제품 데이터를 삽입하는 함수
 async function insertProductData() {
-    const { id } = getPathParams();
-    const product = await Api.get(`/api/book/${id}`);
+  const { id } = getPathParams();
+  const product = await Api.get(`/api/book/${id}`);
 
-    // 객체 destructuring
-    const {
-        title,
-        description,
-        publisher,
-        publishedDate,
-        isRecommended,
-        imageURL,
-        price
-    } = product;
-    const imageUrl = await getImageUrl(imageURL);
+  // 객체 destructuring
+  const {
+    title,
+    category,
+    author,
+    description,
+    publisher,
+    publishedDate,
+    isRecommended,
+    imageURL,
+    price
+  } = product;
 
-    productImageTag.src = imageUrl;
-    titleTag.innerText = title;
-    descriptionTag.innerText = description;
-    publisherTag.innerText = publisher;
-    publishedDateTag.innerText = formatPublishedDate(publishedDate);
-    priceTag.innerText = `${addCommas(price)}원`;
+  productImageTag.src = imageURL;
+  titleTag.innerText = title;
+  categoryTag.innerText = category.name;
+  authorTag.innerText = author.name;
+  descriptionTag.innerText = description;
+  publisherTag.innerText = publisher;
+  publishedDateTag.innerText = formatPublishedDate(publishedDate);
+  priceTag.innerText = `${addCommas(price)}원`;
 
-    function formatPublishedDate(dateString) {
-        const date = new Date(dateString);
-        const year = String(date.getFullYear()).slice(2);
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    }
+  function formatPublishedDate(dateString) {
+    const date = new Date(dateString);
+    const year = String(date.getFullYear());
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
 
-    if (isRecommended) {
-        titleTag.insertAdjacentHTML(
-            "beforeend",
-            '<span class="tag is-success is-rounded">추천</span>'
-        );
+  if (isRecommended) {
+    titleTag.insertAdjacentHTML(
+      "beforeend",
+      '<span class="tag is-success is-rounded">추천</span>'
+    );
+  }
+
+  addToCartButton.addEventListener("click", async () => {
+    try {
+      await insertDb(product);
+
+      alert("장바구니에 추가되었습니다.");
+    } catch (err) {
+      // Key already exists 에러면 아래와 같이 alert함
+      if (err.message.includes("Key")) {
+        alert("이미 장바구니에 추가되어 있습니다.");
+      }
+
+      console.log(err);
     }
 
     addToCartButton.addEventListener("click", async () => {

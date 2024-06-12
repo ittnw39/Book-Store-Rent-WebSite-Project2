@@ -1,7 +1,11 @@
 package io.elice.shoppingmall.cart.controller;
 
+import io.elice.shoppingmall.cart.repository.CartRepository;
+import io.elice.shoppingmall.user.entity.User;
+import io.elice.shoppingmall.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.coyote.Response;
+import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import io.elice.shoppingmall.cart.dto.CartDetailDto;
 import io.elice.shoppingmall.cart.dto.CartItemDto;
@@ -18,16 +22,15 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 public class CartController {
     private final CartService cartService;
 
-
-
     //장바구니 담기
-    @PostMapping("/cart")
-    public @ResponseBody ResponseEntity<?> addCartItem(@RequestBody @Valid CartItemDto cartItemDto, BindingResult bindingResult, Principal principal) {
+    @PostMapping("/cart/items")
+    public @ResponseBody ResponseEntity<?> addCartItem(@RequestBody @Valid CartItemDto cartItemDto, BindingResult bindingResult, Authentication authentication) {
         if (bindingResult.hasErrors()) {
             StringBuilder sb = new StringBuilder();
             List<FieldError> fieldErrors = bindingResult.getFieldErrors();
@@ -37,7 +40,7 @@ public class CartController {
             return new ResponseEntity<>(sb.toString().trim(), HttpStatus.BAD_REQUEST);
         }
 
-        String email = (principal != null) ? principal.getName() : "honggildong@example.com";
+        String email = authentication.getName();
         Long cartItemId;
 
         try {
@@ -52,31 +55,32 @@ public class CartController {
 
     //장바구니 조회
     @GetMapping("/cart")
-    public String getCartPage(Principal principal, Model model) {
-        // 임의의 사용자 정보 설정
-        String email = (principal != null) ? principal.getName() : "honggildong@example.com";
-        model.addAttribute("username", "홍길동");
-        model.addAttribute("email", email);
+    public String getCartPage(Authentication authentication, Model model) {
+        List<CartDetailDto> cartDetailList = new ArrayList<>();
 
-        List<CartDetailDto> cartDetailList;
-        try {
-            cartDetailList = cartService.getCartList(email);
-        } catch (EntityNotFoundException e) {
-            model.addAttribute("errorMessage", "사용자를 찾을 수 없습니다.");
-            cartDetailList = new ArrayList<>();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String email = authentication.getName();
+
+            try {
+                cartDetailList = cartService.getCartList(email);
+            } catch (EntityNotFoundException e) {
+                model.addAttribute("errorMessage", "사용자를 찾을 수 없습니다.");
+            }
+        } else {
+            model.addAttribute("errorMessage", "로그인이 필요합니다.");
         }
 
         model.addAttribute("cartItems", cartDetailList);
-        return "/cart/cart.html"; // .html 확장자 없이 뷰 이름 반환
+        return "/cart/cart.html";
     }
 
     @PatchMapping("/cart/item/{cartItemId}")
-    public @ResponseBody ResponseEntity<?> updateCartItem(@PathVariable("cartItemId") Long cartItemId, int quantity, Principal principal) {
+    public @ResponseBody ResponseEntity<?> updateCartItem(@PathVariable("cartItemId") Long cartItemId, int quantity, Authentication authentication) {
+        String email = authentication.getName();
         if (quantity <= 0) {
             return new ResponseEntity<>("최소 1개 이상 담아주세요", HttpStatus.BAD_REQUEST);
         }
 
-        String email = (principal != null) ? principal.getName() : "honggildong@example.com";
 
         if (!cartService.validateCartItem(cartItemId, email)) {
             return new ResponseEntity<>("수정 권한이 없습니다.", HttpStatus.FORBIDDEN);
@@ -87,8 +91,8 @@ public class CartController {
     }
 
     @DeleteMapping("/cart/item/{cartItemId}")
-    public @ResponseBody ResponseEntity<?> deleteCartItem(@PathVariable("cartItemId") Long cartItemId, Principal principal) {
-        String email = (principal != null) ? principal.getName() : "honggildong@example.com";
+    public @ResponseBody ResponseEntity<?> deleteCartItem(@PathVariable("cartItemId") Long cartItemId, Authentication authentication) {
+        String email =  authentication.getName();
 
         if (!cartService.validateCartItem(cartItemId, email)) {
             return new ResponseEntity<>("삭제 권한이 없습니다.", HttpStatus.FORBIDDEN);

@@ -4,6 +4,9 @@ import io.elice.shoppingmall.order.DTO.OrderDTO;
 import io.elice.shoppingmall.order.entity.Orders;
 import io.elice.shoppingmall.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,17 +22,18 @@ public class AdminOrderController {
     private final OrderService orderService;
 
     @GetMapping //모든 주문 조회
-    public String getAllOrders(Model model) {
-        List<OrderDTO> orders = orderService.getAllOrders();
+    public String getAllOrders(Model model, @RequestParam(name= "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<OrderDTO> orders = orderService.getAllOrders(pageable);
         model.addAttribute("orders", orders);
-        return "admin-orders/admin-orders";
+        return "/admin-orders/admin-orders.html";
     }
 
-    @GetMapping("/{orderId}/{orderLineId}") //주문 아이디별 주문 상세 조회
+    @GetMapping("/{orderId}") //주문 아이디별 주문 상세 조회
     public String getOrderDetail(@PathVariable Long orderId, Model model) {
         OrderDTO orderDTO = orderService.getOrderById(orderId);
         model.addAttribute("order", orderDTO);
-        return "order/order-detail";
+        return "/order/order-detail.html";
     }
 
     @PutMapping("/{orderId}") //주문 수정

@@ -50,10 +50,12 @@ public class JwtUtil {
 
         SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
+        SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+
         return Jwts.builder()
-                .setClaims(claims) // 클레임 설정
-                .signWith(key, SignatureAlgorithm.HS512) // 서명 키 설정
-                .compact(); // 토큰 문자열 생성
+            .setClaims(claims) // 클레임 설정
+            .signWith(key, SignatureAlgorithm.HS512) // 서명 키 설정
+            .compact(); // 토큰 문자열 생성
 
     }
 
@@ -76,11 +78,11 @@ public class JwtUtil {
 
         try {
             return Jwts.parser()
-                    .setSigningKey(key)
-                    .setAllowedClockSkewSeconds(30)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
+                .setSigningKey(key)
+                .setAllowedClockSkewSeconds(30)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
 
         } catch (ExpiredJwtException e) {
             // 토큰이 만료된 경우 예외 처리
@@ -104,6 +106,7 @@ public class JwtUtil {
             // 토큰 파싱 또는 유효성 검사 실패 시 예외 처리
             return null;
         }
+
     }
 }
 

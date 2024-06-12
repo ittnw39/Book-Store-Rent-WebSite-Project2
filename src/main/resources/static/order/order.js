@@ -146,15 +146,15 @@ async function insertOrderSummary() {
 
 async function insertUserData() {
   const userData = await Api.get("/user");
-  const { fullName, phoneNumber, address } = userData;
+  const { username, phNum, address } = userData;
 
   // 만약 db에 데이터 값이 있었다면, 배송지정보에 삽입
-  if (fullName) {
-    receiverNameInput.value = fullName;
+  if (username) {
+    receiverNameInput.value = username;
   }
 
-  if (phoneNumber) {
-    receiverPhoneNumberInput.value = phoneNumber;
+  if (phNum) {
+    receiverPhoneNumberInput.value = phNum;
   }
 
   if (address) {
@@ -190,10 +190,8 @@ async function doCheckout() {
   const postalCode = postalCodeInput.value;
   const address1 = address1Input.value;
   const address2 = address2Input.value;
-  const requestType = requestSelectBox.value;
-  const customRequest = customRequestInput.value;
-  const summaryTitle = productsTitleElem.innerText;
-  const totalPrice = convertToNumber(orderTotalElem.innerText);
+  const totalPrice = convertToNumber(orderTotalElem.innerText);  // 백엔드가 BigDecimal을 요구한다면 문자열 형태로 전송
+  const userId = sessionStorage.getItem('userId');  // 로그인 세션에서 사용자 ID 가져오기
   const { selectedIds } = await getFromDb("order", "summary");
 
   if (!receiverName || !receiverPhoneNumber || !postalCode || !address2) {
@@ -218,19 +216,24 @@ async function doCheckout() {
     address1,
     address2,
     receiverName,
-    receiverPhoneNumber,
+    receiverPhoneNumber
   };
 
-  try {
-    // 전체 주문을 등록함
-    const orderData = await Api.post("/api/order", {
-      summaryTitle,
-      totalPrice,
-      address,
-      request,
-    });
+  // 주문 정보 생성
+    const orderData = {
+      userId: userId,
+      orderDate: new Date().toISOString(),
+      totalAmount: totalPrice.toString(),
+      userAddress: `${address.postalCode} ${address.address1} ${address.address2}`,
+      orderOption: 'PURCHASE'
+    };
 
-    const orderId = orderData._id;
+try {
+    // 주문 생성 API 호출
+    const orderResponse = await Api.post("/api/orders/create", orderData);
+    if (!orderResponse.ok) throw new Error('Failed to create order');
+    const order = await orderResponse.json();
+    const orderId = order.id; // 서버에서 반환된 주문 ID 사용
 
     // 제품별로 주문아이템을 등록함
     for (const productId of selectedIds) {
@@ -241,7 +244,7 @@ async function doCheckout() {
         orderId,
         productId,
         quantity,
-        totalPrice,
+        totalPrice
       });
 
       // indexedDB에서 해당 제품 관련 데이터를 제거함
@@ -256,17 +259,17 @@ async function doCheckout() {
 
     // 입력된 배송지정보를 유저db에 등록함
     const data = {
-      phoneNumber: receiverPhoneNumber,
+      phNum: receiverPhoneNumber,
       address: {
         postalCode,
         address1,
-        address2,
+        address2
       },
     };
-    await Api.post("/api/user/deliveryinfo", data);
+    await Api.post("/api/user", data);
 
     alert("결제 및 주문이 정상적으로 완료되었습니다.\n감사합니다.");
-    window.location.href = "/order/complete";
+    window.location.href = "/order-complete/order-complete";
   } catch (err) {
     console.log(err);
     alert(`결제 중 문제가 발생하였습니다: ${err.message}`);
