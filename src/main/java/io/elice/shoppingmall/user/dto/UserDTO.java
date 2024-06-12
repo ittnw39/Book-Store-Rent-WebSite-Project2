@@ -3,6 +3,9 @@ package io.elice.shoppingmall.user.dto;
 import io.elice.shoppingmall.user.entity.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
+import java.util.Date;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,6 +27,7 @@ public class UserDTO {
     @NotBlank(message = "비밀번호 확인은 필수 입력 값입니다.")
     private String passwordConfirm;
     private boolean admin;
+    private Date createdAt;
 
     public UserDTO(User user) {
         this.email = user.getEmail();
@@ -34,5 +38,6 @@ public class UserDTO {
         this.password = user.getPassword();
         this.totalSpent = user.getTotalSpent();
         this.admin = user.isAdmin();
+        this.createdAt = user.getCreatedAt();
     }
 }

@@ -64,37 +64,7 @@ public class UserController {
     }
 
 
-//    @PostMapping("/login")
-//    public ResponseEntity<?> login(@RequestBody Map<String, String> userData) {
-//        String email = userData.get("email");
-//        String password = userData.get("password");
-//
-//        try {
-//            String token = userService.login(email, password);
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setBearerAuth(token);
-//
-//            // 사용자의 역할 정보 가져오기
-//            UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
-//            Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
-//            List<String> roles = authorities.stream()
-//                .map(GrantedAuthority::getAuthority)
-//                .collect(Collectors.toList());
-//
-//            Map<String, Object> response = new HashMap<>();
-//            response.put("message", "로그인되었습니다.");
-//            response.put("token", token);
-//            response.put("roles", roles);
-//
-//            return ResponseEntity.ok()
-//                .headers(headers)
-//                .body(response);
-//        } catch (UsernameNotFoundException | IllegalArgumentException e) {
-//            Map<String, String> error = new HashMap<>();
-//            error.put("error", "잘못된 이메일 또는 비밀번호입니다.");
-//            return ResponseEntity.badRequest().body(error);
-//        }
-//    }
+
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> userData, HttpServletResponse response) {

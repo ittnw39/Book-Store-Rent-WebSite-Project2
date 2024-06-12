@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,6 +24,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 
 @Service
@@ -65,6 +67,7 @@ public class UserService {
         user.setAddress(userDTO.getAddress());
         user.setNickname(userDTO.getNickname());
         user.setAdmin(userDTO.isAdmin());
+        user.setCreatedAt(userDTO.getCreatedAt());
 
         userRepository.save(user);
     }
@@ -107,13 +110,6 @@ public class UserService {
         return token;
     }
 
-//    public boolean isAdmin(String email) {
-//        User user = userRepository.findByEmail(email)
-//            .orElseThrow(
-//                () -> new UsernameNotFoundException("가입되지 않은 이메일이거나 회원 탈퇴로 인해 로그인할 수 없습니다."));
-//         return user.isAdmin();
-//    }
-
 
     public String logout(String token) {
         if (token != null && token.startsWith("Bearer ")) {
@@ -146,6 +142,7 @@ public class UserService {
         user.setPhNum(userDTO.getPhNum());
         user.setAddress(userDTO.getAddress());
         user.setNickname(userDTO.getNickname());
+        user.setCreatedAt(userDTO.getCreatedAt());
 
         return new UserDTO(user);
     }
@@ -169,10 +166,15 @@ public class UserService {
         return userDTOs;
     }
 
+    public UserDTO updateUserRole(String email, UserDTO userDTO) {
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found"));
 
+        user.setAdmin(userDTO.isAdmin());
+        User updatedUser = userRepository.save(user);
 
-
-
+        return new UserDTO(updatedUser);
+    }
 
 
 }

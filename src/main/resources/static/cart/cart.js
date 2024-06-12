@@ -8,6 +8,8 @@ import {
 } from "../useful-functions.js";
 import { deleteFromDb, getFromDb, putToDb } from "../indexed-db.js";
 
+
+
 // 요소(element), input 혹은 상수
 const cartProductsContainer = document.querySelector("#cartProductsContainer");
 const allSelectCheckbox = document.querySelector("#allSelectCheckbox");
@@ -334,16 +336,31 @@ async function updateAllSelectCheckbox() {
 }
 
 async function deleteItem(id) {
-  // indexedDB의 cart 목록에서 id를 key로 가지는 데이터를 삭제함.
+  // 상품 삭제 버튼을 누를 때는 체크박스 선택 여부와 관계없이 상품 금액을 업데이트해야 합니다.
+  const priceElem = document.querySelector(`#total-${id}`);
+  const price = convertToNumber(priceElem.innerText);
+
+  // 현재 주문 총액을 가져옵니다.
+  const currentOrderTotal = convertToNumber(orderTotalElem.innerText);
+
+  // 삭제할 상품의 수량을 가져옵니다.
+  const quantity = 1; // 단일 상품 삭제 시 수량은 항상 1입니다.
+
+  // 삭제할 상품의 금액을 주문 총액에서 차감합니다.
+  const priceUpdate = -price;
+  const countUpdate = -quantity;
+  orderTotalElem.innerText = `${addCommas(currentOrderTotal + priceUpdate)}원`;
+
+  // indexedDB의 cart 목록에서 id를 key로 가지는 데이터를 삭제합니다.
   await deleteFromDb("cart", id);
 
-  // 결제정보를 업데이트함.
+  // 결제정보를 업데이트합니다.
   await updateOrderSummary(id, "removePermanent-deleteButton");
 
-  // 제품 요소(컴포넌트)를 페이지에서 제거함
+  // 제품 요소(컴포넌트)를 페이지에서 제거합니다.
   document.querySelector(`#productItem-${id}`).remove();
 
-  // 전체선택 체크박스를 업데이트함
+  // 전체선택 체크박스를 업데이트합니다.
   updateAllSelectCheckbox();
 }
 
@@ -368,14 +385,16 @@ async function updateOrderSummary(id, type) {
 
   // 체크박스 혹은 삭제 버튼 클릭으로 인한 업데이트임.
   if (isCheckbox || isDeleteButton) {
+    price = 0;
     const priceElem = document.querySelector(`#total-${id}`);
     price = convertToNumber(priceElem.innerText);
 
-    quantity = 1;
+    quantity = 0;
   }
 
   // - + 버튼 클릭으로 인한 업데이트임.
   if (isMinusButton || isPlusButton) {
+    price = 0;
     const unitPriceElem = document.querySelector(`#unitPrice-${id}`);
     price = convertToNumber(unitPriceElem.innerText);
 
@@ -384,6 +403,7 @@ async function updateOrderSummary(id, type) {
 
   // input 박스 입력으로 인한 업데이트임
   if (isInput) {
+    price = 0;
     const unitPriceElem = document.querySelector(`#unitPrice-${id}`);
     const unitPrice = convertToNumber(unitPriceElem.innerText);
 
@@ -512,14 +532,25 @@ async function insertOrderSummary() {
 
   const hasItems = productsCount !== 0;
 
-  productsCountElem.innerText = `${productsCount}개`;
-  productsTotalElem.innerText = `${addCommas(productsTotal)}원`;
+  if (!hasItems) {
+    // 장바구니에 아무 상품도 없을 경우, 상품 수, 상품 금액을 0으로 설정합니다.
+    productsCountElem.innerText = `0개`;
+    productsTotalElem.innerText = `0원`;
 
-  if (hasItems) {
-    deliveryFeeElem.innerText = `3,000원`;
-    orderTotalElem.innerText = `${addCommas(productsTotal + 3000)}원`;
-  } else {
+    // 배송비와 총 결제 금액도 0으로 설정합니다.
     deliveryFeeElem.innerText = `0원`;
     orderTotalElem.innerText = `0원`;
+  } else {
+    // 아이템이 있는 경우에만 값을 설정합니다.
+    productsCountElem.innerText = `${productsCount}개`;
+    productsTotalElem.innerText = `${addCommas(productsTotal)}원`;
+
+    // 배송비는 3000원으로 설정합니다.
+    deliveryFeeElem.innerText = `3,000원`;
+
+    // 상품 금액에 배송비를 더한 값을 총 결제 금액으로 설정합니다.
+    orderTotalElem.innerText = `${addCommas(productsTotal + 3000)}원`;
   }
+
+
 }
