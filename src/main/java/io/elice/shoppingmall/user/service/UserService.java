@@ -9,6 +9,7 @@ import io.elice.shoppingmall.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -167,4 +168,11 @@ public class UserService {
         }
         return userDTOs;
     }
+
+
+
+
+
+
+
 }

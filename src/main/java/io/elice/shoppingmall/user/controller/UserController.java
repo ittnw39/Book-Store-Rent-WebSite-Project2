@@ -24,6 +24,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @RequiredArgsConstructor
@@ -156,6 +157,7 @@ public class UserController {
         return ResponseEntity.ok("회원탈퇴가 완료되었습니다.");
     }
 
+
     @GetMapping("/admin-check")
     public ResponseEntity<?> checkAdmin(@RequestHeader("Authorization") String token) {
         if (token != null && token.startsWith("Bearer ")) {
@@ -221,7 +223,7 @@ public class UserController {
     }
 
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty()) {
@@ -237,6 +239,46 @@ public class UserController {
 
     }
 
+
+
+    @GetMapping("/data")
+    public ResponseEntity<?> getUserData(@RequestHeader("Authorization") String token) {
+
+        String email = jwtUtil.getEmailFromToken(token.substring(7));
+
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자를 찾을 수 없습니다.");
+        }
+        User user = optionalUser.get();
+
+        return ResponseEntity.ok(user);
+    }
+
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable Long id,
+                                        @RequestBody Map<String, Object> updates) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        updates.forEach((key, value) -> {
+            switch (key) {
+                case "username":
+                    user.setUsername((String) value);
+                    break;
+                case "email":
+                    user.setEmail((String) value);
+                    break;
+                case "phNum":
+                    user.setPhNum((String) value);
+                    break;
+            }
+        });
+        userRepository.save(user);
+        return ResponseEntity.ok(user);
+    }
 
 
 
