@@ -1,6 +1,8 @@
 export const createNavbar = () => {
   const pathname = window.location.pathname;
 
+  const container = document.querySelector("#navbar");
+
   switch (pathname) {
     case "/":
       addNavElements("admin register login account logout");
@@ -55,6 +57,7 @@ export const createNavbar = () => {
       break;
 
     default:
+      addNavElements("admin register login account logout");
   }
 };
 
@@ -62,9 +65,11 @@ export const createNavbar = () => {
 const addNavElements = (keyString) => {
   const keys = keyString.split(" ");
 
+
   const container = document.querySelector("#navbar");
   const isLogin = sessionStorage.getItem("token") ? true : false;
-  const isAdmin = sessionStorage.getItem("admin") ? true : false;
+  const isAdmin = sessionStorage.getItem("isAdmin") ? true : false;
+
 
   // 로그인 안 된 상태에서만 보이게 될 navbar 요소들
   const itemsBeforeLogin = {
@@ -81,40 +86,40 @@ const addNavElements = (keyString) => {
   };
 
   const itemsForAdmin = {
-    admin: '<li><a href="/admin">페이지관리</a></li>',
+    admin: '<li><a href="/admin">관리자 페이지</a></li>',
   };
 
   // 로그아웃 요소만 유일하게, 클릭 이벤트를 필요로 함 (나머지는 href로 충분함)
   const logoutScript = document.createElement("script");
   logoutScript.innerText = `
-      const logoutElem = document.querySelector('#logout'); 
-      
-      if (logoutElem) {
-        logoutElem.addEventListener('click', () => {
-          sessionStorage.removeItem('token');
-          sessionStorage.removeItem('admin');
+      const logoutElem = document.querySelector('#logout');
 
-          window.location.href = '/';
-        });
-      }
-  `;
+       if (logoutElem) {
+              logoutElem.addEventListener('click', () => {
+                sessionStorage.removeItem('token');
+                sessionStorage.removeItem('isAdmin');
 
-  let items = "";
-  for (const key of keys) {
-    if (isAdmin) {
-      items += itemsForAdmin[key] ?? "";
-    }
-    if (isLogin) {
-      items += itemsAfterLogin[key] ?? "";
-    } else {
-      items += itemsBeforeLogin[key] ?? "";
-    }
+                window.location.href = '/';
+              });
+            }
+        `;
+
+let items = "";
+for (const key of keys) {
+  if (isAdmin && itemsForAdmin[key]) {
+    items += itemsForAdmin[key];
+  } else if (isLogin && itemsAfterLogin[key]) {
+    items += itemsAfterLogin[key];
+  } else if (!isLogin && itemsBeforeLogin[key]) {
+    items += itemsBeforeLogin[key];
   }
+}// items에 쌓은 navbar 요소들 문자열을 html에 삽입함.
+   container.insertAdjacentHTML("afterbegin", items);
 
-  // items에 쌓은 navbar 요소들 문자열을 html에 삽입함.
-  container.insertAdjacentHTML("afterbegin", items);
+   // insertAdjacentHTML 은 문자열 형태 script를 실행하지는 않음.
+   // append, after 등의 함수로 script 객체 요소를 삽입해 주어야 실행함.
+   container.after(logoutScript);
+ };
 
-  // insertAdjacentHTML 은 문자열 형태 script를 실행하지는 않음.
-  // append, after 등의 함수로 script 객체 요소를 삽입해 주어야 실행함.
-  container.after(logoutScript);
-};
+
+

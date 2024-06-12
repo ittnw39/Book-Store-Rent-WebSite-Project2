@@ -6,6 +6,7 @@ const fullNameInput = document.querySelector("#fullNameInput");
 const emailInput = document.querySelector("#emailInput");
 const passwordInput = document.querySelector("#passwordInput");
 const passwordConfirmInput = document.querySelector("#passwordConfirmInput");
+const phNumInput = document.querySelector("#phNumInput");
 const submitButton = document.querySelector("#submitButton");
 
 addAllElements();
@@ -29,12 +30,15 @@ async function handleSubmit(e) {
   const email = emailInput.value;
   const password = passwordInput.value;
   const passwordConfirm = passwordConfirmInput.value;
+  const phNum = phNumInput.value;
+
 
   // 잘 입력했는지 확인
   const isFullNameValid = username.length >= 2;
   const isEmailValid = validateEmail(email);
   const isPasswordValid = password.length >= 4;
   const isPasswordSame = password === passwordConfirm;
+  const isPhNumValid = phNum.length >= 9;
 
   if (!isFullNameValid || !isPasswordValid) {
     return alert("이름은 2글자 이상, 비밀번호는 4글자 이상이어야 합니다.");

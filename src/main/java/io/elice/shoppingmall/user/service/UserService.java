@@ -7,11 +7,11 @@ import io.elice.shoppingmall.user.dto.UserDTO;
 import io.elice.shoppingmall.user.entity.User;
 import io.elice.shoppingmall.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
-import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,6 +23,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +35,7 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final JwtBlacklistService blacklistService;
+
 
 
     public boolean isEmailDuplicate(String email) {
@@ -62,8 +65,8 @@ public class UserService {
         user.setPhNum(userDTO.getPhNum());
         user.setAddress(userDTO.getAddress());
         user.setNickname(userDTO.getNickname());
-
-
+        user.setAdmin(userDTO.isAdmin());
+        user.setCreatedAt(userDTO.getCreatedAt());
 
         userRepository.save(user);
     }
@@ -74,9 +77,11 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
     }
+
     public String login(String email, String password) {
         User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new UsernameNotFoundException("가입되지 않은 이메일이거나 회원 탈퇴로 인해 로그인할 수 없습니다."));
+            .orElseThrow(
+                () -> new UsernameNotFoundException("가입되지 않은 이메일이거나 회원 탈퇴로 인해 로그인할 수 없습니다."));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
@@ -84,9 +89,9 @@ public class UserService {
 
         List<GrantedAuthority> authorities = new ArrayList<>();
         if (user.isAdmin()) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            authorities.add(new SimpleGrantedAuthority("ADMIN"));
         } else {
-            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+            authorities.add(new SimpleGrantedAuthority("USER"));
         }
 
         UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
@@ -101,13 +106,6 @@ public class UserService {
         String token = jwtUtil.createToken(authentication);
         return token;
     }
-
-//    public boolean isAdmin(String email) {
-//        User user = userRepository.findByEmail(email)
-//            .orElseThrow(
-//                () -> new UsernameNotFoundException("가입되지 않은 이메일이거나 회원 탈퇴로 인해 로그인할 수 없습니다."));
-//         return user.isAdmin();
-//    }
 
 
     public String logout(String token) {
@@ -141,6 +139,7 @@ public class UserService {
         user.setPhNum(userDTO.getPhNum());
         user.setAddress(userDTO.getAddress());
         user.setNickname(userDTO.getNickname());
+        user.setCreatedAt(userDTO.getCreatedAt());
 
         return new UserDTO(user);
     }
@@ -153,4 +152,26 @@ public class UserService {
         blacklistService.blacklistUserId(user.getId()); // userId를 블랙리스트에 추가
         userRepository.delete(user);
     }
+
+
+    public List<UserDTO> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user : users) {
+            userDTOs.add(new UserDTO(user));
+        }
+        return userDTOs;
+    }
+
+    public UserDTO updateUserRole(String email, UserDTO userDTO) {
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found"));
+
+        user.setAdmin(userDTO.isAdmin());
+        User updatedUser = userRepository.save(user);
+
+        return new UserDTO(updatedUser);
+    }
+
+
 }

@@ -34,7 +34,6 @@ public class SecurityConfig {
     }
 
 
-
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(jwtUtil, customUserDetailsService, jwtBlacklistService);
@@ -49,8 +48,8 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
-                    .requestMatchers("/admin/**").hasAuthority("ADMIN")
-                    .requestMatchers("/**").permitAll()// 모든 페이지 인증 없이 접근 가능하도록 설정
+                    .requestMatchers("/**").permitAll()
+                    .requestMatchers("/admin/**").hasAuthority("ADMIN")// 공개 경로만 인증 없이 접근 허용// 모든 페이지 인증 없이 접근 가능하도록 설정
                     .anyRequest().authenticated() // 나머지 요청은 인증 필요.formLogin((form) -> form
 
             )
@@ -59,4 +58,3 @@ public class SecurityConfig {
         return http.build();
     }
 }
-

@@ -3,10 +3,12 @@ package io.elice.shoppingmall.cart.dto;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class CartItemDto {
 
     //상품 상세 페이지에서 장바구니에 담을 상품 id, 수량
