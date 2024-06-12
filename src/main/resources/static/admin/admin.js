@@ -7,6 +7,6 @@ async function fetchAdminData() {
   // 가져온 관리자 데이터를 사용하여 페이지를 렌더링하는 로직 작성
 }
 
-checkAdmin();
+// checkAdmin();
 createNavbar();
 fetchAdminData();

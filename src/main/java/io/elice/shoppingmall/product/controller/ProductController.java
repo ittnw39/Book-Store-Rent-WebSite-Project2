@@ -23,50 +23,95 @@ public class ProductController {
 
     private final BookService bookService;
     private final ReviewService reviewService;
+    private final BookMapper bookMapper;
 
     @Autowired
-    public ProductController(BookService bookService, ReviewService reviewService) {
+    public ProductController(BookService bookService, ReviewService reviewService, BookMapper bookMapper) {
         this.bookService = bookService;
         this.reviewService = reviewService;
+        this.bookMapper = bookMapper;
     }
 
-    //상품 목록 조회 API
+    //상품 목록 조회 페이지
     @GetMapping("/books")
     public ResponseEntity<List<BookDTO>> viewBookList() {
         List<BookDTO> bookList = bookService.getAllBooks();
         return new ResponseEntity<>(bookList, HttpStatus.OK);
     }
 
-    //상품 상세 조회 API
+    //카테고리별 상품 목록 조회 페이지
+    @GetMapping("/books/category")
+    public ResponseEntity<List<BookDTO>> viewBookListByCategory(@RequestParam Long categoryId) {
+        List<BookDTO> categoryBookList = bookService.getBooksByCategory(categoryId);
+        return new ResponseEntity<>(categoryBookList, HttpStatus.OK);
+    }
+
+    //상품 검색 기능 추가 (책 제목, 저자)
+    @GetMapping("/books/search")
+    public ResponseEntity<List<BookDTO>> searchBookList(@RequestParam String keyword) {
+        List<BookDTO> searchResults = bookService.searchBooks(keyword);
+        return new ResponseEntity<>(searchResults, HttpStatus.OK);
+    }
+
+    //상품 상세 조회 페이지
     @GetMapping("/book/{bookId}")
     public ResponseEntity<BookDTO> viewBook(@PathVariable("bookId") Long id) {
         BookDTO bookDTO = bookService.searchBookById(id);
         return new ResponseEntity<>(bookDTO, HttpStatus.OK);
     }
 
-    //상품 리뷰 작성 API
+
+    //상품 리뷰 목록 조회(정렬 포함)
+    @GetMapping("/book/{bookId}/reviews")
+    public ResponseEntity<List<ReviewDTO>> getReviewsByBook(@PathVariable("bookId") Long bookId, @RequestParam(required = false) String sortBy) {
+        BookDTO bookDTO = bookService.searchBookById(bookId);
+        List<ReviewDTO> reviews = reviewService.getReviewsByBookSorted(bookMapper.toBookEntity(bookDTO), sortBy);
+        return new ResponseEntity<>(reviews, HttpStatus.OK);
+    }
+
+    //상품 리뷰 작성
     @PostMapping("/book/review/{bookId}")
-    public ResponseEntity<ReviewDTO> createReview(@PathVariable("bookId") Long id, @RequestBody ReviewDTO reviewDTO) {
-        BookDTO bookDTO = bookService.searchBookById(id);
-
+    public ResponseEntity<ReviewDTO> createReview(@PathVariable("bookId") Long bookId, @RequestBody ReviewDTO reviewDTO,
+                                                  Principal principal) {
+        if(principal == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        // 이메일로 사용자 ID를 찾음
+        String email = principal.getName();
+        BookDTO bookDTO = bookService.searchBookById(bookId);
         reviewDTO.setBookDTO(bookDTO);
-
-        ReviewDTO newReview = reviewService.saveReview(reviewDTO);
+        ReviewDTO newReview = reviewService.saveReview(reviewDTO, email);
         return new ResponseEntity<>(newReview, HttpStatus.CREATED);
+
     }
 
-    //상품 리뷰 수정 API
+    //상품 리뷰 수정
     @PutMapping("/book/review/{reviewId}")
-    public ResponseEntity<ReviewDTO> updateReview(@PathVariable("reviewId") Long id, @RequestBody ReviewDTO reviewDTO) {
-        reviewDTO.setId(id);
-        ReviewDTO selectedReview = reviewService.modifyReview(reviewDTO);
-        return new ResponseEntity<>(selectedReview, HttpStatus.OK);
+    public ResponseEntity<ReviewDTO> updateReview(@PathVariable("reviewId") Long reviewId, @RequestBody ReviewDTO reviewDTO, Principal principal) {
+        String email = principal.getName();
+
+        reviewService.verifyReviewOwner(reviewId, email);
+
+        reviewDTO.setId(reviewId);
+        ReviewDTO updatedReview = reviewService.modifyReview(reviewDTO, email);
+        return new ResponseEntity<>(updatedReview, HttpStatus.OK);
     }
 
-    //상품 리뷰 삭제 API
+    //상품 리뷰 삭제
     @DeleteMapping("/book/review/{reviewId}")
-    public ResponseEntity<ReviewDTO> deleteReview(@PathVariable("reviewId") Long id) {
-        reviewService.removeReview(id);
+    public ResponseEntity<ReviewDTO> deleteReview(@PathVariable("reviewId") Long reviewId, Principal principal) {
+        String email = principal.getName();
+
+        reviewService.verifyReviewOwner(reviewId, email);
+
+        reviewService.removeReview(reviewId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    //상품 리뷰 좋아요 기능
+    @PostMapping("/book/review/{reviewId}/like")
+    public ResponseEntity<ReviewDTO> likeReview(@PathVariable("reviewId") Long reviewId) {
+        ReviewDTO likedReview = reviewService.addLikeReview(reviewId);
+        return new ResponseEntity<>(likedReview, HttpStatus.OK);
     }
 }

@@ -1,25 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Category Management</title>
-    <link rel="stylesheet" href="/admin-categories/admin-categories.css">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shopping Mall</title>
+    <!-- 아이콘 -->
+    <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/elice-rabbit-favicon.png"
+    />
+    <!-- bulma css 관련 -->
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+    />
+    <!-- 폰트 어썸: 아이콘 -->
+    <script
+            defer
+            src="https://kit.fontawesome.com/9daa42bcef.js"
+            crossorigin="anonymous"
+    ></script>
+    <!-- AWS S3 사용하기 위한 파일 -->
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.410.0.min.js"></script>
+    <!-- 커스텀 css, js -->
+    <link rel="stylesheet" href="/admin-categories/admin-categories.css" />
+    <script src="/admin-categories/admin-categories.js" type="module" defer></script>
 </head>
 <body>
-<div class="container">
-    <h1>카테고리 관리</h1>
-    <div id="categoryList">
-        <!-- Category list will be populated here -->
+<!-- 헤더 -->
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="container mt-3">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <img src="/elice-rabbit.png" width="30" height="30" />
+                <span class="has-text-link">Shopping Mall</span>
+            </a>
+
+            <a
+                    role="button"
+                    class="navbar-burger"
+                    aria-label="menu"
+                    aria-expanded="false"
+                    data-target="navbarBasicExample"
+            >
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
     </div>
-    <form id="categoryForm">
-        <input type="hidden" id="categoryId">
-        <label for="categoryName">카테고리명:</label>
-        <input type="text" id="categoryName" required>
-        <button type="submit">add/change</button>
-    </form>
-    <button id="deleteSelected">선택 삭제</button>
-</div>
-<script src="/admin-categories/admin-categories.js"></script>
+</nav>
+
+<!-- 카테고리 관리 -->
+<section class="section">
+    <div class="container">
+        <div class="box">
+            <h1 class="title">카테고리 관리</h1>
+            <div id="categoryList" class="mb-4">
+                <!-- Category list will be populated here -->
+            </div>
+            <form id="categoryForm">
+                <input type="hidden" id="categoryId">
+                <div class="field">
+                    <label class="label" for="categoryName">카테고리명:</label>
+                    <div class="control">
+                        <input class="input" type="text" id="categoryName" required>
+                    </div>
+                </div>
+                <div class="field is-grouped">
+                    <div class="control">
+                        <button class="button is-link" type="submit">추가/변경</button>
+                    </div>
+                    <div class="control">
+                        <button id="deleteSelected" class="button is-danger" type="button">선택 삭제</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
 </body>
 </html>

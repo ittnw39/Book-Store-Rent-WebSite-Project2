@@ -1,3 +1,6 @@
+// import { checkAdmin } from "../useful-functions.js";
+// checkAdmin();
+
 document.addEventListener('DOMContentLoaded', () => {
     const categoryList = document.getElementById('categoryList');
     const categoryForm = document.getElementById('categoryForm');
@@ -7,9 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fetch all categories and display them
     function fetchCategories() {
-        fetch('/admin/category/all', {
+
+        fetch('/admin/categories', {
             headers: {
-                'Accept': 'application/json'
+                'Accept': 'application/json',
             }
         })
             .then(response => response.json())

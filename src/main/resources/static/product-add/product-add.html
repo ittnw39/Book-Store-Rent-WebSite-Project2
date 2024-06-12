@@ -1,72 +1,72 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Shopping Mall</title>
-    <!-- 아이콘 -->
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="/elice-rabbit-favicon.png"
-    />
-    <!-- bulma css 관련 -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
-    />
-    <!-- 폰트 어썸: 아이콘 -->
-    <script
-      defer
-      src="https://kit.fontawesome.com/9daa42bcef.js"
-      crossorigin="anonymous"
-    ></script>
-    <!-- AWS S3 사용하기 위한 파일 -->
-    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.410.0.min.js"></script>
-    <!-- 커스텀 css, js -->
-    <link rel="stylesheet" href="/product-add/product-add.css" />
-    <script src="/product-add/product-add.js" type="module" defer></script>
-  </head>
-  <body>
-    <!-- 헤더 -->
-    <nav class="navbar" role="navigation" aria-label="main navigation">
-      <div class="container mt-3">
-        <div class="navbar-brand">
-          <a class="navbar-item" href="/">
-            <img src="/elice-rabbit.png" width="30" height="30" />
-            <span class="has-text-link">Shopping Mall</span>
-          </a>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shopping Mall</title>
+  <!-- 아이콘 -->
+  <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/elice-rabbit-favicon.png"
+  />
+  <!-- bulma css 관련 -->
+  <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+  />
+  <!-- 폰트 어썸: 아이콘 -->
+  <script
+          defer
+          src="https://kit.fontawesome.com/9daa42bcef.js"
+          crossorigin="anonymous"
+  ></script>
+  <!-- AWS S3 사용하기 위한 파일 -->
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.410.0.min.js"></script>
+  <!-- 커스텀 css, js -->
+  <link rel="stylesheet" href="/product-add/product-add.css" />
+  <script src="/product-add/product-add.js" type="module" defer></script>
+</head>
+<body>
+<!-- 헤더 -->
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="container mt-3">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">
+        <img src="/elice-rabbit.png" width="30" height="30" />
+        <span class="has-text-link">Shopping Mall</span>
+      </a>
 
-          <a
-            role="button"
-            class="navbar-burger"
-            aria-label="menu"
-            aria-expanded="false"
-            data-target="navbarBasicExample"
-          >
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-          </a>
-        </div>
+      <a
+              role="button"
+              class="navbar-burger"
+              aria-label="menu"
+              aria-expanded="false"
+              data-target="navbarBasicExample"
+      >
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
 
-        <div id="navbarBasicExample" class="navbar-menu">
-          <div class="navbar-end breadcrumb my-auto" aria-label="breadcrumbs">
-            <ul id="navbar">
-              <li>
-                <a href="/cart" aria-current="page">
+    <div id="navbarBasicExample" class="navbar-menu">
+      <div class="navbar-end breadcrumb my-auto" aria-label="breadcrumbs">
+        <ul id="navbar">
+          <li>
+            <a href="/cart" aria-current="page">
                   <span class="icon">
                     <i class="fas fa-cart-shopping"></i>
                   </span>
-                  <span>카트</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
+              <span>카트</span>
+            </a>
+          </li>
+        </ul>
       </div>
-    </nav>
+    </div>
+  </div>
+</nav>
 
     <!-- 제품 추가 폼(Form) -->
     <section class="section">
@@ -90,16 +90,16 @@
               </div>
             </div>
 
-            <div class="field">
-              <label class="label" for="categorySelectBox">카테고리</label>
-              <div class="control">
-                <div class="select is-fullwidth">
-                  <select id="categorySelectBox">
-                    <option value="">카테고리를 선택해 주세요.</option>
-                  </select>
-                </div>
-              </div>
+        <div class="field">
+          <label class="label" for="categorySelectBox">카테고리</label>
+          <div class="control">
+            <div class="select is-fullwidth">
+              <select id="categorySelectBox">
+                <option value="">카테고리를 선택해 주세요.</option>
+              </select>
             </div>
+          </div>
+        </div>
 
             <div class="field">
               <label class="label" for="authorInput">작가</label>
@@ -151,27 +151,27 @@
                   placeholder="제품에 대한 상세 설명을 적어 주세요."
                   autocomplete="on"
                 ></textarea>
-              </div>
-            </div>
+          </div>
+        </div>
 
-            <div class="field is-fullwidth">
-              <label class="label" for="imageInput">제품 사진</label>
-              <div class="file has-name is-fullwidth">
-                <label class="file-label">
-                  <input
-                    class="file-input"
-                    id="imageInput"
-                    type="file"
-                    name="image-file"
-                    accept=".png, .jpeg, .jpg"
-                  />
-                  <span class="file-cta">
+        <div class="field is-fullwidth">
+          <label class="label" for="imageInput">제품 사진</label>
+          <div class="file has-name is-fullwidth">
+            <label class="file-label">
+              <input
+                      class="file-input"
+                      id="imageInput"
+                      type="file"
+                      name="image-file"
+                      accept=".png, .jpeg, .jpg"
+              />
+              <span class="file-cta">
                     <span class="file-icon">
                       <i class="fas fa-upload"></i>
                     </span>
                     <span class="file-label"> 사진 업로드 </span>
                   </span>
-                  <span class="file-name" id="fileNameSpan">
+              <span class="file-name" id="fileNameSpan">
                     사진파일 (png, jpg, jpeg)
                   </span>
 
@@ -191,21 +191,18 @@
               </div>
             </div>
 
-            <div class="field">
-              <label class="label" for="priceInput">가격</label>
-              <div class="field">
-                <div class="control has-icons-right">
-                  <input
+        <div class="field">
+          <label class="label" for="totalStockQuantityInput">재고 수</label>
+          <div class="control">
+            <input
                     class="input"
-                    id="priceInput"
+                    id="totalStockQuantityInput"
                     type="number"
-                    placeholder="10000"
+                    placeholder="10"
                     autocomplete="on"
-                  />
-                  <span class="icon is-small is-right"> 원 </span>
-                </div>
-              </div>
-            </div>
+            />
+          </div>
+        </div>
 
             <div class="field">
               <label class="label" for="pageInput">페이지 수</label>
@@ -222,15 +219,25 @@
                 </div>
               </div>
             </div>
+          </div>
+        </div>
 
             <div class="mt-5">
               <button class="button is-primary is-fullwidth" id="submitButton">
                 제품 등록하기
               </button>
             </div>
-          </form>
+          </div>
         </div>
-      </div>
-    </section>
-  </body>
+
+        <div class="mt-5">
+          <button class="button is-primary is-fullwidth" id="submitButton">
+            제품 판매하기
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+</body>
 </html>

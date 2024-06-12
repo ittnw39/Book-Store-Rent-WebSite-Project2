@@ -54,13 +54,29 @@ public class BookService {
 
     public BookDTO searchBookById(Long id) {
         Book book = bookRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Book id is not exists : " + id));
+                .orElseThrow(() -> new NoSuchElementException("Book id is not exists : " + id));
         return bookMapper.toBookDTO(book);
+    }
+
+    //책 검색 기능
+    public List<BookDTO> searchBooks(String keyword) {
+        return bookRepository.findByTitleOrAuthor(keyword)
+                .stream()
+                .map(bookMapper::toBookDTO)
+                .collect(Collectors.toList());
+    }
+
+    //카테고리별 목록
+    public List<BookDTO> getBooksByCategory(Long categoryId) {
+        return bookRepository.findByCategoryId(categoryId)
+                .stream()
+                .map(bookMapper::toBookDTO)
+                .collect(Collectors.toList());
     }
 
     public void removeBook(Long id) {
         Book book = bookRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Book id is not exists : " + id));
+                .orElseThrow(() -> new NoSuchElementException("Book id is not exists : " + id));
         bookRepository.delete(book);
     }
 }

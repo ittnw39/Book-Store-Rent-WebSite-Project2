@@ -45,8 +45,10 @@ public class JwtUtil {
         claims.put("iat", new Date()); // 발행 시간(issued at) 클레임
         claims.put("exp", new Date(System.currentTimeMillis() + EXPIRATION_TIME)); // 만료 시간(expiration) 클레임
         claims.put("roles", userDetails.getAuthorities().stream()
-            .map(GrantedAuthority::getAuthority)
-            .collect(Collectors.toList()));
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList()));
+
+        SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
         SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
@@ -62,11 +64,11 @@ public class JwtUtil {
         SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
         return Jwts.builder()
-            .setSubject(email)
-            .setIssuedAt(new Date())
-            .setExpiration(new Date()) // 만료 시간을 현재 시간으로 설정하여 즉시 만료되도록 함
-            .signWith(key, SignatureAlgorithm.HS512)
-            .compact();
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date()) // 만료 시간을 현재 시간으로 설정하여 즉시 만료되도록 함
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
     }
 
     // Validate JWT token

@@ -59,7 +59,7 @@ public class UserController {
             return ResponseEntity.ok(Collections.singletonMap("message", "회원 가입이 완료되었습니다."));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
-                .body(Collections.singletonMap("reason", e.getMessage()));
+                    .body(Collections.singletonMap("reason", e.getMessage()));
         }
     }
 
@@ -84,8 +84,8 @@ public class UserController {
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
             Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
             List<String> roles = authorities.stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
 
             Map<String, Object> responseData = new HashMap<>();
             responseData.put("message", "로그인되었습니다.");

@@ -26,9 +26,16 @@ function addAllElements() {
 function addAllEvents() {}
 
 async function addProductItemsToContainer() {
-  const { category } = getUrlParams();
-  console.log(category)
-  const products = await Api.get(`/api/books`);
+  const { categoryId, keyword } = getUrlParams();
+  let products;
+
+  if (categoryId) {
+    products = await Api.get(`/api/books/category?categoryId=${categoryId}`);
+  } else if (keyword) {
+    products = await Api.get(`/api/books/search?keyword=${keyword}`);
+  } else {
+    products = await Api.get(`/api/books`);
+  }
 
   for (const product of products) {
     // 객체 destructuring
@@ -38,8 +45,8 @@ async function addProductItemsToContainer() {
     const random = randomId();
 
     productItemContainer.insertAdjacentHTML(
-      "beforeend",
-      `
+        "beforeend",
+        `
       <div class="message media product-item" id="a${random}">
         <div class="media-left">
           <figure class="image">
@@ -54,10 +61,10 @@ async function addProductItemsToContainer() {
             <p class="title">
               ${title}
               ${
-                isRecommended
-                  ? '<span class="tag is-success is-rounded">추천</span>'
-                  : ""
-              }
+            isRecommended
+                ? '<span class="tag is-success is-rounded">추천</span>'
+                : ""
+        }
             </p>
             <p class="description">저자 : ${author.name}</p>
             <p class="description">${description}</p>
@@ -71,8 +78,8 @@ async function addProductItemsToContainer() {
 
     const productItem = document.querySelector(`#a${random}`);
     productItem.addEventListener(
-      "click",
-      navigate(`/book/${id}`)
+        "click",
+        navigate(`/book/${id}`)
     );
   }
 }
