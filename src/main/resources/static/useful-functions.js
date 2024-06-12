@@ -87,7 +87,8 @@ export const checkLogin = () => {
       if (!token || token === "") {
           const pathname = window.location.pathname;
           const search = window.location.search;
-          window.location.replace(`/login?previouspage=${pathname + search}`);
+          //window.location.replace(`/login?previouspage=${pathname + search}`);
+          window.location.replace("/users/login");
           return;
       }
 

@@ -2,6 +2,18 @@
 import { addCommas, checkAdmin, createNavbar } from "../../useful-functions.js";
 import * as Api from "../../api.js";
 
+// Date 객체를 특정 형식의 문자열로 변환하는 함수
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 // 요소(element), input 혹은 상수
 const usersCount = document.querySelector("#usersCount");
 const adminCount = document.querySelector("#adminCount");
@@ -53,7 +65,7 @@ async function insertUsers() {
      "beforeend",
      `
        <div class="columns orders-item" id="user-${sanitizedEmail}">
-         <div class="column is-2">${date}</div>
+         <div class="column is-2">${formatDate(createdAt)}</div>
          <div class="column is-2">${email}</div>
          <div class="column is-2">${username}</div>
          <div class="column is-2">
@@ -100,30 +112,24 @@ roleSelectBox.addEventListener("change", async () => {
   };
 
   try {
-    // api 요청
-    const response = await Api.patch("/admin/users", data);
+      const response = await Api.patch("/admin/users", "", data);
+      const index = roleSelectBox.selectedIndex;
+      roleSelectBox.className = roleSelectBox[index].className;
 
-    // 선택한 옵션의 배경색 반영
-    const index = roleSelectBox.selectedIndex;
-    roleSelectBox.className = roleSelectBox[index].className;
+      console.log(response);
 
-    console.log(response); // 서버 응답 확인용 로그
-
-    if (response.success) {
-      alert(response.message);
-    } else {
-      throw new Error("권한 변경에 실패했습니다.");
+      if (response.message === '권한이 성공적으로 변경되었습니다.') {
+        alert(response.message);
+      } else {
+        throw new Error(response.message || "권한 변경에 실패했습니다.");
+      }
+    } catch (err) {
+      if (err.message !== '권한이 성공적으로 변경되었습니다.') {
+        console.error(err);
+        alert(`권한 변경 과정에서 오류가 발생하였습니다: ${err.message}`);
+      }
     }
-  } catch (err) {
-    console.error(err);
-    alert(`권한 변경 과정에서 오류가 발생하였습니다: ${err.message}`);
-
-    // 오류 발생 시 이전 선택 옵션으로 되돌리기
-    roleSelectBox.value = user.admin ? "ADMIN" : "USER";
-    const index = roleSelectBox.selectedIndex;
-    roleSelectBox.className = roleSelectBox[index].className;
-  }
-});
+  });
 
  //이벤트 - 삭제버튼 클릭 시 Modal 창 띄우고, 동시에, 전역변수에 해당 주문의 id 할당
    deleteButton.addEventListener("click", () => {

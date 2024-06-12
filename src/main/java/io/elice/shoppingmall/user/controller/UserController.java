@@ -75,10 +75,10 @@ public class UserController {
             String token = userService.login(email, password);
 
             // 쿠키에 토큰 저장
-            Cookie cookie = new Cookie("jwtToken", token);
-            cookie.setMaxAge(60 * 60 * 24); // 쿠키 유효기간 설정 (예: 24시간)
-            cookie.setPath("/"); // 쿠키 경로 설정
-            response.addCookie(cookie);
+//            Cookie cookie = new Cookie("jwtToken", token);
+//            cookie.setMaxAge(60 * 60 * 24); // 쿠키 유효기간 설정 (예: 24시간)
+//            cookie.setPath("/"); // 쿠키 경로 설정
+//            response.addCookie(cookie);
 
             // 사용자의 역할 정보 가져오기
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
