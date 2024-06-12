@@ -64,7 +64,7 @@ public class UserService {
         user.setEmail(userDTO.getEmail());
         user.setUsername(userDTO.getUsername());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setPhNum(userDTO.getPhNum());
+        user.setPhNum(userDTO.getPhone_number());
         user.setAddress(userDTO.getAddress());
         user.setNickname(userDTO.getNickname());
         user.setAdmin(userDTO.isAdmin());
@@ -140,7 +140,7 @@ public class UserService {
             .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
         user.setUsername(userDTO.getUsername());
-        user.setPhNum(userDTO.getPhNum());
+        user.setPhNum(userDTO.getPhone_number());
         user.setAddress(userDTO.getAddress());
         user.setNickname(userDTO.getNickname());
         user.setCreatedAt(userDTO.getCreatedAt());
@@ -178,5 +178,14 @@ public class UserService {
 
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
+    }
+
+    @Transactional
+    public User updateUserPassword(String email, String newPassword) {
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+        user.setPassword(newPassword);
+        return userRepository.save(user);
     }
 }
