@@ -24,7 +24,7 @@ public class OrderController {
         return "/order/order.html";
     }
 
-    @PostMapping(path= "/create",  consumes = "application/json") // 상품 주문하기
+    @PostMapping("/create") // 상품 주문하기
     public String createOrder(@RequestBody OrderDTO orderDTO) {
         Orders createdOrder = orderService.createOrder(orderDTO);
         return "/order-complete/order-complete.html"; //주문 완료 페이지

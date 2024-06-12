@@ -51,7 +51,6 @@ public class OrderService {
     public OrderDTO getOrderDetails(Long orderId) { // 관리자,사용자 - 주문 아이디로 주문 상세 조회
         Orders order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
-        // Hibernate의 Lazy Loading을 강제로 초기화
         order.getOrderLine().forEach(line -> line.getOrderLineBooks().size());
         return orderMapper.toOrderDTO(order);
     }

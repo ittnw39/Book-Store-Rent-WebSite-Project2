@@ -244,7 +244,7 @@ try {
         orderId,
         productId,
         quantity,
-        totalPrice,
+        totalPrice
       });
 
       // indexedDB에서 해당 제품 관련 데이터를 제거함
