@@ -9,6 +9,7 @@ import io.elice.shoppingmall.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -77,6 +78,8 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
     }
+
+
 
     public String login(String email, String password) {
         User user = userRepository.findByEmail(email)

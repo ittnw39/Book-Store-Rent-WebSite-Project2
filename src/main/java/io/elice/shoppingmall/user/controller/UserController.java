@@ -1,16 +1,17 @@
 package io.elice.shoppingmall.user.controller;
 
+
 import io.elice.shoppingmall.user.dto.UserDTO;
+import io.elice.shoppingmall.user.entity.User;
+import io.elice.shoppingmall.user.repository.UserRepository;
 import io.elice.shoppingmall.user.security.JwtUtil;
 import io.elice.shoppingmall.user.service.CustomUserDetailsService;
 import io.elice.shoppingmall.user.service.JwtBlacklistService;
 import io.elice.shoppingmall.user.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -20,9 +21,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import java.util.Map;
+import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,8 +34,8 @@ public class UserController {
     private final CustomUserDetailsService customUserDetailsService;
     private final UserService userService;
     private final JwtUtil jwtUtil;
-
-
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
 
     @GetMapping("/login")
@@ -125,6 +127,7 @@ public class UserController {
         return ResponseEntity.ok("회원탈퇴가 완료되었습니다.");
     }
 
+
     @GetMapping("/admin-check")
     public ResponseEntity<?> checkAdmin(@RequestHeader("Authorization") String token) {
         if (token != null && token.startsWith("Bearer ")) {
@@ -142,6 +145,114 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("result", "fail"));
     }
+
+
+    @GetMapping("/users/all")
+    public List<UserDTO> getAllUsers() {
+        return userService.getAllUsers();
+    }
+
+    @GetMapping("/account")
+    public String accountPage() {
+        return "/account/account.html";
+    }
+
+    @GetMapping("/account/security")
+    public String accountSecurityPage() {
+        return "/account-security/account-security.html";
+    }
+
+    @GetMapping("/account/signout")
+    public String signoutPage() {
+        return "/account-signout/account-signout.html";
+    }
+
+
+    @PostMapping("/password-check")
+    public ResponseEntity<?> checkPassword(@RequestHeader("Authorization") String token,
+                                           @RequestBody Map<String, String> passwordData) {
+        String email = jwtUtil.getEmailFromToken(token.substring(7));
+
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자를 찾을 수 없습니다.");
+        }
+        User user = optionalUser.get();
+
+        String inputPassword = passwordData.get("password");
+
+        if (passwordEncoder.matches(inputPassword, user.getPassword())) {
+            // 비밀번호가 일치하면 사용자의 ID를 포함하는 객체를 반환합니다.
+            Map<String, Long> responseBody = new HashMap<>();
+            responseBody.put("id", user.getId());
+            return ResponseEntity.ok(responseBody);
+        } else {
+            // 비밀번호가 일치하지 않으면 에러 메시지를 반환합니다.
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("잘못된 비밀번호입니다.");
+        }
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자를 찾을 수 없습니다.");
+        }
+
+        // 사용자 삭제
+        userRepository.deleteById(id);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "사용자가 성공적으로 삭제되었습니다.");
+        return ResponseEntity.ok(response);
+
+    }
+
+
+
+    @GetMapping("/data")
+    public ResponseEntity<?> getUserData(@RequestHeader("Authorization") String token) {
+
+        String email = jwtUtil.getEmailFromToken(token.substring(7));
+
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자를 찾을 수 없습니다.");
+        }
+        User user = optionalUser.get();
+
+        return ResponseEntity.ok(user);
+    }
+
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable Long id,
+                                        @RequestBody Map<String, Object> updates) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        updates.forEach((key, value) -> {
+            switch (key) {
+                case "username":
+                    user.setUsername((String) value);
+                    break;
+                case "email":
+                    user.setEmail((String) value);
+                    break;
+                case "phNum":
+                    user.setPhNum((String) value);
+                    break;
+            }
+        });
+        userRepository.save(user);
+        return ResponseEntity.ok(user);
+    }
+
+
+
+
 
 }
 

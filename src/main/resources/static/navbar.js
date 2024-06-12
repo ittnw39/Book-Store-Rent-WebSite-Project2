@@ -79,7 +79,7 @@ const addNavElements = (keyString) => {
 
   // 로그인 완료된 상태에서만 보이게 될 navbar 요소들
   const itemsAfterLogin = {
-    account: '<li><a href="/account">계정관리</a></li>',
+    account: '<li><a href="/users/account">계정관리</a></li>',
     logout: '<li><a href="#" id="logout">로그아웃</a></li>',
     productAdd: '<li><a href="/product/add">제품 추가</a></li>',
     categoryAdd: '<li><a href="/category/add">카테고리 추가</a></li>',
