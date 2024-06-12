@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package io.elice.shoppingmall.order.mapper;
 
 import io.elice.shoppingmall.order.DTO.OrderDTO;
