@@ -191,6 +191,9 @@ async function doCheckout() {
   const postalCode = postalCodeInput.value;
   const address1 = address1Input.value;
   const address2 = address2Input.value;
+  const requestType = requestSelectBox.value;
+  const customRequest = customRequestInput.value;
+  const summaryTitle = productsTitleElem.innerText;
   const totalPrice = convertToNumber(orderTotalElem.innerText);  // 백엔드가 BigDecimal을 요구한다면 문자열 형태로 전송
   const userId = sessionStorage.getItem('userId');  // 로그인 세션에서 사용자 ID 가져오기
   const { selectedIds } = await getFromDb("order", "summary");
@@ -232,11 +235,15 @@ async function doCheckout() {
     };
 
 try {
-    // 주문 생성 API 호출
-    const orderResponse = await Api.post("/orders/create", orderData);
-    if (!orderResponse.ok) throw new Error('Failed to create order');
-    const order = await orderResponse.json();
-    const orderId = order.id; // 서버에서 반환된 주문 ID 사용
+    // 전체 주문을 등록함
+    const orderData = await Api.post("/order/create", {
+      summaryTitle,
+      totalPrice,
+      address,
+      request,
+    });
+
+    const orderId = orderData._id;
 
     // 제품별로 주문아이템을 등록함
     for (const productId of selectedIds) {
@@ -247,7 +254,7 @@ try {
         orderId,
         productId,
         quantity,
-        totalPrice
+        totalPrice,
       });
 
       // indexedDB에서 해당 제품 관련 데이터를 제거함
