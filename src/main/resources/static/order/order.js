@@ -25,6 +25,7 @@ const customRequestInput = document.querySelector("#customRequest");
 const productsTitleElem = document.querySelector("#productsTitle");
 const productsTotalElem = document.querySelector("#productsTotal");
 const deliveryFeeElem = document.querySelector("#deliveryFee");
+const discountRate = document.querySelector("#discountRate");
 const orderTotalElem = document.querySelector("#orderTotal");
 const checkoutButton = document.querySelector("#checkoutButton");
 
@@ -145,7 +146,7 @@ async function insertOrderSummary() {
 }
 
 async function insertUserData() {
-  const userData = await Api.get("/user");
+  const userData = await Api.get("/users/data");
   const { username, phNum, address } = userData;
 
   // 만약 db에 데이터 값이 있었다면, 배송지정보에 삽입
@@ -223,6 +224,8 @@ async function doCheckout() {
     const orderData = {
       userId: userId,
       orderDate: new Date().toISOString(),
+      orderStatus: "주문 완료",
+      discountRate: 0.5,
       totalAmount: totalPrice.toString(),
       userAddress: `${address.postalCode} ${address.address1} ${address.address2}`,
       orderOption: 'PURCHASE'
@@ -230,7 +233,7 @@ async function doCheckout() {
 
 try {
     // 주문 생성 API 호출
-    const orderResponse = await Api.post("/api/orders/create", orderData);
+    const orderResponse = await Api.post("/orders/create", orderData);
     if (!orderResponse.ok) throw new Error('Failed to create order');
     const order = await orderResponse.json();
     const orderId = order.id; // 서버에서 반환된 주문 ID 사용
@@ -240,7 +243,7 @@ try {
       const { quantity, price } = await getFromDb("cart", productId);
       const totalPrice = quantity * price;
 
-      await Api.post("/api/orderitem", {
+      await Api.post("/orderLine/create", {
         orderId,
         productId,
         quantity,
