@@ -124,7 +124,7 @@ async function processData(title, authorName, publisher, publishedDate, descript
 
   try {
     if(bookId) {
-      await Api.put("/admin/api/book", data, bookId);
+      await Api.push("/admin/api/book", data, bookId);
     } else {
       await Api.post("/admin/api/book", data);
     }
@@ -144,7 +144,7 @@ async function processData(title, authorName, publisher, publishedDate, descript
 
 // 선택할 수 있는 카테고리 종류를 api로 가져와서, 옵션 태그를 만들어 삽입함.
 async function addOptionsToSelectBox() {
-  const categories = await Api.get("/admin/category/all");
+  const categories = await Api.get("/categories");
   categories.forEach((category) => {
     // 객체 destructuring
     const { id, name } = category;
