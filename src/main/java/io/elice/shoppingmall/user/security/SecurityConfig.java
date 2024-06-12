@@ -2,6 +2,7 @@ package io.elice.shoppingmall.user.security;
 import io.elice.shoppingmall.user.service.CustomUserDetailsService;
 import io.elice.shoppingmall.user.service.JwtBlacklistService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

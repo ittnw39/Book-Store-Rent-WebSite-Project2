@@ -72,19 +72,19 @@
     <section class="section">
       <div class="container">
         <div class="block account-header">
-          <h1 class="subtitle is-4">제품판매</h1>
+          <h1 class="subtitle is-4">제품등록</h1>
         </div>
         <div class="register-product-form-container">
           <form class="box register-product-form-box" id="registerProductForm">
-            <p class="title is-5 has-text-primary">제품을 판매해 보세요</p>
+            <p class="title is-5 has-text-primary">제품을 등록해 보세요</p>
             <div class="field">
-              <label class="label" for="titleInput">제품 이름</label>
+              <label class="label" for="titleInput">책 이름</label>
               <div class="control">
                 <input
                   class="input"
                   id="titleInput"
                   type="text"
-                  placeholder="아이보리 티셔츠"
+                  placeholder="책 이름"
                   autocomplete="on"
                 />
               </div>
@@ -102,39 +102,51 @@
             </div>
 
             <div class="field">
-              <label class="label" for="manufacturerInput">제조사</label>
+              <label class="label" for="authorInput">작가</label>
+              <div class="control">
+                <input
+                    class="input"
+                    id="authorInput"
+                    type="text"
+                    placeholder="작가 이름"
+                    autocomplete="on"
+                />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label" for="publisherInput">출판사</label>
               <div class="control">
                 <input
                   class="input"
-                  id="manufacturerInput"
+                  id="publisherInput"
                   type="text"
-                  placeholder="OO의류제조(주)"
+                  placeholder="출판사명"
                   autocomplete="on"
                 />
               </div>
             </div>
 
             <div class="field">
-              <label class="label" for="shortDescriptionInput">요약 설명</label>
+              <label class="label" for="publishedDateInput">출간일</label>
               <div class="control">
-                <textarea
-                  class="textarea"
-                  id="shortDescriptionInput"
-                  rows="3"
-                  placeholder="제품에 대한 1~2문장의 설명을 적어 주세요."
+                <input
+                  class="input"
+                  id="publishedDateInput"
+                  placeholder="0000-00-00 형태로 입력해주세요."
                   autocomplete="on"
-                ></textarea>
+                >
               </div>
             </div>
 
             <div class="field">
-              <label class="label" for="detailDescriptionInput"
+              <label class="label" for="descriptionInput"
                 >상세 설명</label
               >
               <div class="control">
                 <textarea
                   class="textarea"
-                  id="detailDescriptionInput"
+                  id="descriptionInput"
                   rows="8"
                   placeholder="제품에 대한 상세 설명을 적어 주세요."
                   autocomplete="on"
@@ -162,16 +174,16 @@
                   <span class="file-name" id="fileNameSpan">
                     사진파일 (png, jpg, jpeg)
                   </span>
+
                 </label>
               </div>
             </div>
-
             <div class="field">
-              <label class="label" for="inventoryInput">재고 수</label>
+              <label class="label" for="totalStockQuantityInput">재고 수</label>
               <div class="control">
                 <input
                   class="input"
-                  id="inventoryInput"
+                  id="totalStockQuantityInput"
                   type="number"
                   placeholder="10"
                   autocomplete="on"
@@ -196,32 +208,24 @@
             </div>
 
             <div class="field">
-              <label class="label" for="searchKeywordInput">검색 키워드</label>
-              <div class="field has-addons">
-                <div class="control header-search-input is-flex-grow-1">
+              <label class="label" for="pageInput">페이지 수</label>
+              <div class="field">
+                <div class="control has-icons-right">
                   <input
-                    class="input"
-                    id="searchKeywordInput"
-                    type="text"
-                    placeholder="남자옷"
+                      class="input"
+                      id="pageInput"
+                      type="number"
+                      placeholder="숫자를 입력해주세요."
+                      autocomplete="on"
                   />
-                </div>
-                <div class="control">
-                  <button class="button is-primary" id="addKeywordButton">
-                    추가하기
-                  </button>
+                  <span class="icon is-small is-right"> 쪽 </span>
                 </div>
               </div>
             </div>
 
-            <div
-              class="field is-grouped is-grouped-multiline mt-3"
-              id="keywordContainer"
-            ></div>
-
             <div class="mt-5">
               <button class="button is-primary is-fullwidth" id="submitButton">
-                제품 판매하기
+                제품 등록하기
               </button>
             </div>
           </form>

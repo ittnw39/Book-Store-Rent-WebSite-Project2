@@ -1,9 +1,9 @@
 import { randomId } from "./useful-functions.js";
 
 // aws-s3 사이트에서의 설정값들
-const s3BucketName = "elice-shoppingmall";
+const s3BucketName = "elice-shoppingmall-8";
 const bucketRegion = "ap-northeast-2"; // 한국은 항상 ap-northeast-2임.
-const IdentityPoolId = "ap-northeast-2:5e7a5d7d-e6ed-462c-b302-f5663eb5fb0d";
+const IdentityPoolId = "ap-northeast-2:a0840be0-86d2-4c55-aee2-4e1d86d93935";
 
 // aws 공식문서 그대로 가져옴
 AWS.config.update({
@@ -57,6 +57,7 @@ async function addImageToS3(fileInputElement, album) {
 
     return fileKey;
   } catch (err) {
+    console.log(err);
     throw new Error(
       `S3에 업로드하는 과정에서 에러가 발생하였습니다.\n${err.message}`
     );
