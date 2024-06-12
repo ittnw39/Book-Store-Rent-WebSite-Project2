@@ -10,6 +10,7 @@ import io.jsonwebtoken.Claims;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -156,7 +157,6 @@ public class UserService {
         userRepository.delete(user);
     }
 
-
     public List<UserDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
         List<UserDTO> userDTOs = new ArrayList<>();
@@ -176,5 +176,7 @@ public class UserService {
         return new UserDTO(updatedUser);
     }
 
-
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
+    }
 }

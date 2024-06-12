@@ -2,8 +2,10 @@ package io.elice.shoppingmall.product.controller;
 
 import io.elice.shoppingmall.product.dto.BookDTO;
 import io.elice.shoppingmall.product.dto.ReviewDTO;
+import io.elice.shoppingmall.product.mapper.BookMapper;
 import io.elice.shoppingmall.product.service.BookService;
 import io.elice.shoppingmall.product.service.ReviewService;
+import java.security.Principal;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
