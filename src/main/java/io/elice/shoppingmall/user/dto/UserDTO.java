@@ -33,7 +33,7 @@ public class UserDTO {
     public UserDTO(User user) {
         this.email = user.getEmail();
         this.username = user.getUsername();
-        this.phone_number = user.getPhNum();
+        this.phone_number = user.getPhone_number();
         this.address = user.getAddress();
         this.nickname = user.getNickname();
         this.password = user.getPassword();

@@ -105,8 +105,8 @@ async function insertUserData() {
   userData = await Api.get("/users/data");
 
   // 객체 destructuring
-  const { username, email, phNum } = userData;
-//  const { username, email, address, phNum } = userData;
+  const { username, email, phone_number } = userData;
+//  const { username, email, address, phone_number } = userData;
 
   // 서버에서 온 비밀번호는 해쉬 문자열인데, 이를 빈 문자열로 바꿈
   // 나중에 사용자가 비밀번호 변경을 위해 입력했는지 확인하기 위함임.
@@ -126,8 +126,8 @@ async function insertUserData() {
 //    userData.address = { postalCode: "", address1: "", address2: "" };
 //  }
 
-  if (phNum) {
-    phoneNumberInput.value = phNum;
+  if (phone_number) {
+    phoneNumberInput.value = phone_number;
   }
 
   // 크롬 자동완성 삭제함.
@@ -199,7 +199,7 @@ async function saveUserData(e) {
 //  const postalCode = postalCodeInput.value;
 //  const address1 = address1Input.value;
 //  const address2 = address2Input.value;
-  const phNum = phoneNumberInput.value;
+  const phone_number = phoneNumberInput.value;
   const currentPassword = currentPasswordInput.value;
 
   const isPasswordLong = password.length >= 4;
@@ -244,8 +244,8 @@ async function saveUserData(e) {
 //    };
 //  }
 
-  if (phNum && phNum !== userData.phNum) {
-    data.phNum = phNum;
+  if (phone_number && phone_number !== userData.phone_number) {
+    data.phone_number = phone_number;
   }
 
   // 만약 업데이트할 것이 없다면 (디폴트인 currentPassword만 있어서 1개라면), 종료함

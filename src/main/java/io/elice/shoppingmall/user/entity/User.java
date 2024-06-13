@@ -40,7 +40,7 @@ public class User {
     private String password;
 
     @Column(nullable = false, name = "phone_number")
-    private String phNum;
+    private String phone_number;
 
     @Column(nullable = true)
     private String address;
