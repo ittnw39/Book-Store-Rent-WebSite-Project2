@@ -265,6 +265,3 @@ function parseJwt(token) {
 
     return JSON.parse(jsonPayload);
 }
-
-// 페이지 로드 시 리뷰를 기본 정렬 옵션으로 가져오는 함수
-//document.addEventListener("DOMContentLoaded", insertProductData);
