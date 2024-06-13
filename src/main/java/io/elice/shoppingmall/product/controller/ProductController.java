@@ -66,7 +66,7 @@ public class ProductController {
 
     //상품 리뷰 목록 조회(정렬 포함)
     @GetMapping("/book/{bookId}/reviews")
-    public ResponseEntity<List<ReviewDTO>> getReviewsByBook(@PathVariable("bookId") Long bookId, @RequestParam(name = "sort", defaultValue = "date") String sortBy) {
+    public ResponseEntity<List<ReviewDTO>> getReviewsByBook(@PathVariable("bookId") Long bookId, @RequestParam(name = "sort") String sortBy) {
         BookDTO bookDTO = bookService.searchBookById(bookId);
         List<ReviewDTO> reviews = reviewService.getReviewsByBookSorted(bookMapper.toBookEntity(bookDTO), sortBy);
         return new ResponseEntity<>(reviews, HttpStatus.OK);
