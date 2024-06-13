@@ -22,7 +22,7 @@ public class OrderLineService {
         return orderLineRepository.save(orderLine);
     }
 
-    public OrderLineDTO getOrderLineById(Long orderId) {
+    public OrderLineDTO getOrderLineById(Long orderId) { //주문 상세 조회
         OrderLine orderLine = orderLineRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("OrderLine not found"));
         return orderMapper.toOrderLineDTO(orderLine);

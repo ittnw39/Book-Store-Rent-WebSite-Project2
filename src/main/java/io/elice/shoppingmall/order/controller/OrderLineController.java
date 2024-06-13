@@ -1,10 +1,7 @@
 package io.elice.shoppingmall.order.controller;
 
-import io.elice.shoppingmall.order.DTO.OrderDTO;
 import io.elice.shoppingmall.order.DTO.OrderLineDTO;
 import io.elice.shoppingmall.order.entity.OrderLine;
-import io.elice.shoppingmall.order.entity.Orders;
-import io.elice.shoppingmall.order.mapper.OrderMapper;
 import io.elice.shoppingmall.order.service.OrderLineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +27,6 @@ public class OrderLineController {
         OrderLineDTO orderLineDTO = orderLineService.getOrderLineById(orderId);
         return ResponseEntity.ok(orderLineDTO);
     }
-
 
     @PutMapping("/{orderId}") //주문 정보 수정
     public ResponseEntity<OrderLine> updateOrderLine(@PathVariable Long orderId, @RequestBody OrderLineDTO orderLineDTO) {
