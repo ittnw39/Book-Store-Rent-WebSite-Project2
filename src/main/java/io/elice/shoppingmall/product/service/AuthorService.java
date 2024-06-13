@@ -19,10 +19,10 @@ public class AuthorService {
     }
 
     public Optional<Author> searchAuthorByName(String name) {
-        Optional<Author> author = authorRepository.findByName(name);
-        if (!author.isPresent()) {
-            throw new AuthorNotFoundException("Author: " + name + " not found");
-        }
-        return author;
+//        Optional<Author> author = authorRepository.findByName(name);
+//        if (!author.isPresent()) {
+//            throw new AuthorNotFoundException("Author: " + name + " not found");
+//        }
+        return authorRepository.findByName(name);
     }
 }

@@ -43,7 +43,11 @@ function addAllEvents() {
   modalBackground.addEventListener("click", closeModal);
   modalCloseButton.addEventListener("click", closeModal);
   document.addEventListener("keydown", keyDownCloseModal);
+
   saveCompleteButton.addEventListener("click", saveUserData);
+
+
+
 }
 
 // input 및 주소찾기 버튼의 disabled <-> abled 상태를 토글함.
@@ -269,6 +273,32 @@ async function saveUserData(e) {
     alert(`회원정보 저장 과정에서 오류가 발생하였습니다: ${err}`);
   }
 }
+// 여기까지가 정보 수정 함수,
+
+// 비밀번호 검증 함수 -----------------
+//async function verifyPassword() {
+//  var enteredPassword = document.getElementById('currentPasswordInput').value;
+//
+//  var data = { password: enteredPassword };
+//
+//  try {
+//    var response = await Api.post("/users/verify-password", data);
+//    var responseData = await response.json();
+//
+//    if (response.ok && responseData.isValid) {
+//    alert('수정된 정보를 저장합니다.')
+//      saveUserData(); // 비밀번호가 맞으면 saveUserData 함수 호출
+//    } else {
+//      alert('비밀번호가 일치하지 않습니다. fronterr'); // 비밀번호가 틀리면 경고 메시지 출력
+//    }
+//  } catch (error) {
+//    console.error('비밀번호 검증 중 오류가 발생했습니다:', error);
+//  }
+//}
+// -------------------------
+
+
+
 
 // Modal 창 열기
 function openModal(e) {

@@ -40,7 +40,8 @@ async function deleteUserData(e) {
     const { id } = userToDelete;
 
     // 삭제 진행
-    await Api.delete("/users", id);
+    await Api.delete(`/users/${id}`);
+    //await Api.delete("/users", id);
 
     // 삭제 성공
     alert("회원 정보가 안전하게 삭제되었습니다.");
