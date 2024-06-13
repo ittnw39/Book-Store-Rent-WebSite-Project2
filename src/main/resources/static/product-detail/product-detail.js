@@ -175,8 +175,9 @@ async function insertDb(product) {
 async function fetchAndDisplayReviews() {
     const { id } = getPathParams();
     const sortBy = sortOption.value || "date";
+    console.log("Selected sort option:", sortOption.value);
     const reviews = await Api.get(`/api/book/${id}/reviews?sort=${sortBy}`);
-    console.log(reviews); // 리뷰 데이터를 콘솔에 출력하여 확인합니다.
+    console.log("Fetched reviews:", reviews);
     reviewsContainer.innerHTML = reviews.map(createReviewHtml).join("");
 
     // 수정, 삭제 버튼에 이벤트 리스너 추가
@@ -191,6 +192,14 @@ async function fetchAndDisplayReviews() {
         button.addEventListener("click", async() => {
             const reviewId = button.getAttribute("data-id");
             await deleteReview(reviewId);
+        });
+    });
+
+    // 좋아요 버튼에 이벤트 리스너 추가
+    document.querySelectorAll(".like-review-button").forEach(button => {
+        button.addEventListener("click", async () => {
+            const reviewId = button.getAttribute("data-id");
+            await likeReview(reviewId);
         });
     });
 }
@@ -236,7 +245,7 @@ async function deleteReview(reviewId) {
 
 // 리뷰에 좋아요를 추가하는 함수
 async function likeReview(reviewId) {
-    await Api.post(`/api/book/review/${reviewId}/like`);
+    await Api.post(`/api/book/review/${reviewId}/like`, {});
     await fetchAndDisplayReviews();
 }
 
@@ -244,14 +253,15 @@ async function likeReview(reviewId) {
 function createReviewHtml(review) {
     const { id, comment, createdAt, likes, userDTO } = review;
     const isOwner = currentUserEmail && userDTO && userDTO.email === currentUserEmail;
+
     return `
     <div class="box review" data-id="${id}">
       <div class="content">
         <p><strong>${userDTO?.username ?? 'Unknown User'}</strong> <small>${new Date(createdAt).toLocaleString()}</small></p>
         <p>${comment}</p>
         <p>
-          <span class="icon" onclick="likeReview(${id})">
-            <i class="fas fa-heart"></i>
+          <span class="icon like-review-button" data-id="${id}">
+            <i class="fas fa-heart" style="color: ${likes > 0 ? 'red' : 'gray'};"></i>
           </span>
           ${likes}
           ${currentUserEmail && isOwner ? `

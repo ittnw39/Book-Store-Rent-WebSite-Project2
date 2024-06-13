@@ -44,6 +44,7 @@ public class ReviewService {
 
     public ReviewDTO modifyReview(ReviewDTO reviewDTO, String email) {
         ReviewDTO updatedReview = searchReviewById(reviewDTO.getId());
+        reviewDTO.setLikes(updatedReview.getLikes()); // 좋아요 수 유지
         reviewDTO.setBookDTO(updatedReview.getBookDTO());
         Review review = reviewMapper.toReviewEntity(reviewDTO);
         User user = userService.findUserByEmail(email);
@@ -62,8 +63,10 @@ public class ReviewService {
         List<Review> reviews;
         if ("likes".equalsIgnoreCase(sortBy)) {
             reviews = reviewRepository.findByBookOrderByLikesDesc(book);
+            System.out.println("Sorting by likes");
         } else {
             reviews = reviewRepository.findByBookOrderByCreatedAtDesc(book);
+            System.out.println("Sorting by date");
         }
         return reviews.stream()
                 .map(reviewMapper::toReviewDTO)
