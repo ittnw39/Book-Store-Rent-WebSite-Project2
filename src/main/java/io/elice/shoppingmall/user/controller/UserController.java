@@ -257,7 +257,6 @@ public class UserController {
     @PostMapping("/verify-password")
     public ResponseEntity<?> verifyPassword(@RequestHeader("Authorization") String token,
                                             @RequestBody Map<String, String> body) {
-
         Map<String, Boolean> response = new HashMap<>();
         try {
             String email = jwtUtil.getEmailFromToken(token.substring(7));
