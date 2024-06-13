@@ -56,60 +56,45 @@ function getPathParams() {
 
 // 제품 데이터를 삽입하는 함수
 async function insertProductData() {
-  const { id } = getPathParams();
-  const product = await Api.get(`/api/book/${id}`);
+    const { id } = getPathParams();
+    const product = await Api.get(`/api/book/${id}`);
 
-  // 객체 destructuring
-  const {
-    title,
-    category,
-    author,
-    description,
-    publisher,
-    publishedDate,
-    isRecommended,
-    imageURL,
-    price
-  } = product;
+    // 객체 destructuring
+    const {
+        title,
+        category,
+        author,
+        description,
+        publisher,
+        publishedDate,
+        isRecommended,
+        imageURL,
+        price
+    } = product;
 
-  productImageTag.src = imageURL;
-  titleTag.innerText = title;
-  categoryTag.innerText = category.name;
-  authorTag.innerText = author.name;
-  descriptionTag.innerText = description;
-  publisherTag.innerText = publisher;
-  publishedDateTag.innerText = formatPublishedDate(publishedDate);
-  priceTag.innerText = `${addCommas(price)}원`;
+    productImageTag.src = imageURL;
+    titleTag.innerText = title;
+    categoryTag.innerText = category.name;
+    authorTag.innerText = author.name;
+    descriptionTag.innerText = description;
+    publisherTag.innerText = publisher;
+    publishedDateTag.innerText = formatPublishedDate(publishedDate);
+    priceTag.innerText = `${addCommas(price)}원`;
 
-  function formatPublishedDate(dateString) {
-    const date = new Date(dateString);
-    const year = String(date.getFullYear());
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
+    function formatPublishedDate(dateString) {
+        const date = new Date(dateString);
+        const year = String(date.getFullYear());
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
 
-  if (isRecommended) {
-    titleTag.insertAdjacentHTML(
-      "beforeend",
-      '<span class="tag is-success is-rounded">추천</span>'
-    );
-  }
-
-  addToCartButton.addEventListener("click", async () => {
-    try {
-      await insertDb(product);
-
-      alert("장바구니에 추가되었습니다.");
-    } catch (err) {
-      // Key already exists 에러면 아래와 같이 alert함
-      if (err.message.includes("Key")) {
-        alert("이미 장바구니에 추가되어 있습니다.");
-      }
-
-      console.log(err);
-      }
-    });
+    if (isRecommended) {
+        titleTag.insertAdjacentHTML(
+            "beforeend",
+            '<span class="tag is-success is-rounded">추천</span>'
+        );
+    }
 
     addToCartButton.addEventListener("click", async () => {
         try {
@@ -141,10 +126,12 @@ async function insertProductData() {
     });
 
     // JWT 토큰에서 현재 사용자 이메일 추출
-    const token = getJwtTokenFromCookie();
+    const token = getJwtTokenFromSession();
     if (token) {
         const decodedToken = parseJwt(token);
         currentUserEmail = decodedToken.sub; // JWT의 subject를 email로 가정
+    } else {
+        currentUserEmail = null; // JWT 토큰이 없으면 이메일을 null로 설정
     }
 
     // 리뷰 데이터 불러오기
@@ -183,6 +170,7 @@ async function insertDb(product) {
     });
 }
 
+
 // 리뷰 목록을 정렬 옵션에 따라 가져오는 함수
 async function fetchAndDisplayReviews() {
     const { id } = getPathParams();
@@ -210,7 +198,7 @@ async function fetchAndDisplayReviews() {
 // 서버에 리뷰를 추가하는 함수
 async function addReview(comment) {
     const { id } = getPathParams();
-    const token = getJwtTokenFromCookie(); // 쿠키에서 토큰을 가져옴
+    const token = getJwtTokenFromSession();
     if (!token) {
         alert("로그인이 필요합니다.");
         return;
@@ -257,7 +245,7 @@ function createReviewHtml(review) {
     const { id, comment, createdAt, likes, userDTO } = review;
     const isOwner = currentUserEmail && userDTO && userDTO.email === currentUserEmail;
     return `
-    <div class="box review">
+    <div class="box review" data-id="${id}">
       <div class="content">
         <p><strong>${userDTO?.username ?? 'Unknown User'}</strong> <small>${new Date(createdAt).toLocaleString()}</small></p>
         <p>${comment}</p>
@@ -266,7 +254,7 @@ function createReviewHtml(review) {
             <i class="fas fa-heart"></i>
           </span>
           ${likes}
-          ${isOwner ? `
+          ${currentUserEmail && isOwner ? `
           <button class="button is-small is-warning edit-review-button" data-id="${id}">수정</button>
           <button class="button is-small is-danger delete-review-button" data-id="${id}">삭제</button>
           ` : ""}
@@ -275,16 +263,9 @@ function createReviewHtml(review) {
     </div>`;
 }
 
-// JWT 토큰을 쿠키에서 가져오는 함수
-function getJwtTokenFromCookie() {
-    const cookies = document.cookie.split("; ");
-    for (const cookie of cookies) {
-        const [name, value] = cookie.split("=");
-        if (name === "jwtToken") {
-            return value;
-        }
-    }
-    return null;
+
+function getJwtTokenFromSession() {
+    return sessionStorage.getItem("token");
 }
 
 // JWT 토큰을 디코딩하여 페이로드 정보를 추출하는 함수
@@ -298,6 +279,4 @@ function parseJwt(token) {
     return JSON.parse(jsonPayload);
 }
 
-// 페이지 로드 시 리뷰를 기본 정렬 옵션으로 가져오는 함수
-document.addEventListener("DOMContentLoaded", insertProductData);
 

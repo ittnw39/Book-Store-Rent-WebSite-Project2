@@ -1,5 +1,6 @@
-// import { checkAdmin } from "../useful-functions.js";
-// checkAdmin();
+import { checkAdmin } from "../useful-functions.js";
+
+checkAdmin();
 
 document.addEventListener('DOMContentLoaded', () => {
     const categoryList = document.getElementById('categoryList');
