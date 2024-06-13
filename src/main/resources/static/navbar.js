@@ -77,8 +77,6 @@ const addNavElements = (keyString) => {
     login: '<li><a href="/users/login">로그인</a></li>',
   };
 
-  console.log(isLogin);
-
   // 로그인 완료된 상태에서만 보이게 될 navbar 요소들
   const itemsAfterLogin = {
     account: '<li><a href="/users/account">계정관리</a></li>',

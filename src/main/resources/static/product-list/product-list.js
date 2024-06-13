@@ -35,12 +35,20 @@ async function addProductItemsToContainer() {
   const { categoryId, keyword } = getUrlParams();
   let products;
 
-  if (categoryId) {
-    products = await Api.get(`/api/books/category?categoryId=${categoryId}`);
-  } else if (keyword) {
-    products = await Api.get(`/api/books/search?keyword=${keyword}`);
-  } else {
-    products = await Api.get(`/api/books`);
+  try {
+    if (categoryId) {
+        products = await Api.get(`/api/books/category?categoryId=${categoryId}`);
+      } else if (keyword) {
+        products = await Api.get(`/api/books/search?keyword=${keyword}`);
+      } else {
+        products = await Api.get(`/api/books`);
+      }
+
+    if(products.status === 404) {
+      throw new Error(`예외가 발생했습니다.`);
+    }
+  } catch (error) {
+      alert(`검색 결과가 없습니다.`);
   }
 
   for (const product of products) {

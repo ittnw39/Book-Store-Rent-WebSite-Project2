@@ -7,6 +7,7 @@ import io.elice.shoppingmall.product.entity.Author;
 import io.elice.shoppingmall.product.entity.Book;
 import io.elice.shoppingmall.product.exception.BookNotFoundException;
 import io.elice.shoppingmall.product.exception.CategoryNotFoundException;
+import io.elice.shoppingmall.product.exception.NoSearchResultException;
 import io.elice.shoppingmall.product.mapper.BookMapper;
 import io.elice.shoppingmall.product.repository.BookRepository;
 import java.util.List;
@@ -61,16 +62,22 @@ public class BookService {
 
     //책 검색 기능
     public List<BookDTO> searchBooks(String keyword) {
-        return bookRepository.findByTitleOrAuthor(keyword)
-                .stream()
+        List<Book> books = bookRepository.findByTitleOrAuthor(keyword);
+        if (books.isEmpty()) {
+            throw new NoSearchResultException();
+        }
+        return books.stream()
                 .map(bookMapper::toBookDTO)
                 .collect(Collectors.toList());
     }
 
     //카테고리별 목록
     public List<BookDTO> getBooksByCategory(Long categoryId) {
-        return bookRepository.findByCategoryId(categoryId)
-                .stream()
+        List<Book> books = bookRepository.findByCategoryId(categoryId);
+        if (books.isEmpty()) {
+            throw new NoSearchResultException();
+        }
+        return books.stream()
                 .map(bookMapper::toBookDTO)
                 .collect(Collectors.toList());
     }
