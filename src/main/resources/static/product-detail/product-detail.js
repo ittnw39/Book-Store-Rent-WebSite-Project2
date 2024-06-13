@@ -107,48 +107,34 @@ async function insertProductData() {
         alert("이미 장바구니에 추가되어 있습니다.");
       }
 
+      console.log('장바구니 추가 에러');
       console.log(err);
+    }
+  });
+
+  purchaseButton.addEventListener("click", async () => {
+      try {
+          await insertDb(product);
+
+          window.location.href = "/order";
+      } catch (err) {
+          console.log(err);
+
+          //insertDb가 에러가 되는 경우는 이미 제품이 장바구니에 있던 경우임
+          //따라서 다시 추가 안 하고 바로 order 페이지로 이동함
+          window.location.href = "/order";
       }
-    });
-
-    addToCartButton.addEventListener("click", async () => {
-        try {
-            await insertDb(product);
-
-            alert("장바구니에 추가되었습니다.");
-        } catch (err) {
-            // Key already exists 에러면 아래와 같이 alert함
-            if (err.message.includes("Key")) {
-                alert("이미 장바구니에 추가되어 있습니다.");
-            }
-
-            console.log(err);
-        }
-    });
-
-    purchaseButton.addEventListener("click", async () => {
-        try {
-            await insertDb(product);
-
-            window.location.href = "/order";
-        } catch (err) {
-            console.log(err);
-
-            //insertDb가 에러가 되는 경우는 이미 제품이 장바구니에 있던 경우임
-            //따라서 다시 추가 안 하고 바로 order 페이지로 이동함
-            window.location.href = "/order";
-        }
-    });
+  });
 
     // JWT 토큰에서 현재 사용자 이메일 추출
-    const token = getJwtTokenFromCookie();
-    if (token) {
-        const decodedToken = parseJwt(token);
-        currentUserEmail = decodedToken.sub; // JWT의 subject를 email로 가정
-    }
+  const token = getJwtTokenFromCookie();
+  if (token) {
+      const decodedToken = parseJwt(token);
+      currentUserEmail = decodedToken.sub; // JWT의 subject를 email로 가정
+  }
 
-    // 리뷰 데이터 불러오기
-    await fetchAndDisplayReviews();
+  // 리뷰 데이터 불러오기
+  await fetchAndDisplayReviews();
 }
 
 
@@ -300,4 +286,3 @@ function parseJwt(token) {
 
 // 페이지 로드 시 리뷰를 기본 정렬 옵션으로 가져오는 함수
 document.addEventListener("DOMContentLoaded", insertProductData);
-

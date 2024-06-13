@@ -5,6 +5,8 @@ import io.elice.shoppingmall.category.service.CategoryService;
 import io.elice.shoppingmall.product.dto.BookDTO;
 import io.elice.shoppingmall.product.entity.Author;
 import io.elice.shoppingmall.product.entity.Book;
+import io.elice.shoppingmall.product.exception.BookNotFoundException;
+import io.elice.shoppingmall.product.exception.CategoryNotFoundException;
 import io.elice.shoppingmall.product.mapper.BookMapper;
 import io.elice.shoppingmall.product.repository.BookRepository;
 import java.util.List;
@@ -37,10 +39,9 @@ public class BookService {
             book.setAuthor(author);
         }
 
-        Category category = categoryService.searchCategoryByName(book.getCategory().getName()).orElse(null);
-        if (category != null) {
-            book.setCategory(category);
-        }
+        Category category = categoryService.searchCategoryByName(book.getCategory().getName())
+                                .orElseThrow(() -> new CategoryNotFoundException("Category not found: " + book.getCategory().getName()));
+        book.setCategory(category);
 
         Book savedBook = bookRepository.save(book);
         return bookMapper.toBookDTO(savedBook);
@@ -54,7 +55,7 @@ public class BookService {
 
     public BookDTO searchBookById(Long id) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Book id is not exists : " + id));
+                .orElseThrow(() -> new BookNotFoundException("Book id is not exists : " + id));
         return bookMapper.toBookDTO(book);
     }
 
