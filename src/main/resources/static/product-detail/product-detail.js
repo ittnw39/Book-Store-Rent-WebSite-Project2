@@ -31,6 +31,7 @@ addAllEvents();
 function addAllElements() {
     createNavbar();
     insertProductData();
+    addAllEvents();
 }
 
 // addEventListener들을 묶어주어서 코드를 깔끔하게 하는 역할임.
@@ -43,61 +44,20 @@ function addAllEvents() {
 
 async function handleAddToCart() {
     const { id } = getPathParams();
+    const quantity = document.getElementById("quantity").value;
     const product = await Api.get(`/api/book/${id}`);
     try {
         await insertDb(product);
         alert("장바구니에 추가되었습니다.");
-        addToCartButton(); // 여기서 새로 추가된 함수를 호출
+
+        // AJAX 요청으로 id와 quantity를 /cart 페이지로 보냄
+        await addToCart(id, quantity);
     } catch (err) {
         if (err.message.includes("Key")) {
             alert("이미 장바구니에 추가되어 있습니다.");
         }
         console.log('장바구니 추가 에러', err);
     }
-}
-function addToCartButton() {
-    var token = $("meta[name='csrf']").attr("content");
-    var header = $("meta[name='_csrf_header'").attr("content");
-
-    console.log("addToCartButton function called.");
-    console.log("CSRF Token:", token);
-    console.log("CSRF Header:", header);
-
-    var url = "/cart";
-    var paramData = {
-        bookId: $("#bookId").val(),
-        quantity: $("#quantity").val()
-    };
-
-    console.log("Parameters:", paramData);
-
-    var param = JSON.stringify(paramData);
-
-    $.ajax({
-        url: url,
-        type: "POST",
-        contentType: "application/json",
-        data: param,
-        beforeSend: function(xhr) {
-            xhr.setRequestHeader(header, token);
-        },
-        dataType: "json",
-        cache: false,
-        success: function(result, status) {
-            console.log("Success:", result);
-            alert("상품을 장바구니에 담았습니다.");
-            location.href = '/';
-        },
-        error: function(jqXHR, status, error) {
-            console.error("Error:", jqXHR, status, error);
-            if (jqXHR.status == '401') {
-                alert('로그인 후 이용해주세요');
-                location.href = "/users/login";
-            } else {
-                alert(jqXHR.responseText);
-            }
-        }
-    });
 }
 
 async function handlePurchase() {
@@ -127,6 +87,27 @@ function getPathParams() {
     const pathParts = pathname.split('/');
     return { id: pathParts[pathParts.length - 1] };
 }
+
+// AJAX 요청을 보내는 함수
+async function addToCart(id, quantity) {
+    try {
+        const response = await fetch('/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ bookId: id, quantity: quantity }),
+        });
+        if (!response.ok) {
+            throw new Error('Failed to add to cart');
+        }
+        console.log('Added to cart successfully');
+        window.location.href = '/cart'; // 성공적으로 추가되면 장바구니 페이지로 리다이렉트
+    } catch (error) {
+        console.error('Error adding to cart:', error);
+    }
+}
+
 
 // 제품 데이터를 삽입하는 함수
 async function insertProductData() {
@@ -308,5 +289,8 @@ function parseJwt(token) {
 }
 
 // 페이지 로드 시 리뷰를 기본 정렬 옵션으로 가져오는 함수
-document.addEventListener("DOMContentLoaded", insertProductData);
+//document.addEventListener("DOMContentLoaded", insertProductData);
 
+window.addEventListener("load", () => {
+    addAllElements();
+});

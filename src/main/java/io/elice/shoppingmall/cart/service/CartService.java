@@ -1,5 +1,6 @@
 package io.elice.shoppingmall.cart.service;
 
+import io.elice.shoppingmall.cart.dto.CartDetailDto;
 import io.elice.shoppingmall.cart.dto.CartItemDto;
 import io.elice.shoppingmall.cart.entity.Cart;
 import io.elice.shoppingmall.cart.entity.CartItem;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -24,40 +26,45 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final BookRepository bookRepository;
-    private final UserRepository userRepository;
 
+    // 사용자의 장바구니를 가져오거나 없으면 생성합니다.
     public Cart getOrCreateCart(User user) {
-        return cartRepository.findByUser(user)
-                .orElseGet(() -> cartRepository.save(new Cart(user)));
+        Optional<Cart> cartOptional = cartRepository.findByUser(user);
+        return cartOptional.orElseGet(() -> createCartForUser(user));
     }
 
-    public List<CartItem> getCartItems(Cart cart) {
-        return cartItemRepository.findByCart(cart);
-    }
+    // 장바구니에 상품을 추가합니다.
+    public void addCart(Long userId, CartItemDto cartItemDto) {
+        User user = new User();
+        user.setId(userId);
 
-    @Transactional
-    public Long addCart(Long userId, CartItemDto cartItemDto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(EntityNotFoundException::new);
-        Book book = bookRepository.findById(cartItemDto.getBookId())
-                .orElseThrow(EntityNotFoundException::new);
         Cart cart = getOrCreateCart(user);
 
-        // 이미 장바구니에 해당 상품이 있는지 확인
-        Optional<CartItem> existingCartItemOpt = cartItemRepository.findByCartAndBook(cart, book);
+        Book book = bookRepository.findById(cartItemDto.getBookId())
+                .orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + cartItemDto.getBookId()));
 
-        if (existingCartItemOpt.isPresent()) {
-            // 이미 있는 경우, 수량을 증가시킴
-            CartItem existingCartItem = existingCartItemOpt.get();
+        Optional<CartItem> existingCartItemOptional = cartItemRepository.findByCartAndBook(cart, book);
+        if (existingCartItemOptional.isPresent()) {
+            CartItem existingCartItem = existingCartItemOptional.get();
             existingCartItem.addQuantity(cartItemDto.getQuantity());
             cartItemRepository.save(existingCartItem);
-            return existingCartItem.getId();
         } else {
-            // 없는 경우, 새로운 카트 아이템을 생성하여 저장
             CartItem newCartItem = new CartItem(cart, book);
             newCartItem.setQuantity(cartItemDto.getQuantity());
-            CartItem savedCartItem = cartItemRepository.save(newCartItem);
-            return savedCartItem.getId();
+            cartItemRepository.save(newCartItem);
         }
+    }
+
+    // 장바구니의 상품 목록을 조회합니다.
+    public List<CartDetailDto> getCartItems(User user) {
+        Cart cart = getOrCreateCart(user);
+        return cartItemRepository.findCartDetailDtoList(cart.getId());
+    }
+
+    // 사용자를 위한 새로운 장바구니를 생성합니다.
+    private Cart createCartForUser(User user) {
+        Cart cart = new Cart();
+        cart.setUser(user);
+        return cartRepository.save(cart);
     }
 }
