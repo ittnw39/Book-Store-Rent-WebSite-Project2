@@ -1,5 +1,7 @@
 package io.elice.shoppingmall.cart.controller;
 
+import io.elice.shoppingmall.cart.dto.CartItemDto;
+import io.elice.shoppingmall.cart.entity.Cart;
 import io.elice.shoppingmall.cart.service.CartService;
 import io.elice.shoppingmall.user.entity.User;
 import io.elice.shoppingmall.user.repository.UserRepository;
@@ -8,12 +10,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.security.Principal;
-import java.util.Optional;
 
+//되는코드 !
 //원래코드
 @Controller
+
 @RequiredArgsConstructor
 public class CartController {
 
@@ -22,29 +27,47 @@ public class CartController {
 
     @GetMapping("/cart")
     public String viewCartPage(Model model, Principal principal) {
-        // Principal에서 사용자 ID 가져오기
         Long userId = getUserIdFromPrincipal(principal);
 
-        // User 객체를 UserRepository를 통해 가져오기
-        Optional<User> userOptional = userRepository.findById(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(EntityNotFoundException::new);
 
-        // User 객체가 존재하면 해당 객체를 사용하여 장바구니 생성 또는 확인
-        userOptional.ifPresent(user -> cartService.createCart(user));
+        Cart cart = cartService.getOrCreateCart(user);
 
-        // 사용자의 장바구니 페이지로 이동
-        return "/cart/cart.html";
+        model.addAttribute("cartItems", cartService.getCartItems(cart));
+
+        return "cart/cart.html";
     }
 
+    @PostMapping("/cart/add")
+    public String addCart(@RequestBody CartItemDto cartItemDto, Principal principal) {
+        if (principal == null) {
+            return "redirect:/login"; // 로그인 페이지로 리다이렉트
+        }
 
-    // Principal로부터 사용자 ID를 가져오는 메서드
-    private Long getUserIdFromPrincipal(Principal principal) {
-        // Principal을 통해 인증된 사용자 정보 가져오기
         String username = principal.getName();
+        System.out.println("Username retrieved from principal: " + username);
 
-        // User 객체를 UserRepository를 통해 가져오기
-        Optional<User> userOptional = userRepository.findByEmail(username);
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(EntityNotFoundException::new);
+        System.out.println("Retrieved user: " + user);
 
-        // User 객체가 존재하면 해당 객체의 ID 반환, 그렇지 않으면 예외 처리
-        return userOptional.orElseThrow(EntityNotFoundException::new).getId();
+        System.out.println("Adding book to cart. Book ID: " + cartItemDto.getBookId() + ", Quantity: " + cartItemDto.getQuantity());
+        cartService.addCart(user.getId(), cartItemDto);
+
+        return "redirect:/cart/cart.html";
     }
+
+    private Long getUserIdFromPrincipal(Principal principal) {
+        String username = principal.getName();
+        System.out.println("Username retrieved from principal: " + username);
+
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(EntityNotFoundException::new);
+        System.out.println("Retrieved user: " + user);
+
+        return user.getId();
+    }
+
+
 }

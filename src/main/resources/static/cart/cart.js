@@ -156,6 +156,25 @@ async function insertProductsfromCart() {
   });
 }
 
+const addToCart = async (bookId, quantity) => {
+    const response = await fetch('/cart/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            bookId: bookId,
+            quantity: quantity
+        })
+    });
+
+    if (response.ok) {
+        console.log('상품이 장바구니에 추가되었습니다.');
+    } else {
+        console.error('상품을 장바구니에 추가하는데 실패했습니다.');
+    }
+};
+
 async function toggleItem(id) {
   const itemCheckbox = document.querySelector(`#checkbox-${id}`);
   const isChecked = itemCheckbox.checked;

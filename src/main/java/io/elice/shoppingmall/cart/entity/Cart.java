@@ -23,6 +23,8 @@ public class Cart {
     @JoinColumn(name="user_id")
     private User user; //member
 
+
+
     // 기본 생성자 추가
     public Cart() {
     }
@@ -31,4 +33,6 @@ public class Cart {
     public Cart(User user) {
         this.user = user;
     }
+
+
 }
