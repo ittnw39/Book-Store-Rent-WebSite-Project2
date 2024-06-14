@@ -261,10 +261,41 @@ public class UserController {
                     String encodedPassword = passwordEncoder.encode((String) value);
                     user.setPassword(encodedPassword);
                     break;
+                case "password":
+                    String encodedPassword = passwordEncoder.encode((String) value);
+                    user.setPassword(encodedPassword);
+                    break;
             }
         });
         userRepository.save(user);
         return ResponseEntity.ok(user);
+    }
+
+    @PostMapping("/verify-password")
+    public ResponseEntity<?> verifyPassword(@RequestHeader("Authorization") String token,
+                                            @RequestBody Map<String, String> body) {
+        Map<String, Boolean> response = new HashMap<>();
+        try {
+            String email = jwtUtil.getEmailFromToken(token.substring(7));
+            String inputPassword = body.get("password");
+
+            Optional<User> optionalUser = userRepository.findByEmail(email);
+            if (optionalUser.isEmpty()) {
+                response.put("isValid", false);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+            User user = optionalUser.get();
+
+            String encodedPassword = user.getPassword();
+            boolean isPasswordValid = userService.verifyPassword(inputPassword, encodedPassword);
+
+            response.put("isValid", isPasswordValid);
+            return ResponseEntity.ok().body(response);
+
+        } catch (IllegalArgumentException e){
+            response.put("isValid", false);
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
 
