@@ -65,6 +65,20 @@ public class CartController {
         return new ResponseEntity<>("Item added to cart", HttpStatus.OK);
     }
 
+    @PatchMapping("/cart/item/{cartItemId}")
+    public ResponseEntity<String> updateCartItemQuantity(@PathVariable("cartItemId") Long cartItemId, @RequestParam("quantity") int quantity, Principal principal) {
+        if (principal == null) {
+            return new ResponseEntity<>("로그인이 필요합니다", HttpStatus.UNAUTHORIZED);
+        }
+
+        try {
+            cartService.updateCartItemQuantity(cartItemId, quantity);
+            return ResponseEntity.ok("Cart item quantity updated successfully");
+        } catch (Exception e) {
+            return new ResponseEntity<>("수량 업데이트 중 오류가 발생했습니다", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @DeleteMapping("/cart/item/{cartItemId}")
     public ResponseEntity<String> deleteCartItem(@PathVariable("cartItemId") Long cartItemId, Principal principal) {
         if (principal == null) {

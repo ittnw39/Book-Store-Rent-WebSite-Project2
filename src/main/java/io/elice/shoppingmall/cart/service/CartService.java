@@ -78,6 +78,14 @@ public class CartService {
         cartItemRepository.delete(cartItem);
     }
 
+    @Transactional
+    public void updateCartItemQuantity(Long cartItemId, int quantity) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new EntityNotFoundException("Cart item not found"));
+        cartItem.setQuantity(quantity);
+        cartItemRepository.save(cartItem);
+    }
+
 
     public List<CartDetailDto> getCartDetails(Long cartId) {
         return cartItemRepository.findCartDetailDtoList(cartId);
