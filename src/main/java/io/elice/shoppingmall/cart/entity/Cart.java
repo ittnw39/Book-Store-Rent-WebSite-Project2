@@ -6,33 +6,46 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "cart")
 @Getter
 @Setter
-@ToString //객체를 문자열로 출력
+@ToString
 public class Cart {
-
-    //장바구니 생성
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="user_id")
-    private User user; //member
+    @JoinColumn(name = "user_id")
+    private User user;
 
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItem> cartItems = new ArrayList<>();
 
-
-    // 기본 생성자 추가
     public Cart() {
     }
 
-    // 매개변수가 있는 생성자
     public Cart(User user) {
         this.user = user;
     }
 
+    // 장바구니에 상품 추가
+    public void addCartItem(CartItem cartItem) {
+        cartItems.add(cartItem);
+        cartItem.setCart(this);
+    }
+
+    // 장바구니에서 상품 삭제
+    public void removeCartItem(CartItem cartItem) {
+        cartItems.remove(cartItem);
+        cartItem.setCart(null);
+    }
+
+    // 기타 필요한 메서드들
 
 }

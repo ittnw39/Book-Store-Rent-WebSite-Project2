@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 
@@ -12,6 +13,7 @@ import java.util.Date;
 @Table(name = "cart_item")
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
 public class CartItem {
 
     @Id

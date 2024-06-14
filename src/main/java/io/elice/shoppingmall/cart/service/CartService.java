@@ -13,6 +13,7 @@ import io.elice.shoppingmall.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,7 +26,11 @@ public class CartService {
 
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
+    @Autowired
     private final BookRepository bookRepository;
+    private final UserRepository userRepository;
+
+
 
     // 사용자의 장바구니를 가져오거나 없으면 생성합니다.
     public Cart getOrCreateCart(User user) {
@@ -55,11 +60,6 @@ public class CartService {
         }
     }
 
-    // 장바구니의 상품 목록을 조회합니다.
-    public List<CartDetailDto> getCartItems(User user) {
-        Cart cart = getOrCreateCart(user);
-        return cartItemRepository.findCartDetailDtoList(cart.getId());
-    }
 
     // 사용자를 위한 새로운 장바구니를 생성합니다.
     private Cart createCartForUser(User user) {
@@ -67,4 +67,21 @@ public class CartService {
         cart.setUser(user);
         return cartRepository.save(cart);
     }
+
+
+    // 장바구니에서 상품을 삭제
+
+    @Transactional
+    public void deleteCartItem(Long cartItemId) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(EntityNotFoundException::new);
+        cartItemRepository.delete(cartItem);
+    }
+
+
+    public List<CartDetailDto> getCartDetails(Long cartId) {
+        return cartItemRepository.findCartDetailDtoList(cartId);
+    }
+
+
 }

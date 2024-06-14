@@ -47,15 +47,13 @@ async function handleAddToCart() {
     const quantity = document.getElementById("quantity").value;
     const product = await Api.get(`/api/book/${id}`);
     try {
-        await insertDb(product);
+        await addToCart(id, quantity);
         alert("장바구니에 추가되었습니다.");
 
         // AJAX 요청으로 id와 quantity를 /cart 페이지로 보냄
-        await addToCart(id, quantity);
+
     } catch (err) {
-        if (err.message.includes("Key")) {
-            alert("이미 장바구니에 추가되어 있습니다.");
-        }
+
         console.log('장바구니 추가 에러', err);
     }
 }
@@ -164,22 +162,22 @@ async function insertProductData() {
   await fetchAndDisplayReviews();
 }
 
-// IndexedDB에 제품을 추가하는 함수
-async function insertDb(product) {
-    const { id, price } = product;
-    await addToDb("cart", { ...product, quantity: 1 }, id);
-    await putToDb("order", "summary", (data) => {
-        const count = data.productsCount;
-        const total = data.productsTotal;
-        const ids = data.ids;
-        const selectedIds = data.selectedIds;
-
-        data.productsCount = count ? count + 1 : 1;
-        data.productsTotal = total ? total + price : price;
-        data.ids = ids ? [...ids, id] : [id];
-        data.selectedIds = selectedIds ? [...selectedIds, id] : [id];
-    });
-}
+//// IndexedDB에 제품을 추가하는 함수
+//async function insertDb(product) {
+//    const { id, price } = product;
+//    await addToDb("cart", { ...product, quantity: 1 }, id);
+//    await putToDb("order", "summary", (data) => {
+//        const count = data.productsCount;
+//        const total = data.productsTotal;
+//        const ids = data.ids;
+//        const selectedIds = data.selectedIds;
+//
+//        data.productsCount = count ? count + 1 : 1;
+//        data.productsTotal = total ? total + price : price;
+//        data.ids = ids ? [...ids, id] : [id];
+//        data.selectedIds = selectedIds ? [...selectedIds, id] : [id];
+//    });
+//}
 
 // 리뷰 목록을 정렬 옵션에 따라 가져오는 함수
 async function fetchAndDisplayReviews() {
@@ -294,3 +292,4 @@ function parseJwt(token) {
 window.addEventListener("load", () => {
     addAllElements();
 });
+

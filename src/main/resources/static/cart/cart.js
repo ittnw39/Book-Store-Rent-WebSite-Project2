@@ -563,139 +563,139 @@
 //
 //}
 
-document.addEventListener("DOMContentLoaded", async () => {
-    // 페이지가 로드될 때 장바구니 정보를 가져와서 표시
-    await fetchCartItems();
-
-    // 구매하기 버튼 클릭 시 이벤트 리스너
-    document.getElementById("purchaseButton").addEventListener("click", async () => {
-        const response = await fetch('/cart/purchase', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (response.ok) {
-            const result = await response.json();
-            alert(result.message);
-            window.location.href = '/'; // 구매 성공 시 메인 페이지로 이동 (예시)
-        } else {
-            alert('구매하는데 실패했습니다.');
-        }
-    });
-
-    // 전체 선택 체크박스 이벤트 리스너
-    document.getElementById("allSelectCheckbox").addEventListener("change", function() {
-        const checkboxes = document.querySelectorAll('.productCheckbox');
-        checkboxes.forEach((checkbox) => {
-            checkbox.checked = this.checked;
-        });
-    });
-
-    // 선택 삭제 이벤트 리스너
-    document.getElementById("partialDeleteLabel").addEventListener("click", async () => {
-        const checkboxes = document.querySelectorAll('.productCheckbox:checked');
-        const itemIds = Array.from(checkboxes).map(checkbox => checkbox.value);
-
-        if (itemIds.length === 0) {
-            alert('삭제할 상품을 선택해주세요.');
-            return;
-        }
-
-        const response = await fetch('/cart/delete', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ itemIds: itemIds })
-        });
-
-        if (response.ok) {
-            alert('선택한 상품이 삭제되었습니다.');
-            fetchCartItems(); // 장바구니 목록 다시 불러오기
-        } else {
-            alert('상품 삭제하는데 실패했습니다.');
-        }
-    });
-});
-
-// 장바구니 상품 목록을 가져오는 함수
-async function fetchCartItems() {
-    try {
-        const response = await fetch('/api/cart/items');
-        if (!response.ok) {
-            throw new Error('장바구니 데이터를 가져오는 데 실패했습니다.');
-        }
-        const cartItems = await response.json();
-        renderCartItems(cartItems);
-        updateOrderSummary(cartItems);
-    } catch (error) {
-        console.error(error);
-        // 에러 처리
-    }
-}
-
-// 장바구니 상품을 화면에 표시하는 함수
-function renderCartItems(cartItems) {
-    const cartProductsContainer = document.getElementById('cartProductsContainer');
-    cartProductsContainer.innerHTML = ''; // 기존 내용 초기화
-
-    cartItems.forEach(item => {
-        const productCard = createProductCard(item);
-        cartProductsContainer.appendChild(productCard);
-    });
-}
-
-// 상품 카드 생성 함수
-function createProductCard(item) {
-    const card = document.createElement('div');
-    card.classList.add('card');
-
-    card.innerHTML = `
-        <div class="card-content">
-            <div class="media">
-                <div class="media-left">
-                    <figure class="image is-64x64">
-                        <img src="${item.imageURL}" alt="${item.title}">
-                    </figure>
-                </div>
-                <div class="media-content">
-                    <p class="title is-5">${item.title}</p>
-                    <p class="subtitle is-6">가격: ${item.price}원</p>
-                    <p class="subtitle is-6">수량: ${item.quantity}</p>
-                </div>
-            </div>
-            <div class="media-right">
-                <label class="checkbox">
-                    <input type="checkbox" class="productCheckbox" value="${item.id}" />
-                </label>
-            </div>
-        </div>
-    `;
-
-    return card;
-}
-
-// 주문 요약 정보 업데이트 함수
-function updateOrderSummary(cartItems) {
-    const productsCountElement = document.getElementById('productsCount');
-    const productsTotalElement = document.getElementById('productsTotal');
-    const orderTotalElement = document.getElementById('orderTotal');
-
-    // 상품 수량 계산
-    const productsCount = cartItems.reduce((total, item) => total + item.quantity, 0);
-    productsCountElement.textContent = productsCount;
-
-    // 상품 총 금액 계산
-    const productsTotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-    productsTotalElement.textContent = `${productsTotal}원`;
-
-    // 배송비는 예시로 설정
-    const deliveryFee = 3000; // 예시 배송비
-    document.getElementById('deliveryFee').textContent = `${deliveryFee}원`;
-
-    // 총 결제 금액 계산
-    const orderTotal = productsTotal + deliveryFee;
-    orderTotalElement.textContent = `${orderTotal}원`;
-}
+//document.addEventListener("DOMContentLoaded", async () => {
+//    // 페이지가 로드될 때 장바구니 정보를 가져와서 표시
+//    await fetchCartItems();
+//
+//    // 구매하기 버튼 클릭 시 이벤트 리스너
+//    document.getElementById("purchaseButton").addEventListener("click", async () => {
+//        const response = await fetch('/cart/purchase', {
+//            method: 'POST',
+//            headers: {
+//                'Content-Type': 'application/json',
+//            },
+//        });
+//
+//        if (response.ok) {
+//            const result = await response.json();
+//            alert(result.message);
+//            window.location.href = '/'; // 구매 성공 시 메인 페이지로 이동 (예시)
+//        } else {
+//            alert('구매하는데 실패했습니다.');
+//        }
+//    });
+//
+//    // 전체 선택 체크박스 이벤트 리스너
+//    document.getElementById("allSelectCheckbox").addEventListener("change", function() {
+//        const checkboxes = document.querySelectorAll('.productCheckbox');
+//        checkboxes.forEach((checkbox) => {
+//            checkbox.checked = this.checked;
+//        });
+//    });
+//
+//    // 선택 삭제 이벤트 리스너
+//    document.getElementById("partialDeleteLabel").addEventListener("click", async () => {
+//        const checkboxes = document.querySelectorAll('.productCheckbox:checked');
+//        const itemIds = Array.from(checkboxes).map(checkbox => checkbox.value);
+//
+//        if (itemIds.length === 0) {
+//            alert('삭제할 상품을 선택해주세요.');
+//            return;
+//        }
+//
+//        const response = await fetch('/cart/delete', {
+//            method: 'POST',
+//            headers: {
+//                'Content-Type': 'application/json',
+//            },
+//            body: JSON.stringify({ itemIds: itemIds })
+//        });
+//
+//        if (response.ok) {
+//            alert('선택한 상품이 삭제되었습니다.');
+//            fetchCartItems(); // 장바구니 목록 다시 불러오기
+//        } else {
+//            alert('상품 삭제하는데 실패했습니다.');
+//        }
+//    });
+//});
+//
+//// 장바구니 상품 목록을 가져오는 함수
+//async function fetchCartItems() {
+//    try {
+//        const response = await fetch('/api/cart/items');
+//        if (!response.ok) {
+//            throw new Error('장바구니 데이터를 가져오는 데 실패했습니다.');
+//        }
+//        const cartItems = await response.json();
+//        renderCartItems(cartItems);
+//        updateOrderSummary(cartItems);
+//    } catch (error) {
+//        console.error(error);
+//        // 에러 처리
+//    }
+//}
+//
+//// 장바구니 상품을 화면에 표시하는 함수
+//function renderCartItems(cartItems) {
+//    const cartProductsContainer = document.getElementById('cartProductsContainer');
+//    cartProductsContainer.innerHTML = ''; // 기존 내용 초기화
+//
+//    cartItems.forEach(item => {
+//        const productCard = createProductCard(item);
+//        cartProductsContainer.appendChild(productCard);
+//    });
+//}
+//
+//// 상품 카드 생성 함수
+//function createProductCard(item) {
+//    const card = document.createElement('div');
+//    card.classList.add('card');
+//
+//    card.innerHTML = `
+//        <div class="card-content">
+//            <div class="media">
+//                <div class="media-left">
+//                    <figure class="image is-64x64">
+//                        <img src="${item.imageURL}" alt="${item.title}">
+//                    </figure>
+//                </div>
+//                <div class="media-content">
+//                    <p class="title is-5">${item.title}</p>
+//                    <p class="subtitle is-6">가격: ${item.price}원</p>
+//                    <p class="subtitle is-6">수량: ${item.quantity}</p>
+//                </div>
+//            </div>
+//            <div class="media-right">
+//                <label class="checkbox">
+//                    <input type="checkbox" class="productCheckbox" value="${item.id}" />
+//                </label>
+//            </div>
+//        </div>
+//    `;
+//
+//    return card;
+//}
+//
+//// 주문 요약 정보 업데이트 함수
+//function updateOrderSummary(cartItems) {
+//    const productsCountElement = document.getElementById('productsCount');
+//    const productsTotalElement = document.getElementById('productsTotal');
+//    const orderTotalElement = document.getElementById('orderTotal');
+//
+//    // 상품 수량 계산
+//    const productsCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+//    productsCountElement.textContent = productsCount;
+//
+//    // 상품 총 금액 계산
+//    const productsTotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+//    productsTotalElement.textContent = `${productsTotal}원`;
+//
+//    // 배송비는 예시로 설정
+//    const deliveryFee = 3000; // 예시 배송비
+//    document.getElementById('deliveryFee').textContent = `${deliveryFee}원`;
+//
+//    // 총 결제 금액 계산
+//    const orderTotal = productsTotal + deliveryFee;
+//    orderTotalElement.textContent = `${orderTotal}원`;
+//}
