@@ -10,6 +10,7 @@ import {
 const emailInput = document.querySelector("#emailInput");
 const passwordInput = document.querySelector("#passwordInput");
 const submitButton = document.querySelector("#submitButton");
+const naverSignInButton = document.querySelector("#naverSignInButton");
 
 blockIfLogin();
 addAllElements();
@@ -25,6 +26,16 @@ function addAllEvents() {
   submitButton.addEventListener("click", handleSubmit);
 }
 
+// Naver 소셜 로그인 진행
+async function handleNaverSignIn() {
+  try {
+    const naverSignInUrl = await Api.get("/api/v1/auth/oauth2/naver");
+    window.location.href = naverSignInUrl;
+  } catch (err) {
+    console.error(err.stack);
+    alert(`Naver 로그인 중 문제가 발생했습니다. 다시 시도해 주세요.`);
+  }
+}
 // 로그인 진행 //여기서부터 시작입니당 post 요청 출발
 async function handleSubmit(e) {
   e.preventDefault();
@@ -83,4 +94,3 @@ async function handleSubmit(e) {
     alert(`문제가 발생하였습니다. 확인 후 다시 시도해 주세요: ${err.message}`);
   }
   }
-

@@ -115,7 +115,7 @@ export const checkLogin = () => {
                   window.document.body.style.display = "block";
               } else {
                   alert("관리자 전용 페이지입니다.");
-                  window.location.replace("/");
+                  window.location.replace("/users/login");
               }
           } else {
               throw new Error("관리자 인증 실패");

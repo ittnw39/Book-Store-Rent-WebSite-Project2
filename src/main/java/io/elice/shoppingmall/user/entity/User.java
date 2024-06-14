@@ -27,7 +27,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private int level;
 
     @Column(nullable = false, unique = true) //중복된 이메일 가입 방지
@@ -54,6 +54,9 @@ public class User {
     @Column(nullable = true, name = "total_spent")
     private Long totalSpent;
 
+    @Column(nullable = false, name = "auth_provider")
+    private String authProvider = "local";
+
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false, name = "created_at")
@@ -62,7 +65,7 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private WishList wishList;
 
-    @OneToMany(mappedBy ="user")
+    @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Orders> orders;
 
@@ -78,4 +81,6 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "grade")
     private Grade grade;
+
+
 }
