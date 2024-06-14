@@ -42,6 +42,9 @@ public class Orders {
     @Column(name = "order_option")
     private OrderOption orderOption;
 
+    @Column(name= "request")
+    private String request;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

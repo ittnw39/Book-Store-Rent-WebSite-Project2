@@ -1,6 +1,7 @@
 
 package io.elice.shoppingmall.user.security;
 
+import io.elice.shoppingmall.user.entity.CustomOAuth2User;
 import io.elice.shoppingmall.user.repository.UserRepository;
 import io.elice.shoppingmall.user.service.UserService;
 import io.jsonwebtoken.Claims;
@@ -38,17 +39,26 @@ public class JwtUtil {
     private static final long EXPIRATION_TIME = 1000L * 60 * 60 * 10;
 
     public String createToken(Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
+        Object principal = authentication.getPrincipal();
+        String username;
+        if (principal instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) principal;
+            username = userDetails.getUsername();
+        } else if (principal instanceof CustomOAuth2User) {
+            CustomOAuth2User oAuth2User = (CustomOAuth2User) principal;
+            username = oAuth2User.getName();
+        } else {
+            throw new IllegalArgumentException("Invalid principal type");
+        }
 
         // 필수 클레임 설정
         Map<String, Object> claims = new HashMap<>();
-        claims.put("sub", userDetails.getUsername()); // 주체(subject) 클레임
+        claims.put("sub", username); // 주체(subject) 클레임
         claims.put("iat", new Date()); // 발행 시간(issued at) 클레임
         claims.put("exp", new Date(System.currentTimeMillis() + EXPIRATION_TIME)); // 만료 시간(expiration) 클레임
-        claims.put("roles", userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList()));
+        claims.put("roles", authentication.getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority)
+            .collect(Collectors.toList()));
 
         SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
@@ -56,7 +66,6 @@ public class JwtUtil {
             .setClaims(claims) // 클레임 설정
             .signWith(key, SignatureAlgorithm.HS512) // 서명 키 설정
             .compact(); // 토큰 문자열 생성
-
     }
 
     public String createLogoutToken(String email) {

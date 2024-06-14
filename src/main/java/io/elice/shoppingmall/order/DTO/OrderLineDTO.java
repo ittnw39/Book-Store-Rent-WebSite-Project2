@@ -21,8 +21,6 @@ public class OrderLineDTO {
 
     private BigDecimal discountRate;
 
-    @NotNull
-
     @JsonBackReference
     private Long orderId;
 

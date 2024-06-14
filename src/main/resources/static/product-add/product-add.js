@@ -23,7 +23,7 @@ let bookImageURL;
 const params = new URLSearchParams(window.location.search);
 const bookId = params.get('id');
 
-//checkLogin();
+checkLogin();
 addAllElements();
 addAllEvents();
 

@@ -9,6 +9,7 @@ import io.elice.shoppingmall.user.service.CustomUserDetailsService;
 import io.elice.shoppingmall.user.service.JwtBlacklistService;
 import io.elice.shoppingmall.user.service.UserService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.*;
@@ -76,7 +77,7 @@ public class UserController {
 
             // 쿠키에 토큰 저장
             Cookie cookie = new Cookie("jwtToken", token);
-            cookie.setMaxAge(60 * 60 * 24); // 쿠키 유효기간 설정 (예: 24시간)
+            cookie.setMaxAge(0); // 쿠키 유효기간 설정 (예: 24시간)
             cookie.setPath("/"); // 쿠키 경로 설정
             response.addCookie(cookie);
 
@@ -102,10 +103,22 @@ public class UserController {
 
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token, HttpServletRequest request, HttpServletResponse response) {
         String message = userService.logout(token);
+
+        // 현재 요청의 도메인 가져오기
+        String domain = request.getServerName();
+
+        // 쿠키 만료 설정
+//        Cookie cookie = new Cookie("jwtToken", null);
+//        cookie.setMaxAge(0); // 쿠키 유효기간을 0으로 설정하여 즉시 만료
+//        cookie.setPath("/"); // 쿠키 경로 설정
+//        cookie.setDomain(domain); // 도메인 설정
+//        response.addCookie(cookie);
+
         return ResponseEntity.ok(message);
     }
+
 
     @PutMapping("/mypage/update")
     public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDTO, @RequestHeader("Authorization") String token) {
@@ -228,10 +241,10 @@ public class UserController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable Long id,
-                                        @RequestBody Map<String, Object> updates) {
+        @RequestBody Map<String, Object> updates) {
 
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         updates.forEach((key, value) -> {
             switch (key) {
@@ -242,7 +255,11 @@ public class UserController {
                     user.setEmail((String) value);
                     break;
                 case "phNum":
-                    user.setPhNum((String) value);
+                    user.setPhone_number((String) value);
+                    break;
+                case "password":
+                    String encodedPassword = passwordEncoder.encode((String) value);
+                    user.setPassword(encodedPassword);
                     break;
                 case "password":
                     String encodedPassword = passwordEncoder.encode((String) value);

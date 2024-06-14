@@ -19,7 +19,7 @@ public class UserDTO {
     @Email(message = "이메일 형식에 맞지 않습니다.")
     private String email;
     private String username;
-    private String phNum;
+    private String phone_number;
     private String address;
     private String nickname;
     private Long totalSpent;
@@ -33,7 +33,7 @@ public class UserDTO {
     public UserDTO(User user) {
         this.email = user.getEmail();
         this.username = user.getUsername();
-        this.phNum = user.getPhNum();
+        this.phone_number = user.getPhone_number();
         this.address = user.getAddress();
         this.nickname = user.getNickname();
         this.password = user.getPassword();
