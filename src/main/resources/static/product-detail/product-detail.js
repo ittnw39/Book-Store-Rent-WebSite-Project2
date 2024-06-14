@@ -179,12 +179,14 @@ async function insertProductData() {
 //    });
 //}
 
+
 // 리뷰 목록을 정렬 옵션에 따라 가져오는 함수
 async function fetchAndDisplayReviews() {
     const { id } = getPathParams();
     const sortBy = sortOption.value || "date";
+    console.log("Selected sort option:", sortOption.value);
     const reviews = await Api.get(`/api/book/${id}/reviews?sort=${sortBy}`);
-    console.log(reviews); // 리뷰 데이터를 콘솔에 출력하여 확인합니다.
+    console.log("Fetched reviews:", reviews);
     reviewsContainer.innerHTML = reviews.map(createReviewHtml).join("");
 
     document.querySelectorAll(".edit-review-button").forEach(button => {
@@ -200,12 +202,20 @@ async function fetchAndDisplayReviews() {
             await deleteReview(reviewId);
         });
     });
+
+    // 좋아요 버튼에 이벤트 리스너 추가
+    document.querySelectorAll(".like-review-button").forEach(button => {
+        button.addEventListener("click", async () => {
+            const reviewId = button.getAttribute("data-id");
+            await likeReview(reviewId);
+        });
+    });
 }
 
 // 서버에 리뷰를 추가하는 함수
 async function addReview(comment) {
     const { id } = getPathParams();
-    const token = getJwtTokenFromCookie(); // 쿠키에서 토큰을 가져옴
+    const token = getJwtTokenFromSession();
     if (!token) {
         alert("로그인이 필요합니다.");
         return;
@@ -236,7 +246,7 @@ async function deleteReview(reviewId) {
 
 // 리뷰에 좋아요를 추가하는 함수
 async function likeReview(reviewId) {
-    await Api.post(`/api/book/review/${reviewId}/like`);
+    await Api.post(`/api/book/review/${reviewId}/like`, {});
     await fetchAndDisplayReviews();
 }
 
@@ -244,17 +254,18 @@ async function likeReview(reviewId) {
 function createReviewHtml(review) {
     const { id, comment, createdAt, likes, userDTO } = review;
     const isOwner = currentUserEmail && userDTO && userDTO.email === currentUserEmail;
+
     return `
-    <div class="box review">
+    <div class="box review" data-id="${id}">
       <div class="content">
         <p><strong>${userDTO?.username ?? 'Unknown User'}</strong> <small>${new Date(createdAt).toLocaleString()}</small></p>
         <p>${comment}</p>
         <p>
-          <span class="icon" onclick="likeReview(${id})">
-            <i class="fas fa-heart"></i>
+          <span class="icon like-review-button" data-id="${id}">
+            <i class="fas fa-heart" style="color: ${likes > 0 ? 'red' : 'gray'};"></i>
           </span>
           ${likes}
-          ${isOwner ? `
+          ${currentUserEmail && isOwner ? `
           <button class="button is-small is-warning edit-review-button" data-id="${id}">수정</button>
           <button class="button is-small is-danger delete-review-button" data-id="${id}">삭제</button>
           ` : ""}
@@ -263,16 +274,9 @@ function createReviewHtml(review) {
     </div>`;
 }
 
-// JWT 토큰을 쿠키에서 가져오는 함수
-function getJwtTokenFromCookie() {
-    const cookies = document.cookie.split("; ");
-    for (const cookie of cookies) {
-        const [name, value] = cookie.split("=");
-        if (name === "jwtToken") {
-            return value;
-        }
-    }
-    return null;
+
+function getJwtTokenFromSession() {
+    return sessionStorage.getItem("token");
 }
 
 // JWT 토큰을 디코딩하여 페이로드 정보를 추출하는 함수

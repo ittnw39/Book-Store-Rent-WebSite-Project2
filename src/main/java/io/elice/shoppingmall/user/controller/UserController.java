@@ -76,7 +76,7 @@ public class UserController {
 
             // 쿠키에 토큰 저장
             Cookie cookie = new Cookie("jwtToken", token);
-            cookie.setMaxAge(60 * 60 * 24); // 쿠키 유효기간 설정 (예: 24시간)
+            cookie.setMaxAge(0); // 쿠키 유효기간 설정 (예: 24시간)
             cookie.setPath("/"); // 쿠키 경로 설정
             response.addCookie(cookie);
 
