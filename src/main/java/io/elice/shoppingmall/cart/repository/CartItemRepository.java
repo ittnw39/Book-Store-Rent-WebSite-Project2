@@ -16,7 +16,7 @@ import java.util.Optional;
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
     //카트 아이디와 상품 아이디를 이용해서 상품이 장바구니에 들어있는지 조회
-
+    List<CartItem> findByCart(Cart cart);
     Optional<CartItem> findByCartAndBook(Cart cart, Book book);
 
     @Query("select new io.elice.shoppingmall.cart.dto.CartDetailDto(ci.id, b.title, b.price, ci.quantity, b.imageURL) " +
@@ -25,4 +25,6 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
             "where ci.cart.id = :cartId " +
             "order by ci.createdDate desc")
     List<CartDetailDto> findCartDetailDtoList(@Param("cartId") Long cartId);
+
+
 }

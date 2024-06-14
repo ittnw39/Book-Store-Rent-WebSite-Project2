@@ -31,6 +31,7 @@ addAllEvents();
 function addAllElements() {
     createNavbar();
     insertProductData();
+    addAllEvents();
 }
 
 // addEventListener들을 묶어주어서 코드를 깔끔하게 하는 역할임.
@@ -43,22 +44,24 @@ function addAllEvents() {
 
 async function handleAddToCart() {
     const { id } = getPathParams();
+    const quantity = document.getElementById("quantity").value;
+    const product = await Api.get(`/api/book/${id}`);
     try {
-        const product = await Api.get(`/api/book/${id}`);
-        await insertDb(product);
+        await addToCart(id, quantity);
         alert("장바구니에 추가되었습니다.");
+
+        // AJAX 요청으로 id와 quantity를 /cart 페이지로 보냄
+
     } catch (err) {
-        if (err.message.includes("Key")) {
-            alert("이미 장바구니에 추가되어 있습니다.");
-        }
+
         console.log('장바구니 추가 에러', err);
     }
 }
 
 async function handlePurchase() {
     const { id } = getPathParams();
+    const product = await Api.get(`/api/book/${id}`);
     try {
-        const product = await Api.get(`/api/book/${id}`);
         await insertDb(product);
         window.location.href = "/order";
     } catch (err) {
@@ -83,83 +86,98 @@ function getPathParams() {
     return { id: pathParts[pathParts.length - 1] };
 }
 
+// AJAX 요청을 보내는 함수
+async function addToCart(id, quantity) {
+    try {
+        const response = await fetch('/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ bookId: id, quantity: quantity }),
+        });
+        if (!response.ok) {
+            throw new Error('Failed to add to cart');
+        }
+        console.log('Added to cart successfully');
+        window.location.href = '/cart'; // 성공적으로 추가되면 장바구니 페이지로 리다이렉트
+    } catch (error) {
+        console.error('Error adding to cart:', error);
+    }
+}
+
+
 // 제품 데이터를 삽입하는 함수
 async function insertProductData() {
+  console.log("insertProductData called");
   const { id } = getPathParams();
-  try {
-    const product = await Api.get(`/api/book/${id}`);
+  const product = await Api.get(`/api/book/${id}`);
+  console.log("Product data:", product);
 
-    // 객체 destructuring
-    const {
-      title,
-      category,
-      author,
-      description,
-      publisher,
-      publishedDate,
-      isRecommended,
-      imageURL,
-      price
-    } = product;
+  // 객체 destructuring
+  const {
+    title,
+    category,
+    author,
+    description,
+    publisher,
+    publishedDate,
+    isRecommended,
+    imageURL,
+    price
+  } = product;
 
-    productImageTag.src = imageURL;
-    titleTag.innerText = title;
-    categoryTag.innerText = category.name;
-    authorTag.innerText = author.name;
-    descriptionTag.innerText = description;
-    publisherTag.innerText = publisher;
-    publishedDateTag.innerText = formatPublishedDate(publishedDate);
-    priceTag.innerText = `${addCommas(price)}원`;
+  productImageTag.src = imageURL;
+  titleTag.innerText = title;
+  categoryTag.innerText = category.name;
+  authorTag.innerText = author.name;
+  descriptionTag.innerText = description;
+  publisherTag.innerText = publisher;
+  publishedDateTag.innerText = formatPublishedDate(publishedDate);
+  priceTag.innerText = `${addCommas(price)}원`;
 
-    function formatPublishedDate(dateString) {
-      const date = new Date(dateString);
-      const year = String(date.getFullYear());
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    }
-
-    if (isRecommended) {
-      titleTag.insertAdjacentHTML(
-        "beforeend",
-        '<span class="tag is-success is-rounded">추천</span>'
-      );
-    }
-
-    // JWT 토큰에서 현재 사용자 이메일 추출
-    const token = getJwtTokenFromSession();
-    if (token) {
-        const decodedToken = parseJwt(token);
-        currentUserEmail = decodedToken.sub; // JWT의 subject를 email로 가정
-    } else {
-        currentUserEmail = null; // JWT 토큰이 없으면 이메일을 null로 설정
-    }
-
-    // 리뷰 데이터 불러오기
-    await fetchAndDisplayReviews();
-  } catch (error) {
-    console.error("제품 조회 오류: ", error);
-    alert("해당하는 상품이 없습니다."); // 에러 발생 시 사용자에게 경고창 띄우기
-    window.history.back(); // 이전 페이지로 이동
+  function formatPublishedDate(dateString) {
+    const date = new Date(dateString);
+    const year = String(date.getFullYear());
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
+
+  if (isRecommended) {
+    titleTag.insertAdjacentHTML(
+      "beforeend",
+      '<span class="tag is-success is-rounded">추천</span>'
+    );
+  }
+
+  // JWT 토큰에서 현재 사용자 이메일 추출
+  const token = getJwtTokenFromCookie();
+  if (token) {
+      const decodedToken = parseJwt(token);
+      currentUserEmail = decodedToken.sub; // JWT의 subject를 email로 가정
+  }
+
+  // 리뷰 데이터 불러오기
+  await fetchAndDisplayReviews();
 }
 
-// IndexedDB에 제품을 추가하는 함수
-async function insertDb(product) {
-    const { id, price } = product;
-    await addToDb("cart", { ...product, quantity: 1 }, id);
-    await putToDb("order", "summary", (data) => {
-        const count = data.productsCount;
-        const total = data.productsTotal;
-        const ids = data.ids;
-        const selectedIds = data.selectedIds;
-
-        data.productsCount = count ? count + 1 : 1;
-        data.productsTotal = total ? total + price : price;
-        data.ids = ids ? [...ids, id] : [id];
-        data.selectedIds = selectedIds ? [...selectedIds, id] : [id];
-    });
-}
+//// IndexedDB에 제품을 추가하는 함수
+//async function insertDb(product) {
+//    const { id, price } = product;
+//    await addToDb("cart", { ...product, quantity: 1 }, id);
+//    await putToDb("order", "summary", (data) => {
+//        const count = data.productsCount;
+//        const total = data.productsTotal;
+//        const ids = data.ids;
+//        const selectedIds = data.selectedIds;
+//
+//        data.productsCount = count ? count + 1 : 1;
+//        data.productsTotal = total ? total + price : price;
+//        data.ids = ids ? [...ids, id] : [id];
+//        data.selectedIds = selectedIds ? [...selectedIds, id] : [id];
+//    });
+//}
 
 
 // 리뷰 목록을 정렬 옵션에 따라 가져오는 함수
@@ -271,3 +289,11 @@ function parseJwt(token) {
 
     return JSON.parse(jsonPayload);
 }
+
+// 페이지 로드 시 리뷰를 기본 정렬 옵션으로 가져오는 함수
+//document.addEventListener("DOMContentLoaded", insertProductData);
+
+window.addEventListener("load", () => {
+    addAllElements();
+});
+

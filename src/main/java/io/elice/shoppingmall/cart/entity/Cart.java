@@ -1,15 +1,11 @@
 package io.elice.shoppingmall.cart.entity;
 
-import io.elice.shoppingmall.order.entity.OrderOption;
-import io.elice.shoppingmall.product.entity.Book;
 import io.elice.shoppingmall.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,23 +13,39 @@ import java.util.List;
 @Table(name = "cart")
 @Getter
 @Setter
-@ToString //객체를 문자열로 출력
-
+@ToString
 public class Cart {
-
-    //장바구니 생성
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne (fetch = FetchType.EAGER)
-    @JoinColumn(name="user_id")
-    private User user; //member
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    public static Cart createCart(User user) {
-        Cart cart = new Cart();
-        cart.setUser(user);
-        return cart;
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItem> cartItems = new ArrayList<>();
+
+    public Cart() {
     }
+
+    public Cart(User user) {
+        this.user = user;
+    }
+
+    // 장바구니에 상품 추가
+    public void addCartItem(CartItem cartItem) {
+        cartItems.add(cartItem);
+        cartItem.setCart(this);
+    }
+
+    // 장바구니에서 상품 삭제
+    public void removeCartItem(CartItem cartItem) {
+        cartItems.remove(cartItem);
+        cartItem.setCart(null);
+    }
+
+    // 기타 필요한 메서드들
+
 }
