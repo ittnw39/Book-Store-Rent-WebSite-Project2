@@ -1,6 +1,8 @@
 package io.elice.shoppingmall.user.security;
+import io.elice.shoppingmall.user.handler.OAuth2SuccessHandler;
 import io.elice.shoppingmall.user.service.CustomUserDetailsService;
 import io.elice.shoppingmall.user.service.JwtBlacklistService;
+import io.elice.shoppingmall.user.service.OAuth2UserServiceImplement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -22,6 +25,8 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtBlacklistService jwtBlacklistService;
+    private final OAuth2UserServiceImplement oAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig)
@@ -43,16 +48,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // CSRF 비활성화
+            .csrf(csrf -> csrf.disable())
             .sessionManagement(sessionManagement ->
                     sessionManagement.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 세션 생성 정책 설정
             )
             .authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
                     .requestMatchers("/**").permitAll()
-                    .requestMatchers("/admin/**").hasAuthority("ADMIN")// 공개 경로만 인증 없이 접근 허용// 모든 페이지 인증 없이 접근 가능하도록 설정
-                    .anyRequest().authenticated() // 나머지 요청은 인증 필요.formLogin((form) -> form
-
+                    .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                    .anyRequest().authenticated()
+            )
+            .oauth2Login(oauth2 -> oauth2
+                .authorizationEndpoint(endpoint -> endpoint.baseUri("/api/v1/auth/oauth2"))
+                .redirectionEndpoint(endpoint -> endpoint.baseUri("/oauth2/callback/*"))
+                .userInfoEndpoint(endpoint -> endpoint.userService(oAuth2UserService))
+                .successHandler(oAuth2SuccessHandler)
             )
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 

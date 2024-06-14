@@ -2,6 +2,18 @@
 import { addCommas, checkAdmin, createNavbar } from "../../useful-functions.js";
 import * as Api from "../../api.js";
 
+// Date 객체를 특정 형식의 문자열로 변환하는 함수
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 // 요소(element), input 혹은 상수
 const usersCount = document.querySelector("#usersCount");
 const adminCount = document.querySelector("#adminCount");
@@ -12,129 +24,151 @@ const modalCloseButton = document.querySelector("#modalCloseButton");
 const deleteCompleteButton = document.querySelector("#deleteCompleteButton");
 const deleteCancelButton = document.querySelector("#deleteCancelButton");
 
+// 비밀번호 변경 Modal 관련 요소들
+const passwordModal = document.querySelector("#passwordModal");
+const passwordModalBackground = document.querySelector("#passwordModalBackground");
+const passwordModalCloseButton = document.querySelector("#passwordModalCloseButton");
+const newPasswordInput = document.querySelector("#newPasswordInput");
+const newPasswordConfirmInput = document.querySelector("#newPasswordConfirmInput");
+const passwordChangeButton = document.querySelector("#passwordChangeButton");
+
+// 페이지 로드 시 실행, 삭제할 회원 id를 전역변수로 관리함
+let userEmailToDelete;
+
 checkAdmin();
 addAllElements();
 addAllEvents();
 
 // 요소 삽입 함수들을 묶어주어서 코드를 깔끔하게 하는 역할임.
 function addAllElements() {
- createNavbar();
- insertUsers();
+  createNavbar();
+  insertUsers();
 }
 
 // 여러 개의 addEventListener들을 묶어주어서 코드를 깔끔하게 하는 역할임.
 function addAllEvents() {
- modalBackground.addEventListener("click", closeModal);
- modalCloseButton.addEventListener("click", closeModal);
- document.addEventListener("keydown", keyDownCloseModal);
- deleteCompleteButton.addEventListener("click", deleteUserData);
- deleteCancelButton.addEventListener("click", cancelDelete);
+  modalBackground.addEventListener("click", closeModal);
+  modalCloseButton.addEventListener("click", closeModal);
+  document.addEventListener("keydown", keyDownCloseModal);
+  deleteCompleteButton.addEventListener("click", deleteUserData);
+  deleteCancelButton.addEventListener("click", cancelDelete);
+
+  // 비밀번호 변경 Modal 관련 이벤트 리스너 추가
+  passwordModalBackground.addEventListener("click", closePasswordModal);
+  passwordModalCloseButton.addEventListener("click", closePasswordModal);
+  document.addEventListener("keydown", keyDownClosePasswordModal);
+  passwordChangeButton.addEventListener("click", changePassword);
 }
 
-// 페이지 로드 시 실행, 삭제할 회원 id를 전역변수로 관리함
-let userEmailToDelete;
 async function insertUsers() {
- const users = await Api.get("/admin/users/all");
+  const users = await Api.get("/admin/users/all");
 
- // 총 요약에 활용
- const summary = {
-   usersCount: users.length,
-   adminCount: users.filter(user => user.admin).length,
- };
-
- usersContainer.innerHTML = ''; // 기존 사용자 목록 초기화
-
- users.forEach(user => {
-   const { email, username, admin, createdAt, phNum } = user;
-   const date = createdAt;
-   const sanitizedEmail = email.replace(/[^a-zA-Z0-9]/g, '');
-
-   usersContainer.insertAdjacentHTML(
-     "beforeend",
-     `
-       <div class="columns orders-item" id="user-${sanitizedEmail}">
-         <div class="column is-2">${date}</div>
-         <div class="column is-2">${email}</div>
-         <div class="column is-2">${username}</div>
-         <div class="column is-2">
-           <div class="select">
-             <select id="roleSelectBox-${sanitizedEmail}">
-               <option 
-                 class="has-background-link-light has-text-link"
-                 ${!admin ? "selected" : ""} 
-                 value="USER">
-                 일반사용자
-               </option>
-               <option 
-                 class="has-background-danger-light has-text-danger"
-                 ${admin ? "selected" : ""} 
-                 value="ADMIN">
-                 관리자
-               </option>
-             </select>
-           </div>
-         </div>
-         <div class="column is-2">
-           <button class="button" id="deleteButton-${sanitizedEmail}">회원정보 삭제</button>
-         </div>
-         <div class="column is-2">${phNum}</div>
-       </div>
-     `
-   );
-
-   // 요소 선택
-   const roleSelectBox = document.querySelector(`#roleSelectBox-${sanitizedEmail}`);
-   const deleteButton = document.querySelector(`#deleteButton-${sanitizedEmail}`);
-
-   // 권한관리 박스에, 선택되어 있는 옵션의 배경색 반영
-   const index = roleSelectBox.selectedIndex;
-   roleSelectBox.className = roleSelectBox[index].className;
-
-
-// 이벤트 - 권한관리 박스 수정 시 바로 db 반영
-roleSelectBox.addEventListener("change", async () => {
-  const newRole = roleSelectBox.value === "ADMIN";
-  const data = {
-    email: email,
-    admin: newRole
+  // 총 요약에 활용
+  const summary = {
+    usersCount: users.length,
+    adminCount: users.filter(user => user.admin).length,
   };
 
-  try {
-    // api 요청
-    const response = await Api.patch("/admin/users","", data);
+  usersContainer.innerHTML = ''; // 기존 사용자 목록 초기화
 
-    // 선택한 옵션의 배경색 반영
+  users.forEach(user => {
+    const { email, username, admin, createdAt, phone_number } = user;
+    const date = createdAt;
+    const sanitizedEmail = email.replace(/[^a-zA-Z0-9]/g, '');
+
+    usersContainer.insertAdjacentHTML(
+      "beforeend",
+      `
+        <div class="columns orders-item" id="user-${sanitizedEmail}">
+          <div class="column is-2">${formatDate(createdAt)}</div>
+          <div class="column is-2">${email}</div>
+          <div class="column is-2">${username}</div>
+          <div class="column is-2">
+            <div class="select">
+              <select id="roleSelectBox-${sanitizedEmail}">
+                <option
+                  class="has-background-link-light has-text-link"
+                  ${!admin ? "selected" : ""}
+                  value="USER">
+                  일반사용자
+                </option>
+                <option
+                  class="has-background-danger-light has-text-danger"
+                  ${admin ? "selected" : ""}
+                  value="ADMIN">
+                  관리자
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="column is-2">
+            <button class="button" id="deleteButton-${sanitizedEmail}">회원정보 삭제</button>
+          </div>
+          <div class="column is-2">${phone_number || '-'}</div>
+          <div class="column is-2">
+            <button class="button" id="passwordButton-${sanitizedEmail}">비밀번호 변경</button>
+          </div>
+        </div>
+      `
+    );
+
+    // 요소 선택
+    const roleSelectBox = document.querySelector(`#roleSelectBox-${sanitizedEmail}`);
+    const deleteButton = document.querySelector(`#deleteButton-${sanitizedEmail}`);
+    const passwordButton = document.querySelector(`#passwordButton-${sanitizedEmail}`);
+
+    // 권한관리 박스에, 선택되어 있는 옵션의 배경색 반영
     const index = roleSelectBox.selectedIndex;
     roleSelectBox.className = roleSelectBox[index].className;
 
-    console.log(response); // 서버 응답 확인용 로그
+    // 이벤트 - 권한관리 박스 수정 시 바로 db 반영
+    roleSelectBox.addEventListener("change", async () => {
+      const newRole = roleSelectBox.value === "ADMIN";
+      const data = {
+        email: email,
+        admin: newRole
+      };
 
-    if (response.success) {
-      alert(response.message);
-    } else {
-      throw new Error("권한 변경에 실패했습니다.");
-    }
-  } catch (err) {
-    console.error(err);
-    alert(`권한 변경 과정에서 오류가 발생하였습니다: ${err.message}`);
+      try {
+        const response = await Api.patch("/admin/users", "", data);
+        const index = roleSelectBox.selectedIndex;
+        roleSelectBox.className = roleSelectBox[index].className;
 
-    // 오류 발생 시 이전 선택 옵션으로 되돌리기
-    roleSelectBox.value = user.admin ? "ADMIN" : "USER";
-    const index = roleSelectBox.selectedIndex;
-    roleSelectBox.className = roleSelectBox[index].className;
-  }
-});
+        console.log(response);
 
- //이벤트 - 삭제버튼 클릭 시 Modal 창 띄우고, 동시에, 전역변수에 해당 주문의 id 할당
-   deleteButton.addEventListener("click", () => {
-     userEmailToDelete = email;
-     openModal();
-   });
- });
+        if (response.message === '권한이 성공적으로 변경되었습니다.') {
+          alert(response.message);
+        } else {
+          throw new Error(response.message || "권한 변경에 실패했습니다.");
+        }
+      } catch (err) {
+        if (err.message !== '권한이 성공적으로 변경되었습니다.') {
+          console.error(err);
+          alert(`권한 변경 과정에서 오류가 발생하였습니다: ${err.message}`);
+        }
+      }
+    });
 
- // 총 요약에 값 삽입
- usersCount.innerText = addCommas(summary.usersCount);
- adminCount.innerText = addCommas(summary.adminCount);
+    //이벤트 - 삭제버튼 클릭 시 Modal 창 띄우고, 동시에, 전역변수에 해당 주문의 id 할당
+    deleteButton.addEventListener("click", () => {
+      userEmailToDelete = email;
+      openModal();
+    });
+
+    // 이벤트 - 비밀번호 변경 버튼 클릭 시 프롬프트 창 열기
+    passwordButton.addEventListener("click", () => {
+      const email = prompt('사용자 이메일을 입력해주세요:');
+      const newPassword = prompt('새 비밀번호를 입력해주세요:');
+
+      if (email && newPassword) {
+        changeUserPassword(email, newPassword);
+      }
+    });
+  });
+
+  // 총 요약에 값 삽입
+  usersCount.innerText = addCommas(summary.usersCount);
+  adminCount.innerText = addCommas(summary.adminCount);
 }
 
 // db에서 회원정보 삭제
@@ -166,37 +200,113 @@ async function deleteUserData(e) {
 
 // Modal 창에서 아니오 클릭할 시, 전역 변수를 다시 초기화함.
 function cancelDelete() {
- userEmailToDelete = "";
- closeModal();
+  userEmailToDelete = "";
+  closeModal();
 }
 
 // Modal 창 열기
 function openModal() {
- modal.classList.add("is-active");
+  modal.classList.add("is-active");
 }
 
 // Modal 창 닫기
 function closeModal() {
- modal.classList.remove("is-active");
+  modal.classList.remove("is-active");
 }
 
 // 키보드로 Modal 창 닫기
 function keyDownCloseModal(e) {
- // Esc 키
- if (e.keyCode === 27) {
-   closeModal();
- }
+  // Esc 키
+  if (e.keyCode === 27) {
+    closeModal();
+  }
 }
 
 // 유저 수 업데이트
 function updateUserCount() {
- const userCount = document.querySelectorAll(".orders-item").length;
- usersCount.innerText = addCommas(userCount);
+  const userCount = document.querySelectorAll(".orders-item").length;
+  usersCount.innerText = addCommas(userCount);
 }
 
 // 관리자 수 업데이트
 function updateAdminCount() {
- const adminElements = document.querySelectorAll("option[value='ADMIN']:checked");
- const adminCountValue = adminElements.length;
- adminCount.innerText = addCommas(adminCountValue);
+  const adminElements = document.querySelectorAll("option[value='ADMIN']:checked");
+  const adminCountValue = adminElements.length;
+  adminCount.innerText = addCommas(adminCountValue);
+}
+
+// 모달창 닫기
+function closePasswordModal() {
+  passwordModal.classList.remove("is-active");
+  newPasswordInput.value = "";
+  newPasswordConfirmInput.value = "";
+}
+
+// 비밀번호 변경
+async function changePassword() {
+  const newPassword = newPasswordInput.value;
+  const passwordConfirm = newPasswordConfirmInput.value;
+
+  if (newPassword !== passwordConfirm) {
+    alert("새 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+    return;
+  }
+
+  if (newPassword.length < 4) {
+    alert("비밀번호는 4자리 이상이어야 합니다.");
+    return;
+  }
+
+  try {
+    const data = {
+      password: newPassword,
+      passwordConfirm
+    };
+
+    const response = await Api.patch("/admin/users/password", "", data);
+
+    if (response.message === "비밀번호가 성공적으로 변경되었습니다.") {
+      alert(response.message);
+      closePasswordModal();
+    } else {
+      throw new Error(response.message || "비밀번호 변경에 실패했습니다.");
+    }
+  } catch (err) {
+    alert(`비밀번호 변경 과정에서 오류가 발생하였습니다: ${err.message}`);
+  }
+}
+
+// 키보드로 비밀번호 변경 Modal 창 닫기
+function keyDownClosePasswordModal(e) {
+  // Esc 키
+  if (e.keyCode === 27) {
+    closePasswordModal();
+  }
+}
+
+// 비밀번호 변경 함수
+async function changeUserPassword(email, newPassword) {
+  const token = localStorage.getItem('token');
+
+  try {
+    const response = await fetch('/admin/users/password', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ email, password: newPassword })
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      alert(data.message);
+    } else {
+      const errorData = await response.json();
+      alert(errorData.message || '비밀번호 변경에 실패했습니다.');
+    }
+  } catch (error) {
+    console.error('비밀번호 변경 중 오류 발생:', error);
+    alert('비밀번호 변경 중 오류가 발생했습니다.');
+  }
 }

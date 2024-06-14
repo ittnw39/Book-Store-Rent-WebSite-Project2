@@ -64,11 +64,12 @@ public class UserService {
         user.setEmail(userDTO.getEmail());
         user.setUsername(userDTO.getUsername());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setPhNum(userDTO.getPhNum());
+        user.setPhone_number(userDTO.getPhone_number());
         user.setAddress(userDTO.getAddress());
         user.setNickname(userDTO.getNickname());
         user.setAdmin(userDTO.isAdmin());
         user.setCreatedAt(userDTO.getCreatedAt());
+        user.setAuthProvider("local");
 
         userRepository.save(user);
     }
@@ -86,6 +87,13 @@ public class UserService {
         User user = userRepository.findByEmail(email)
             .orElseThrow(
                 () -> new UsernameNotFoundException("가입되지 않은 이메일이거나 회원 탈퇴로 인해 로그인할 수 없습니다."));
+
+        // 소셜 로그인인 경우 비밀번호 검증을 생략
+        if (!"local".equals(user.getAuthProvider())) {
+            // 소셜 로그인 처리
+        } else if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
@@ -140,7 +148,7 @@ public class UserService {
             .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
         user.setUsername(userDTO.getUsername());
-        user.setPhNum(userDTO.getPhNum());
+        user.setPhone_number(userDTO.getPhone_number());
         user.setAddress(userDTO.getAddress());
         user.setNickname(userDTO.getNickname());
         user.setCreatedAt(userDTO.getCreatedAt());
@@ -178,5 +186,14 @@ public class UserService {
 
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
+    }
+
+    @Transactional
+    public User updateUserPassword(String email, String newPassword) {
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+        user.setPassword(newPassword);
+        return userRepository.save(user);
     }
 }
