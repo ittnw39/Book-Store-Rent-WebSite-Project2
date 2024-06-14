@@ -1,7 +1,6 @@
 package io.elice.shoppingmall.product.service;
 
 import io.elice.shoppingmall.product.entity.Author;
-import io.elice.shoppingmall.product.exception.AuthorNotFoundException;
 import io.elice.shoppingmall.product.repository.AuthorRepository;
 import java.util.List;
 import java.util.Optional;
