@@ -72,7 +72,6 @@ async function addProductItemsToContainer() {
       `
     );
 
-
     const productItem = document.querySelector(`#a${random}`);
 
     // 제품 항목 클릭 이벤트
