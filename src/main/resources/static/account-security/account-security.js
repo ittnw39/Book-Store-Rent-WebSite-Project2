@@ -44,35 +44,35 @@ function addAllEvents() {
   modalCloseButton.addEventListener("click", closeModal);
   document.addEventListener("keydown", keyDownCloseModal);
 
-  saveCompleteButton.addEventListener("click", saveUserData); //아래의 주석처리된 코드 실행시 이 부분을 주석처리.
+//  saveCompleteButton.addEventListener("click", saveUserData); //아래의 주석처리된 코드 실행시 이 부분을 주석처리.
 
-//    document.getElementById("saveCompleteButton").addEventListener("click", async function(event) {
-//      event.preventDefault();
-//
-//      const password = document.getElementById("currentPasswordInput").value;
-//      try {
-//        const response = await fetch('/users/verify-password', {
-//          method: 'POST',
-//          headers: {
-//            'Content-Type': 'application/json',
-//            'Authorization': `Bearer ${sessionStorage.getItem("token")}`
-//          },
-//          body: JSON.stringify({ password: password })
-//        });
-//
-//        if (!response.ok) {
-//          throw new Error(`HTTP error! status: ${response.status}`);
-//        }
-//        const data = await response.json();
-//        if (data.isValid) {
-//          saveUserData();
-//        } else {
-//          alert("비밀번호가 일치하지 않습니다.");
-//        }
-//      } catch (error) {
-//        console.error('비밀번호 검증 중 에러가 발생했습니다:', error);
-//      }
-//    });
+    document.getElementById("saveCompleteButton").addEventListener("click", async function(event) {
+      event.preventDefault();
+
+      const password = document.getElementById("currentPasswordInput").value;
+      try {
+        const response = await fetch('/users/verify-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem("token")}`
+          },
+          body: JSON.stringify({ password: password })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        if (data.isValid) {
+          saveUserData(event);
+        } else {
+          alert("비밀번호가 일치하지 않습니다.");
+        }
+      } catch (error) {
+        console.error('비밀번호 검증 중 에러가 발생했습니다:', error);
+      }
+    });
 
 }
 
