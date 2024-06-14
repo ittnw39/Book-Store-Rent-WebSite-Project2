@@ -111,7 +111,7 @@ export const checkLogin = () => {
           if (res.ok) {
               const { result } = await res.json();
               if (result === "success") {
-                  //renderAdminPage();  //주석처리가 하니까 해결
+                  //renderAdminPage();  //주석처리가 하니까 해결/
                   window.document.body.style.display = "block";
               } else {
                   alert("관리자 전용 페이지입니다.");
