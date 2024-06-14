@@ -35,5 +35,7 @@ public class OrderDTO {
     @Column(nullable = false)
     private Long userId;
 
+    private String request;
+
     private List<OrderLineDTO> orderLines;
 }

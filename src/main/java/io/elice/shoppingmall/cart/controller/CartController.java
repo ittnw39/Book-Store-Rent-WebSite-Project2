@@ -1,106 +1,92 @@
 package io.elice.shoppingmall.cart.controller;
 
-import io.elice.shoppingmall.cart.repository.CartRepository;
+import io.elice.shoppingmall.cart.dto.CartDetailDto;
+import io.elice.shoppingmall.cart.dto.CartItemDto;
+import io.elice.shoppingmall.cart.entity.Cart;
+import io.elice.shoppingmall.cart.service.CartService;
 import io.elice.shoppingmall.user.entity.User;
 import io.elice.shoppingmall.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.apache.coyote.Response;
-import org.springframework.security.core.Authentication;
-import org.springframework.ui.Model;
-import io.elice.shoppingmall.cart.dto.CartDetailDto;
-import io.elice.shoppingmall.cart.dto.CartItemDto;
-import io.elice.shoppingmall.cart.service.CartService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 
+//되는코드 !
+//원래코드
 @Controller
 @RequiredArgsConstructor
 public class CartController {
+
     private final CartService cartService;
+    private final UserRepository userRepository;
 
-    //장바구니 담기
-    @PostMapping("/cart/items")
-    public @ResponseBody ResponseEntity<?> addCartItem(@RequestBody @Valid CartItemDto cartItemDto, BindingResult bindingResult, Authentication authentication) {
-        if (bindingResult.hasErrors()) {
-            StringBuilder sb = new StringBuilder();
-            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-            for (FieldError fieldError : fieldErrors) {
-                sb.append(fieldError.getDefaultMessage()).append(" ");
-            }
-            return new ResponseEntity<>(sb.toString().trim(), HttpStatus.BAD_REQUEST);
-        }
-
-        String email = authentication.getName();
-        Long cartItemId;
-
-        try {
-            cartItemId = cartService.addCart(cartItemDto, email);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity<>(cartItemId, HttpStatus.OK);
-    }
-
-
-    //장바구니 조회
     @GetMapping("/cart")
-    public String getCartPage(Authentication authentication, Model model) {
-        List<CartDetailDto> cartDetailList = new ArrayList<>();
-
-        if (authentication != null && authentication.isAuthenticated()) {
-            String email = authentication.getName();
-
-            try {
-                cartDetailList = cartService.getCartList(email);
-            } catch (EntityNotFoundException e) {
-                model.addAttribute("errorMessage", "사용자를 찾을 수 없습니다.");
-            }
-        } else {
-            model.addAttribute("errorMessage", "로그인이 필요합니다.");
+    public String viewCartPage(Model model, Principal principal, RedirectAttributes redirectAttributes) {
+        User user = getUserFromPrincipal(principal);
+        if (principal == null) {
+            redirectAttributes.addFlashAttribute("message", "로그인이 필요합니다");
+            return "redirect:/users/login";
         }
 
-        model.addAttribute("cartItems", cartDetailList);
-        return "/cart/cart.html";
+        Cart cart = cartService.getOrCreateCart(user);
+        List<CartDetailDto> cartItems = cartService.getCartDetails(cart.getId());
+        model.addAttribute("cartItems", cartItems);
+        return "cart/cart.html";
     }
 
-    @PatchMapping("/cart/item/{cartItemId}")
-    public @ResponseBody ResponseEntity<?> updateCartItem(@PathVariable("cartItemId") Long cartItemId, int quantity, Authentication authentication) {
-        String email = authentication.getName();
-        if (quantity <= 0) {
-            return new ResponseEntity<>("최소 1개 이상 담아주세요", HttpStatus.BAD_REQUEST);
+    @GetMapping("/api/cart")
+    @ResponseBody
+    public List<CartDetailDto> getCartItems(Principal principal) {
+        User user = getUserFromPrincipal(principal);
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다");
+        }
+        Cart cart = cartService.getOrCreateCart(user);
+        return cartService.getCartDetails(cart.getId());
+    }
+
+    @PostMapping("/cart/add")
+    public ResponseEntity<String> addCart(@RequestBody CartItemDto cartItemDto, Principal principal) {
+        User user = getUserFromPrincipal(principal);
+        if (user == null) {
+            return new ResponseEntity<>("로그인이 필요합니다", HttpStatus.UNAUTHORIZED);
         }
 
+        cartService.addCart(user.getId(), cartItemDto);
 
-        if (!cartService.validateCartItem(cartItemId, email)) {
-            return new ResponseEntity<>("수정 권한이 없습니다.", HttpStatus.FORBIDDEN);
-        }
-
-        cartService.updateCartItemQuantity(cartItemId, quantity);
-        return new ResponseEntity<>(cartItemId, HttpStatus.OK);
+        return new ResponseEntity<>("Item added to cart", HttpStatus.OK);
     }
 
     @DeleteMapping("/cart/item/{cartItemId}")
-    public @ResponseBody ResponseEntity<?> deleteCartItem(@PathVariable("cartItemId") Long cartItemId, Authentication authentication) {
-        String email =  authentication.getName();
-
-        if (!cartService.validateCartItem(cartItemId, email)) {
-            return new ResponseEntity<>("삭제 권한이 없습니다.", HttpStatus.FORBIDDEN);
+    public ResponseEntity<String> deleteCartItem(@PathVariable("cartItemId") Long cartItemId, Principal principal) {
+        if (principal == null) {
+            return new ResponseEntity<>("로그인이 필요합니다", HttpStatus.UNAUTHORIZED);
         }
 
-        cartService.deleteCartItem(cartItemId);
-        return new ResponseEntity<>(cartItemId, HttpStatus.OK);
+        try {
+            cartService.deleteCartItem(cartItemId);
+            return ResponseEntity.ok("Cart item deleted successfully");
+        }catch (Exception e) {
+            return new ResponseEntity<>("상품 삭제 중 오류가 발생했습니다", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 
+
+    private User getUserFromPrincipal(Principal principal) {
+        if (principal == null) {
+            return null;
+        }
+        String username = principal.getName();
+        return userRepository.findByEmail(username)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + username));
+    }
 }

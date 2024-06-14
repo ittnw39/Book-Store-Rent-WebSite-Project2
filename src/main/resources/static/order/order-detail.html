@@ -1,10 +1,184 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shopping Mall</title>
+    <!-- 아이콘 -->
+    <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/elice-rabbit-favicon.png"
+    />
+    <!-- bulma css 관련 -->
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+    />
+    <!-- 폰트 어썸: 아이콘 -->
+    <script
+            defer
+            src="https://kit.fontawesome.com/9daa42bcef.js"
+            crossorigin="anonymous"
+    ></script>
+    <!-- Daum 주소 API 사용하기 위한 파일 -->
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <!-- 커스텀 css, js -->
+    <link rel="stylesheet" href="/order/order.css" />
+    <script src="/order/order-detail.js" type="module" defer></script>
 </head>
 <body>
+<!-- 헤더 -->
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="container mt-3">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <img src="/elice-rabbit.png" width="30" height="30" />
+                <span class="has-text-link">Shopping Mall</span>
+            </a>
 
+            <a
+                    role="button"
+                    class="navbar-burger"
+                    aria-label="menu"
+                    aria-expanded="false"
+                    data-target="navbarBasicExample"
+            >
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div class="navbar-end breadcrumb my-auto" aria-label="breadcrumbs">
+            <ul id="navbar">
+                <li>
+                    <a href="/cart" aria-current="page">
+                <span class="icon">
+                  <i class="fas fa-cart-shopping"></i>
+                </span>
+                        <span>카트</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- 배송지 정보 입력 박스 -->
+<section class="section">
+    <div class="container">
+        <div class="cart-header">
+            <div class="title">
+             <p class="is-size-2">주문 상세</p>
+            </div>
+        </div>
+
+        <div class="tile is-ancestor">
+            <div class="tile is-parent cart-products">
+                <div class="box delivery-info">
+
+                    <!-- 배송지 정보 -->
+                    <p class="subtitle is-4">배송지정보</p>
+                    <div class="field is-horizontal">
+
+                        <!-- 이름 표시 -->
+                        <div class="field-label is-normal">
+                            <label class="label">이름</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="field">
+                                <p class="input is-static">받는 분 이름</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="field is-horizontal">
+
+                        <!-- 전화번호 표시 -->
+                        <div class="field-label is-normal">
+                            <label class="label">연락처</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="field">
+                                <p class="input is-static">010-1234-5678</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field is-horizontal">
+                        <!-- 주소 표시 -->
+                        <div class="field-label is-normal">
+                            <label class="label">주소</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="field">
+                                <p class="input is-static">서울특별시 강남구 어딘가 123번지</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field is-horizontal">
+                        <!-- 상세주소 표시 -->
+                        <div class="field-label is-normal">
+                            <label class="label">상세주소</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="field">
+                                <p class="input is-static">101동 101호</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 요청사항 표시 -->
+                    <div class="field is-horizontal">
+                        <div class="field-label is-normal">
+                            <label class="label">요청사항</label>
+                        </div>
+                        <div class="field-body">
+                            <p class="input is-static">부재 시 문 앞에 놓아주세요.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 주문 정보 요약 -->
+            <div class="tile is-parent tile-order-summary">
+                <div class="box order-summary">
+                    <div class="header">
+                        <p>결제정보</p>
+                    </div>
+                    <div class="order-info">
+                        <div class="info">
+                            <p>주문상품</p>
+                            <p class="products-title">상품명</p>
+                        </div>
+                        <div class="info">
+                            <p>배송비</p>
+                            <p>무료</p>
+                        </div>
+                        <div class="info">
+                            <p>할인율</p>
+                            <p>10%</p>
+                        </div>
+                    </div>
+                    <div class="total">
+                        <p class="total-label">총 결제금액</p>
+                        <p class="total-price">100,000원</p>
+                    </div>
+                    <div class="purchase">
+                        <button class="button is-info" id="checkoutButton"
+                                style = "background-color: crimson;"
+                        >
+                            결제 취소
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 </body>
 </html>

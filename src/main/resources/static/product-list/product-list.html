@@ -26,6 +26,39 @@
                 <span class="has-text-link">Shopping Mall</span>
             </a>
 
+            <a class="navbar-item" href="/books">
+                <span class="has-text-link">전체 목록</span>
+            </a>
+
+            <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">
+                    카테고리
+                </a>
+                <div class="navbar-dropdown" id="category-dropdown">
+                    <!-- 카테고리 목록이 여기 추가될 예정 -->
+                </div>
+            </div>
+
+            <form id="search-form" class="navbar-item ml-2" action="/book/search" method="get">
+                <div class="field has-addons">
+                    <div class="control" style="min-width: 368px;">
+                        <input
+                            class="input"
+                            type="text"
+                            name="search"
+                            placeholder="저자 또는 책 제목을 입력하세요."
+                        />
+                    </div>
+                    <div class="control">
+                        <button class="button is-link" type="submit">
+                          <span class="icon">
+                            <i class="fas fa-search"></i>
+                          </span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
             <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>

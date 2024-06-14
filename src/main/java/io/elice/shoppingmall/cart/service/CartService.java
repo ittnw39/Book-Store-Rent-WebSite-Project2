@@ -11,90 +11,77 @@ import io.elice.shoppingmall.product.repository.BookRepository;
 import io.elice.shoppingmall.user.entity.User;
 import io.elice.shoppingmall.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class CartService {
-    private final BookRepository bookRepository;
-    private final UserRepository userRepository;
+
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
+    @Autowired
+    private final BookRepository bookRepository;
+    private final UserRepository userRepository;
 
-    // 장바구니에 상품 추가
-    public Long addCart(CartItemDto cartItemDto, String email) {
+
+
+    // 사용자의 장바구니를 가져오거나 없으면 생성합니다.
+    public Cart getOrCreateCart(User user) {
+        Optional<Cart> cartOptional = cartRepository.findByUser(user);
+        return cartOptional.orElseGet(() -> createCartForUser(user));
+    }
+
+    // 장바구니에 상품을 추가합니다.
+    public void addCart(Long userId, CartItemDto cartItemDto) {
+        User user = new User();
+        user.setId(userId);
+
+        Cart cart = getOrCreateCart(user);
+
         Book book = bookRepository.findById(cartItemDto.getBookId())
-            .orElseThrow(EntityNotFoundException::new);
-        User user = userRepository.findByEmail(email)
-            .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + cartItemDto.getBookId()));
 
-        Cart cart = cartRepository.findByUser(user)
-            .orElseGet(() -> {
-                Cart newCart = Cart.createCart(user);
-                cartRepository.save(newCart);
-                return newCart;
-            });
-
-        CartItem savedCartItem = cartItemRepository.findByCartAndBook(cart, book)
-            .map(cartItem -> {
-                cartItem.addQuantity(cartItemDto.getQuantity());
-                return cartItemRepository.save(cartItem);
-            })
-            .orElseGet(() -> {
-                CartItem cartItem = CartItem.createCartItem(cart, book, cartItemDto.getQuantity());
-                return cartItemRepository.save(cartItem);
-            });
-
-        return savedCartItem.getId();
-    }
-
-    // 장바구니 목록 조회
-    @Transactional(readOnly = true)
-    public List<CartDetailDto> getCartList(String email) {
-        User user = userRepository.findByEmail(email)
-            .orElseThrow(EntityNotFoundException::new);
-
-        Cart cart = cartRepository.findByUser(user)
-            .orElse(null);
-
-        if (cart == null) {
-            return new ArrayList<>();
+        Optional<CartItem> existingCartItemOptional = cartItemRepository.findByCartAndBook(cart, book);
+        if (existingCartItemOptional.isPresent()) {
+            CartItem existingCartItem = existingCartItemOptional.get();
+            existingCartItem.addQuantity(cartItemDto.getQuantity());
+            cartItemRepository.save(existingCartItem);
+        } else {
+            CartItem newCartItem = new CartItem(cart, book);
+            newCartItem.setQuantity(cartItemDto.getQuantity());
+            cartItemRepository.save(newCartItem);
         }
-
-        return cartItemRepository.findCartDetailDtoList(cart.getId());
     }
 
-    // 장바구니 상품 유효성 검사
-    @Transactional(readOnly = true)
-    public boolean validateCartItem(Long cartItemId, String email) {
-        CartItem cartItem = cartItemRepository.findById(cartItemId)
-            .orElseThrow(EntityNotFoundException::new);
 
-        User user = userRepository.findByEmail(email)
-            .orElseThrow(EntityNotFoundException::new);
-
-        return cartItem.getCart().getUser().equals(user);
+    // 사용자를 위한 새로운 장바구니를 생성합니다.
+    private Cart createCartForUser(User user) {
+        Cart cart = new Cart();
+        cart.setUser(user);
+        return cartRepository.save(cart);
     }
 
-    // 장바구니 상품 수량 업데이트
-    public void updateCartItemQuantity(Long cartItemId, int quantity) {
-        CartItem cartItem = cartItemRepository.findById(cartItemId)
-            .orElseThrow(EntityNotFoundException::new);
 
-        cartItem.updateQuantity(quantity);
-        cartItemRepository.save(cartItem);
-    }
+    // 장바구니에서 상품을 삭제
 
-    // 장바구니 상품 삭제
+    @Transactional
     public void deleteCartItem(Long cartItemId) {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
-            .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(EntityNotFoundException::new);
         cartItemRepository.delete(cartItem);
     }
+
+
+    public List<CartDetailDto> getCartDetails(Long cartId) {
+        return cartItemRepository.findCartDetailDtoList(cartId);
+    }
+
+
 }

@@ -31,6 +31,7 @@ addAllEvents();
 function addAllElements() {
     createNavbar();
     insertProductData();
+    addAllEvents();
 }
 
 // addEventListener들을 묶어주어서 코드를 깔끔하게 하는 역할임.
@@ -43,14 +44,16 @@ function addAllEvents() {
 
 async function handleAddToCart() {
     const { id } = getPathParams();
+    const quantity = document.getElementById("quantity").value;
     const product = await Api.get(`/api/book/${id}`);
     try {
-        await insertDb(product);
+        await addToCart(id, quantity);
         alert("장바구니에 추가되었습니다.");
+
+        // AJAX 요청으로 id와 quantity를 /cart 페이지로 보냄
+
     } catch (err) {
-        if (err.message.includes("Key")) {
-            alert("이미 장바구니에 추가되어 있습니다.");
-        }
+
         console.log('장바구니 추가 에러', err);
     }
 }
@@ -83,10 +86,33 @@ function getPathParams() {
     return { id: pathParts[pathParts.length - 1] };
 }
 
+// AJAX 요청을 보내는 함수
+async function addToCart(id, quantity) {
+    try {
+        const response = await fetch('/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ bookId: id, quantity: quantity }),
+        });
+        if (!response.ok) {
+            throw new Error('Failed to add to cart');
+        }
+        console.log('Added to cart successfully');
+        window.location.href = '/cart'; // 성공적으로 추가되면 장바구니 페이지로 리다이렉트
+    } catch (error) {
+        console.error('Error adding to cart:', error);
+    }
+}
+
+
 // 제품 데이터를 삽입하는 함수
 async function insertProductData() {
+  console.log("insertProductData called");
   const { id } = getPathParams();
   const product = await Api.get(`/api/book/${id}`);
+  console.log("Product data:", product);
 
   // 객체 destructuring
   const {
@@ -136,29 +162,31 @@ async function insertProductData() {
   await fetchAndDisplayReviews();
 }
 
-// IndexedDB에 제품을 추가하는 함수
-async function insertDb(product) {
-    const { id, price } = product;
-    await addToDb("cart", { ...product, quantity: 1 }, id);
-    await putToDb("order", "summary", (data) => {
-        const count = data.productsCount;
-        const total = data.productsTotal;
-        const ids = data.ids;
-        const selectedIds = data.selectedIds;
+//// IndexedDB에 제품을 추가하는 함수
+//async function insertDb(product) {
+//    const { id, price } = product;
+//    await addToDb("cart", { ...product, quantity: 1 }, id);
+//    await putToDb("order", "summary", (data) => {
+//        const count = data.productsCount;
+//        const total = data.productsTotal;
+//        const ids = data.ids;
+//        const selectedIds = data.selectedIds;
+//
+//        data.productsCount = count ? count + 1 : 1;
+//        data.productsTotal = total ? total + price : price;
+//        data.ids = ids ? [...ids, id] : [id];
+//        data.selectedIds = selectedIds ? [...selectedIds, id] : [id];
+//    });
+//}
 
-        data.productsCount = count ? count + 1 : 1;
-        data.productsTotal = total ? total + price : price;
-        data.ids = ids ? [...ids, id] : [id];
-        data.selectedIds = selectedIds ? [...selectedIds, id] : [id];
-    });
-}
 
 // 리뷰 목록을 정렬 옵션에 따라 가져오는 함수
 async function fetchAndDisplayReviews() {
     const { id } = getPathParams();
     const sortBy = sortOption.value || "date";
+    console.log("Selected sort option:", sortOption.value);
     const reviews = await Api.get(`/api/book/${id}/reviews?sort=${sortBy}`);
-    console.log(reviews); // 리뷰 데이터를 콘솔에 출력하여 확인합니다.
+    console.log("Fetched reviews:", reviews);
     reviewsContainer.innerHTML = reviews.map(createReviewHtml).join("");
 
     document.querySelectorAll(".edit-review-button").forEach(button => {
@@ -174,12 +202,20 @@ async function fetchAndDisplayReviews() {
             await deleteReview(reviewId);
         });
     });
+
+    // 좋아요 버튼에 이벤트 리스너 추가
+    document.querySelectorAll(".like-review-button").forEach(button => {
+        button.addEventListener("click", async () => {
+            const reviewId = button.getAttribute("data-id");
+            await likeReview(reviewId);
+        });
+    });
 }
 
 // 서버에 리뷰를 추가하는 함수
 async function addReview(comment) {
     const { id } = getPathParams();
-    const token = getJwtTokenFromCookie(); // 쿠키에서 토큰을 가져옴
+    const token = getJwtTokenFromSession();
     if (!token) {
         alert("로그인이 필요합니다.");
         return;
@@ -210,7 +246,7 @@ async function deleteReview(reviewId) {
 
 // 리뷰에 좋아요를 추가하는 함수
 async function likeReview(reviewId) {
-    await Api.post(`/api/book/review/${reviewId}/like`);
+    await Api.post(`/api/book/review/${reviewId}/like`, {});
     await fetchAndDisplayReviews();
 }
 
@@ -218,17 +254,18 @@ async function likeReview(reviewId) {
 function createReviewHtml(review) {
     const { id, comment, createdAt, likes, userDTO } = review;
     const isOwner = currentUserEmail && userDTO && userDTO.email === currentUserEmail;
+
     return `
-    <div class="box review">
+    <div class="box review" data-id="${id}">
       <div class="content">
         <p><strong>${userDTO?.username ?? 'Unknown User'}</strong> <small>${new Date(createdAt).toLocaleString()}</small></p>
         <p>${comment}</p>
         <p>
-          <span class="icon" onclick="likeReview(${id})">
-            <i class="fas fa-heart"></i>
+          <span class="icon like-review-button" data-id="${id}">
+            <i class="fas fa-heart" style="color: ${likes > 0 ? 'red' : 'gray'};"></i>
           </span>
           ${likes}
-          ${isOwner ? `
+          ${currentUserEmail && isOwner ? `
           <button class="button is-small is-warning edit-review-button" data-id="${id}">수정</button>
           <button class="button is-small is-danger delete-review-button" data-id="${id}">삭제</button>
           ` : ""}
@@ -237,16 +274,9 @@ function createReviewHtml(review) {
     </div>`;
 }
 
-// JWT 토큰을 쿠키에서 가져오는 함수
-function getJwtTokenFromCookie() {
-    const cookies = document.cookie.split("; ");
-    for (const cookie of cookies) {
-        const [name, value] = cookie.split("=");
-        if (name === "jwtToken") {
-            return value;
-        }
-    }
-    return null;
+
+function getJwtTokenFromSession() {
+    return sessionStorage.getItem("token");
 }
 
 // JWT 토큰을 디코딩하여 페이로드 정보를 추출하는 함수
@@ -261,4 +291,9 @@ function parseJwt(token) {
 }
 
 // 페이지 로드 시 리뷰를 기본 정렬 옵션으로 가져오는 함수
-document.addEventListener("DOMContentLoaded", insertProductData);
+//document.addEventListener("DOMContentLoaded", insertProductData);
+
+window.addEventListener("load", () => {
+    addAllElements();
+});
+

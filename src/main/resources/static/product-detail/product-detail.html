@@ -65,14 +65,13 @@
     </div>
   </div>
 </nav>
-
 <!-- 제품 상세 설명 카드 -->
 <section class="section">
   <div class="container">
     <div class="tile is-ancestor product-detail-card">
       <div class="tile is-6 is-parent">
         <div class="tile is-child box product-image">
-          <figure class="image is-sqaure">
+          <figure class="image is-square">
             <img id="productImageTag" src="" />
           </figure>
         </div>
@@ -93,6 +92,8 @@
             <p class="subtitle is-3 is-family-monospace" id="authorTag"></p>
             <h1 id="priceTag"></h1>
             <p class="detail-description" id="descriptionTag"></p>
+            <!-- Quantity input field -->
+            <input type="number" id="quantity" name="quantity" min="1" value="1">
           </div>
         </div>
         <div class="tile is-child box buttons-container">
