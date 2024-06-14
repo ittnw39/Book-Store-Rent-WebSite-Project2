@@ -101,7 +101,7 @@ roleSelectBox.addEventListener("change", async () => {
 
   try {
     // api 요청
-    const response = await Api.patch("/admin/users", data);
+    const response = await Api.patch("/admin/users","", data);
 
     // 선택한 옵션의 배경색 반영
     const index = roleSelectBox.selectedIndex;
