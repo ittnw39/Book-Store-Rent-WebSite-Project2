@@ -101,7 +101,7 @@ public class Book {
     @OneToMany(mappedBy = "book")
     private List<RentalBook> rentalBook;
 
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true) // book 삭제되면 리뷰도 같이 삭제
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL) // book 삭제되면 리뷰도 같이 삭제
     private List<Review> review;
 
 }

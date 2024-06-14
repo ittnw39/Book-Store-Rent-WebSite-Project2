@@ -111,55 +111,59 @@ async function addToCart(id, quantity) {
 async function insertProductData() {
   console.log("insertProductData called");
   const { id } = getPathParams();
-  const product = await Api.get(`/api/book/${id}`);
-  console.log("Product data:", product);
+  try {
+    const product = await Api.get(`/api/book/${id}`);
+    console.log("Product data:", product);
 
-  // 객체 destructuring
-  const {
-    title,
-    category,
-    author,
-    description,
-    publisher,
-    publishedDate,
-    isRecommended,
-    imageURL,
-    price
-  } = product;
+    // 객체 destructuring
+    const {
+      title,
+      category,
+      author,
+      description,
+      publisher,
+      publishedDate,
+      isRecommended,
+      imageURL,
+      price
+    } = product;
 
-  productImageTag.src = imageURL;
-  titleTag.innerText = title;
-  categoryTag.innerText = category.name;
-  authorTag.innerText = author.name;
-  descriptionTag.innerText = description;
-  publisherTag.innerText = publisher;
-  publishedDateTag.innerText = formatPublishedDate(publishedDate);
-  priceTag.innerText = `${addCommas(price)}원`;
+    productImageTag.src = imageURL;
+    titleTag.innerText = title;
+    categoryTag.innerText = category.name;
+    authorTag.innerText = author.name;
+    descriptionTag.innerText = description;
+    publisherTag.innerText = publisher;
+    publishedDateTag.innerText = formatPublishedDate(publishedDate);
+    priceTag.innerText = `${addCommas(price)}원`;
 
-  function formatPublishedDate(dateString) {
-    const date = new Date(dateString);
-    const year = String(date.getFullYear());
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    function formatPublishedDate(dateString) {
+      const date = new Date(dateString);
+      const year = String(date.getFullYear());
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    if (isRecommended) {
+      titleTag.insertAdjacentHTML(
+        "beforeend",
+        '<span class="tag is-success is-rounded">추천</span>'
+      );
+    }
+
+    // JWT 토큰에서 현재 사용자 이메일 추출
+    function getJwtTokenFromSession() {
+        return sessionStorage.getItem("token");
+    }
+
+    // 리뷰 데이터 불러오기
+    await fetchAndDisplayReviews();
+  } catch (error) {
+    console.error("제품 조회 오류: ", error);
+    alert("해당하는 상품이 없습니다."); // 에러 발생 시 사용자에게 경고창 띄우기
+    window.history.back(); // 이전 페이지로 이동
   }
-
-  if (isRecommended) {
-    titleTag.insertAdjacentHTML(
-      "beforeend",
-      '<span class="tag is-success is-rounded">추천</span>'
-    );
-  }
-
-  // JWT 토큰에서 현재 사용자 이메일 추출
-  const token = getJwtTokenFromCookie();
-  if (token) {
-      const decodedToken = parseJwt(token);
-      currentUserEmail = decodedToken.sub; // JWT의 subject를 email로 가정
-  }
-
-  // 리뷰 데이터 불러오기
-  await fetchAndDisplayReviews();
 }
 
 //// IndexedDB에 제품을 추가하는 함수
@@ -289,11 +293,3 @@ function parseJwt(token) {
 
     return JSON.parse(jsonPayload);
 }
-
-// 페이지 로드 시 리뷰를 기본 정렬 옵션으로 가져오는 함수
-//document.addEventListener("DOMContentLoaded", insertProductData);
-
-window.addEventListener("load", () => {
-    addAllElements();
-});
-
