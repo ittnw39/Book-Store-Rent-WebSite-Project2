@@ -48,6 +48,7 @@ public class BookService {
         return bookMapper.toBookDTO(savedBook);
     }
 
+
     public List<BookDTO> getAllBooks() {
         return bookRepository.findAll().stream()
                 .map(bookMapper::toBookDTO)
