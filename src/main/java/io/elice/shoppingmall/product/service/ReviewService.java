@@ -14,6 +14,7 @@ import io.elice.shoppingmall.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ReviewService {
@@ -29,6 +30,7 @@ public class ReviewService {
         this.userService = userService;
     }
 
+    @Transactional
     public ReviewDTO saveReview(ReviewDTO reviewDTO, String email) {
         try {
             Review review = reviewMapper.toReviewEntity(reviewDTO);
@@ -42,6 +44,7 @@ public class ReviewService {
         }
     }
 
+    @Transactional
     public ReviewDTO modifyReview(ReviewDTO reviewDTO, String email) {
         ReviewDTO updatedReview = searchReviewById(reviewDTO.getId());
         reviewDTO.setLikes(updatedReview.getLikes()); // 좋아요 수 유지
@@ -73,6 +76,7 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void removeReview(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new NoSuchElementException("Review id is not exists : " + reviewId));

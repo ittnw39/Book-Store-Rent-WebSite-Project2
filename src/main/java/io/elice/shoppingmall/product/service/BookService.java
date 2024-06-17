@@ -15,6 +15,7 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BookService {
@@ -32,6 +33,7 @@ public class BookService {
         this.bookMapper = bookMapper;
     }
 
+    @Transactional
     public BookDTO saveBook(BookDTO bookDTO) {
         Book book = bookMapper.toBookEntity(bookDTO);
 
@@ -83,6 +85,7 @@ public class BookService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void removeBook(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Book id is not exists : " + id));
