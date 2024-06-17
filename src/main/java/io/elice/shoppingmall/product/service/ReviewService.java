@@ -1,9 +1,11 @@
 package io.elice.shoppingmall.product.service;
 
+import io.elice.shoppingmall.product.dto.BookDTO;
 import io.elice.shoppingmall.product.dto.ReviewDTO;
 import io.elice.shoppingmall.product.entity.Book;
 import io.elice.shoppingmall.product.entity.Review;
 import io.elice.shoppingmall.product.mapper.ReviewMapper;
+import io.elice.shoppingmall.product.repository.BookRepository;
 import io.elice.shoppingmall.product.repository.ReviewRepository;
 import io.elice.shoppingmall.user.entity.User;
 import java.util.List;
@@ -21,12 +23,14 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;
     private final UserService userService;
+    private final BookRepository bookRepository;
 
     @Autowired
-    public ReviewService(ReviewRepository reviewRepository, ReviewMapper reviewMapper, UserService userService) {
+    public ReviewService(ReviewRepository reviewRepository, ReviewMapper reviewMapper, UserService userService, BookRepository bookRepository) {
         this.reviewRepository = reviewRepository;
         this.reviewMapper = reviewMapper;
         this.userService = userService;
+        this.bookRepository = bookRepository;
     }
 
     public ReviewDTO saveReview(ReviewDTO reviewDTO, String email) {
@@ -35,6 +39,7 @@ public class ReviewService {
             User user = userService.findUserByEmail(email);
             review.setUser(user);
             reviewRepository.save(review);
+            updateReviewCount(review.getBook().getId()); // 리뷰 추가 시 리뷰 수 업데이트
             return reviewMapper.toReviewDTO(review);
         } catch (Exception e) {
             e.printStackTrace();
@@ -77,6 +82,7 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new NoSuchElementException("Review id is not exists : " + reviewId));
         reviewRepository.delete(review);
+        updateReviewCount(review.getBook().getId());
     }
 
     public ReviewDTO addLikeReview(Long reviewId) {
@@ -93,5 +99,13 @@ public class ReviewService {
         if (!review.getUser().getEmail().equals(email)) {
             throw new AccessDeniedException("You do not have permission to modify or delete this review");
         }
+    }
+
+    // 리뷰 수 카운트
+    private void updateReviewCount(Long bookId) {
+        int reviewCount = reviewRepository.countByBookId(bookId);
+        Book book = bookRepository.findById(bookId).orElseThrow();
+        book.setReviewCount(reviewCount);
+        bookRepository.save(book);
     }
 }

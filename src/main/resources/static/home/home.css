@@ -20,3 +20,72 @@
 #search-form .input {
   width: 23rem;
 }
+
+/*리뷰 많은 책 top3*/
+.title.is-3 {
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+#top-books-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.card-content {
+  background-color: transparent;
+  padding: 0.5rem;
+  height: 105px;
+}
+
+#top-books-container .column {
+  margin: 0 1rem;
+}
+
+.top-book .rank {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.top-book .title.is-4 {
+  font-size: 1rem;
+  text-align: center;
+}
+
+.top-book .subtitle.is-6 {
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+@media screen and (min-width: 769px), print {
+  .column.is-one-third, .column.is-one-third-tablet {
+    flex: none;
+    width: 25%;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .container {
+    max-width: 960px;
+    margin-top: 1rem;
+  }
+  .section {
+    padding: 1.5rem 3rem;
+  }
+}
+
+/* 책 카드에 마우스를 올렸을 때 색깔 변경 */
+.top-reviewed-book:hover {
+  background-color: #6fb8f6;
+  cursor: pointer;
+}
+
+/*구분선*/
+.jb-division-line {
+  border-top: 1px solid #444444;
+  margin: 0px auto;
+  width: 300px;
+}
