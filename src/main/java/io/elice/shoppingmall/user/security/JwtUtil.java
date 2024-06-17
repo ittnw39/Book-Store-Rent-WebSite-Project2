@@ -1,29 +1,20 @@
 
 package io.elice.shoppingmall.user.security;
 
-import io.elice.shoppingmall.user.entity.CustomOAuth2User;
-import io.elice.shoppingmall.user.repository.UserRepository;
-import io.elice.shoppingmall.user.service.UserService;
+import io.elice.shoppingmall.user.service.CustomOAuth2User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.security.core.GrantedAuthority;
-import io.jsonwebtoken.Claims;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -40,20 +31,20 @@ public class JwtUtil {
 
     public String createToken(Authentication authentication) {
         Object principal = authentication.getPrincipal();
-        String username;
+        String email;
         if (principal instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) principal;
-            username = userDetails.getUsername();
+            email = userDetails.getUsername();
         } else if (principal instanceof CustomOAuth2User) {
             CustomOAuth2User oAuth2User = (CustomOAuth2User) principal;
-            username = oAuth2User.getName();
+            email = oAuth2User.getName();
         } else {
             throw new IllegalArgumentException("Invalid principal type");
         }
 
         // 필수 클레임 설정
         Map<String, Object> claims = new HashMap<>();
-        claims.put("sub", username); // 주체(subject) 클레임
+        claims.put("sub", email); // 주체(subject) 클레임
         claims.put("iat", new Date()); // 발행 시간(issued at) 클레임
         claims.put("exp", new Date(System.currentTimeMillis() + EXPIRATION_TIME)); // 만료 시간(expiration) 클레임
         claims.put("roles", authentication.getAuthorities().stream()

@@ -75,11 +75,11 @@ public class UserController {
         try {
             String token = userService.login(email, password);
 
-            // 쿠키에 토큰 저장
-            Cookie cookie = new Cookie("jwtToken", token);
-            cookie.setMaxAge(0); // 쿠키 유효기간 설정 (예: 24시간)
-            cookie.setPath("/"); // 쿠키 경로 설정
-            response.addCookie(cookie);
+//            // 쿠키에 토큰 저장
+//            Cookie cookie = new Cookie("jwtToken", token);
+//            cookie.setMaxAge(3600); // 쿠키 유효기간 설정 (예: 24시간)
+//            cookie.setPath("/"); // 쿠키 경로 설정
+//            response.addCookie(cookie);
 
             // 사용자의 역할 정보 가져오기
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
@@ -223,7 +223,6 @@ public class UserController {
     }
 
 
-
     @GetMapping("/data")
     public ResponseEntity<?> getUserData(@RequestHeader("Authorization") String token) {
 
@@ -254,7 +253,7 @@ public class UserController {
                 case "email":
                     user.setEmail((String) value);
                     break;
-                case "phNum":
+                case "phone_number":
                     user.setPhone_number((String) value);
                     break;
                 case "password":

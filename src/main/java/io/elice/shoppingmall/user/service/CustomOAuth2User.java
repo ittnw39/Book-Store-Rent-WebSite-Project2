@@ -1,26 +1,24 @@
-package io.elice.shoppingmall.user.entity;
+package io.elice.shoppingmall.user.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
-
+@RequiredArgsConstructor
 public class CustomOAuth2User implements OAuth2User, UserDetails {
-    private final String userId;
+
     private final String email;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public CustomOAuth2User(String userId, String email, Collection<? extends GrantedAuthority> authorities) {
-        this.userId = userId;
-        this.email = email;
-        this.authorities = authorities;
-    }
+
 
     @Override
     public Map<String, Object> getAttributes() {
-        return null;
+        return Collections.singletonMap("email", email);
     }
 
     @Override
@@ -34,13 +32,17 @@ public class CustomOAuth2User implements OAuth2User, UserDetails {
     }
 
     @Override
-    public String getName() {
-        return userId;
+    public String getUsername() {
+        return email;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     @Override
-    public String getUsername() {
-        return email;
+    public String getName() {
+        return email; // 이메일을 이름으로 사용합니다.
     }
 
     @Override
@@ -62,9 +64,4 @@ public class CustomOAuth2User implements OAuth2User, UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
-    public String getEmail() {
-        return email;
-    }
-
 }

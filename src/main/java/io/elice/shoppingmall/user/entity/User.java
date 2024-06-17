@@ -69,7 +69,7 @@ public class User {
     @JsonIgnore
     private List<Orders> orders;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Review> review;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)

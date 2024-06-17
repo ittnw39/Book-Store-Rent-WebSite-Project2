@@ -94,8 +94,9 @@ function searchAddress() {
 let globalUserId = null; // 페이지 전역에서 사용할 userId
 
 async function insertUserData() {
+  try {
   const userData = await Api.get("/users/data");
-  const { id, username, phNum, address } = userData;
+  const { id, username, phone_number } = userData;
 
   globalUserId = id;
 
@@ -104,15 +105,12 @@ async function insertUserData() {
     receiverNameInput.value = username;
   }
 
-  if (phNum) {
-    receiverPhoneNumberInput.value = phNum;
+  if (phone_number) {
+    receiverPhoneNumberInput.value = phone_number;
   }
-
-  if (address) {
-    postalCode.value = address.postalCode;
-    address1Input.value = address.address1;
-    address2Input.value = address.address2;
-  }
+  } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
 }
 
 // 주문 정보 페이지 로드 시 서버에서 카트 정보를 가져와서 화면에 표시

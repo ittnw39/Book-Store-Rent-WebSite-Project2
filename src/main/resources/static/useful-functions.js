@@ -47,7 +47,8 @@ export const checkLogin = () => {
     const search = window.location.search;
 
     // 로그인 후 다시 지금 페이지로 자동으로 돌아가도록 하기 위한 준비작업임.
-    window.location.replace(`/login?previouspage=${pathname + search}`);
+//    window.location.replace(`/login?previouspage=${pathname + search}`);
+  window.location.replace("/users/login");
   }
   };
 
@@ -104,7 +105,7 @@ export const checkLogin = () => {
               sessionStorage.removeItem("token");
               sessionStorage.removeItem("isAdmin");
               alert("세션이 만료되었습니다. 다시 로그인해주세요.");
-              window.location.replace("users/login");
+              window.location.replace("/users/login");
               return;
           }
 

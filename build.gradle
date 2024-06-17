@@ -40,6 +40,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.281' /* AWS-S3 의존성 추가 */
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4' /* Jasypt 의존성 추가 (암호화) */
+
+
 }
 
 test {
