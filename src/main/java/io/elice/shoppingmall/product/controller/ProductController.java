@@ -124,4 +124,11 @@ public class ProductController {
     public List<BookDTO> getTopReviewedBooks() {
         return bookService.getTopBooksByReviewCount();
     }
+
+    //주문 횟수 많은 순 3위까지 조회
+    @GetMapping("/books/top-ordered")
+    public List<BookDTO> getTopOrderedBooks() {
+        return bookService.getTopOrderedBooks();
+    }
+
 }

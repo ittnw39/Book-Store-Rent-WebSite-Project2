@@ -34,17 +34,12 @@ public class ReviewService {
     }
 
     public ReviewDTO saveReview(ReviewDTO reviewDTO, String email) {
-        try {
             Review review = reviewMapper.toReviewEntity(reviewDTO);
             User user = userService.findUserByEmail(email);
             review.setUser(user);
             reviewRepository.save(review);
             updateReviewCount(review.getBook().getId()); // 리뷰 추가 시 리뷰 수 업데이트
             return reviewMapper.toReviewDTO(review);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error saving review", e);
-        }
     }
 
     public ReviewDTO modifyReview(ReviewDTO reviewDTO, String email) {
