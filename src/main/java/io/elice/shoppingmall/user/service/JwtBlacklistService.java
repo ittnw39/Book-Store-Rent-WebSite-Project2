@@ -3,8 +3,6 @@ package io.elice.shoppingmall.user.service;
 import java.time.Duration;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 

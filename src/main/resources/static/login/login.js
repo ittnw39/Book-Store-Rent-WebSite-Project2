@@ -11,62 +11,69 @@ const emailInput = document.querySelector("#emailInput");
 const passwordInput = document.querySelector("#passwordInput");
 const submitButton = document.querySelector("#submitButton");
 
+
+// 로그인 된 상태라면 페이지 접근을 막는 함수
 blockIfLogin();
 addAllElements();
 addAllEvents();
 
-// html에 요소를 추가하는 함수들을 묶어주어서 코드를 깔끔하게 하는 역할임.
+// HTML에 요소를 추가하는 함수들을 묶어주어서 코드를 깔끔하게 하는 역할
 async function addAllElements() {
   createNavbar();
 }
 
-// 여러 개의 addEventListener들을 묶어주어서 코드를 깔끔하게 하는 역할임.
+// 여러 개의 addEventListener들을 묶어주어서 코드를 깔끔하게 하는 역할
 function addAllEvents() {
   submitButton.addEventListener("click", handleSubmit);
 }
 
-//// 네이버 로그인 버튼 클릭 시 동작
+
+// 네이버 OAuth2 콜백을 처리하는 함수
 async function handleNaverCallback() {
-  try {
-    const response = await fetch('/oauth2/callback', {
-      credentials: 'include' // 쿠키 전송을 위해 필요
-    });
+  const urlParams = new URLSearchParams(window.location.search);
+  const code = urlParams.get('code');
+  const state = urlParams.get('state');
 
-    const cookies = response.headers.get('Set-Cookie');
-    if (cookies) {
-      const tokenCookie = cookies.split(';').find(cookie => cookie.startsWith('token='));
-      if (tokenCookie) {
-        const token = tokenCookie.split('=')[1];
-        sessionStorage.setItem('token', token);
+  if (code && state) {
+    try {
+      const response = await fetch(`/oauth2/callback/naver?code=${code}&state=${state}`);
+      if (response.ok) {
+        const data = await response.json();
+        const token = data.token;
+
+        if (token) {
+          sessionStorage.setItem("token", token);
+          window.opener.postMessage({ token }, '*');
+          window.close();
+        } else {
+          console.error('No token received:', data);
+        }
+      } else {
+        console.error('Naver login failed:', response.status);
       }
+    } catch (error) {
+      console.error('Error during OAuth2 callback handling:', error);
     }
-
-    // 로그인 완료 후 처리
-    // ...
-  } catch (error) {
-    console.error('Naver login failed:', error);
   }
 }
 
-
-// 로그인 진행
-async function handleSubmit(e) {
-  e.preventDefault();
+// 이메일과 비밀번호를 사용한 로그인 요청을 처리하는 함수
+async function handleSubmit(event) {
+  event.preventDefault();
 
   const email = emailInput.value;
   const password = passwordInput.value;
 
-  // 잘 입력했는지 확인
-  const isEmailValid = validateEmail(email);
-  const isPasswordValid = password.length >= 4;
-
-  if (!isEmailValid || !isPasswordValid) {
-    return alert(
-      "비밀번호가 4글자 이상인지, 이메일 형태가 맞는지 확인해 주세요."
-    );
+  if (!validateEmail(email)) {
+    alert('이메일 형식이 맞지 않습니다.');
+    return;
   }
 
-  // 로그인 api 요청
+  if (password.length < 6) {
+    alert('비밀번호는 최소 6자 이상이어야 합니다.');
+    return;
+  }
+
   try {
     const data = { email, password };
     const result = await Api.post("/users/login", data);
@@ -103,4 +110,3 @@ async function handleSubmit(e) {
     alert(`문제가 발생하였습니다. 확인 후 다시 시도해 주세요: ${err.message}`);
   }
 }
-
