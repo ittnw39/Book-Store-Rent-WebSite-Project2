@@ -7,7 +7,6 @@ import {
   randomPick,
   createNavbar,
 } from "../useful-functions.js";
-import { deleteFromDb, getFromDb, putToDb } from "../indexed-db.js";
 
 const subtitleCart = document.querySelector("#subtitleCart");
 // 요소(element), input 혹은 상수

@@ -27,6 +27,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -77,7 +78,7 @@ public class UserController {
 
             // 쿠키에 토큰 저장
             Cookie cookie = new Cookie("jwtToken", token);
-            cookie.setMaxAge(0); // 쿠키 유효기간 설정 (예: 24시간)
+            cookie.setMaxAge(3600); // 쿠키 유효기간 설정 (예: 24시간)
             cookie.setPath("/"); // 쿠키 경로 설정
             response.addCookie(cookie);
 
@@ -221,7 +222,6 @@ public class UserController {
         return ResponseEntity.ok(response);
 
     }
-
 
 
     @GetMapping("/data")
