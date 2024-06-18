@@ -226,16 +226,21 @@ public class UserController {
 
     @GetMapping("/data")
     public ResponseEntity<?> getUserData(@RequestHeader("Authorization") String token) {
+        try {
+            String email = jwtUtil.getEmailFromToken(token.substring(7));
 
-        String email = jwtUtil.getEmailFromToken(token.substring(7));
+            Optional<User> optionalUser = userRepository.findByEmail(email);
+            if (optionalUser.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자를 찾을 수 없습니다.");
+            }
 
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        if (optionalUser.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자를 찾을 수 없습니다.");
+            User user = optionalUser.get();
+            UserDTO userDTO = new UserDTO(user);
+
+            return ResponseEntity.ok(userDTO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("토큰이 유효하지 않습니다.");
         }
-        User user = optionalUser.get();
-
-        return ResponseEntity.ok(user);
     }
 
 

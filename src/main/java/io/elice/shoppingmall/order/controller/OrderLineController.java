@@ -17,7 +17,7 @@ public class OrderLineController {
     private final OrderLineService orderLineService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createOrderLine(@RequestBody OrderLineDTO orderLineDTO){
+    public ResponseEntity<OrderLine> createOrderLine(@RequestBody OrderLineDTO orderLineDTO){
         OrderLine createdOrderLine = orderLineService.createOrderLine(orderLineDTO);
         return ResponseEntity.ok(createdOrderLine);
     }

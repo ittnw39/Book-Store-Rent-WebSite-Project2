@@ -40,12 +40,11 @@ const requestOption = {
 checkLogin();
 addAllElements();
 addAllEvents();
-
+insertUserData();
 
 // html에 요소를 추가하는 함수들을 묶어주어서 코드를 깔끔하게 하는 역할임.
 function addAllElements() {
   createNavbar();
-  insertUserData();
   insertOrderSummary();
 }
 
@@ -94,26 +93,38 @@ function searchAddress() {
 
 let globalUserId; // 페이지 전역에서 사용할 userId
 let userData;
-
 async function insertUserData() {
   try {
-  userData = await Api.get("/users/data");
-  console.log("API Response:", userData);
-  const { id, username, phone_number } = userData;
+    //토큰 검증 - 클라이언트에서 요청
+    const token = sessionStorage.getItem("token");
 
-  globalUserId = id;
-
-  // 만약 db에 데이터 값이 있었다면, 배송지정보에 삽입
-  if (username) {
-    receiverNameInput.value = username;
-  }
-
-  if (phone_number) {
-    receiverPhoneNumberInput.value = phone_number;
-  }
-  } catch (error) {
-      console.error('Error fetching user data:', error);
+    if (!token) {
+      throw new Error("토큰이 없습니다. 로그인이 필요합니다.");
     }
+
+    const userData = await Api.get("/users/data");
+    console.log("API Response:", userData);
+    const { id, username, phone_number } = userData;
+
+
+    if (!id) {
+          throw new Error("API 응답에 id 값이 없습니다.");
+    }
+
+    globalUserId = id;
+
+
+    // 만약 db에 데이터 값이 있었다면, 배송지정보에 삽입
+    if (username) {
+      receiverNameInput.value = username;
+    }
+
+    if (phone_number) {
+      receiverPhoneNumberInput.value = phone_number;
+    }
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+  }
 }
 
 // 주문 요약 정보를 불러와 화면에 표시하는 함수
@@ -121,6 +132,8 @@ async function insertOrderSummary() {
     try {
         const response = await Api.get("/api/cart");
         const cartDetails = response;
+
+        console.log(cartDetails);
 
         if (!cartDetails.length) {
             alert("장바구니에 상품이 없습니다. 상품을 먼저 추가해 주세요.");
@@ -217,6 +230,7 @@ if (!globalUserId) {
     receiverPhoneNumber
   };
 
+
 try {
     // 전체 주문을 등록함
     const discountRate = 0.1;
@@ -231,31 +245,34 @@ try {
       request,
     });
 
-    const orderId = orderData._id;
+    // orderId를 가져오기 위해 새로 생성된 주문을 GET 요청으로 가져옴
+    const orders = await Api.get(`/orders/user/${globalUserId}/all`);
+    const orderId = orders[orders.length - 1].id;  // 마지막으로 생성된 주문의 ID 추출
 
-   // 각 카트 아이템에 대해 OrderLine 생성
-      const cartItems = await Api.get("/api/cart");
-      for (const item of cartItems) {
-        const orderLineDTO = {
-          id: null, // 서버가 ID를 생성
-          quantity: item.quantity,
-          price: item.price,
-          discountRate: discountRate, // 예시 할인율
-          orderId: orderId,
-        };
+    if (!orderId) {
+      throw new Error("Order ID를 추출할 수 없습니다.");
+    }
 
-        const orderLine = await Api.post("/orderLine/create", orderLineDTO);
+    const cartItems = await Api.get("/api/cart");
+    for (const item of cartItems) {
+          const orderLine = {
+            quantity: item.quantity,
+            price: item.price,
+            discountRate: 0.1, // 예시 할인율
+            orderId: orderId,
+          };
+          console.log(cartItems);
 
-        // OrderLineBook 데이터 생성
-        const orderLineBookDTO = {
-          quantity: item.quantity,
-          bookId: item.bookId,
-          orderLineId: orderLine.id
-        };
+          const createdOrderLine = await Api.post('/orderLine/create', orderLine);
+            // 각 orderLine에 대해 여러 orderLineBook을 생성
+                const orderLineBookDTO = {
+                    quantity: item.quantity,
+                    bookId: item.bookDetailId,
+                    orderLineId: createdOrderLine.id // 서버에서 반환된 ID 사용
+                };
 
-        await Api.post("/orderLineBook/create", orderLineBookDTO);
-      }
-
+                await Api.post("/orderLineBook/create", orderLineBookDTO);
+        }
     alert("결제 및 주문이 정상적으로 완료되었습니다.\n감사합니다.");
     window.location.href = "/order-complete/order-complete.html";
   } catch (err) {

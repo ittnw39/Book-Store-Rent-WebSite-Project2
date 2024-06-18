@@ -31,6 +31,7 @@ public class UserDTO {
     private Date createdAt;
 
     public UserDTO(User user) {
+        this.id = user.getId();
         this.email = user.getEmail();
         this.username = user.getUsername();
         this.phone_number = user.getPhone_number();

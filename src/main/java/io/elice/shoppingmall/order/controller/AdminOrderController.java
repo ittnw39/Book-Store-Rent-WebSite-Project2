@@ -21,12 +21,19 @@ public class AdminOrderController {
 
     private final OrderService orderService;
 
-    @GetMapping //모든 주문 조회
-    public String getAllOrders(Model model, @RequestParam(name= "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
+    @GetMapping
+    public String getOrdersPage() {
+        return "/admin-orders/admin-orders.html";
+    }
+
+    @GetMapping("/all")// 모든 주문 조회
+    @ResponseBody
+    public ResponseEntity<Page<OrderDTO>> getAllOrders(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<OrderDTO> orders = orderService.getAllOrders(pageable);
-        model.addAttribute("orders", orders);
-        return "/admin-orders/admin-orders.html";
+        return ResponseEntity.ok(orders);
     }
 
     @GetMapping("/{orderId}") //주문 아이디별 주문 상세 조회

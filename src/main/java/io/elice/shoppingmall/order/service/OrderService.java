@@ -67,4 +67,11 @@ public class OrderService {
     public void deleteOrder(Long id) {
         orderRepository.deleteById(id);
     }
+
+    public List<OrderDTO> getAllOrdersByUserId(Long userId) {
+        List<Orders> orders = orderRepository.findAllByUserId(userId);
+        return orders.stream()
+                .map(order -> new OrderDTO(order))
+                .collect(Collectors.toList());
+    }
 }
