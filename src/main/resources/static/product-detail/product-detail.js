@@ -45,16 +45,31 @@ function addAllEvents() {
 async function handleAddToCart() {
     const { id } = getPathParams();
     const quantity = document.getElementById("quantity").value;
-    const product = await Api.get(`/api/book/${id}`);
     try {
-        await addToCart(id, quantity);
+        const response = await fetch('/cart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ bookId: id, quantity: quantity }),
+        });
+        if (!response.ok) {
+            throw new Error('Failed to add to cart');
+        }
+        console.log('Added to cart successfully');
+
+        // 알림창 표시
         alert("장바구니에 추가되었습니다.");
+       // 추가 성공 메시지를 띄우는 alert은 팝업 이후로 이동
+        const moveToCart = confirm('장바구니로 이동하시겠습니까?');
+        if (moveToCart) {
+            window.location.href = '/cart'; // 네를 클릭하면 장바구니 페이지로 이동
+        }
+        // 아니요를 클릭하면 아무것도 하지 않음 (현재 페이지에 머무름)
 
-        // AJAX 요청으로 id와 quantity를 /cart 페이지로 보냄
-
-    } catch (err) {
-
-        console.log('장바구니 추가 에러', err);
+    } catch (error) {
+        console.error('Error adding to cart:', error);
+        alert('장바구니 추가 중 오류가 발생했습니다.');
     }
 }
 
@@ -87,31 +102,7 @@ function getPathParams() {
 }
 
 // AJAX 요청을 보내는 함수
-async function addToCart(id, quantity) {
-    try {
-        const response = await fetch('/cart/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ bookId: id, quantity: quantity }),
-        });
-        if (!response.ok) {
-            throw new Error('Failed to add to cart');
-        }
-        console.log('Added to cart successfully');
 
-        // 알림창 표시
-        const moveToCart = confirm('장바구니로 이동하시겠습니까?');
-        if (moveToCart) {
-            window.location.href = '/cart'; // 네를 클릭하면 장바구니 페이지로 이동
-        }
-        // 아니요를 클릭하면 아무것도 하지 않음 (현재 페이지에 머무름)
-
-    } catch (error) {
-        console.error('Error adding to cart:', error);
-    }
-}
 
 
 // 제품 데이터를 삽입하는 함수
