@@ -63,8 +63,8 @@ public class JwtUtil {
         SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
         return Jwts.builder()
-            .setClaims(claims) // 클레임 설정
-            .signWith(key, SignatureAlgorithm.HS512) // 서명 키 설정
+            .claims(claims) // 클레임 설정
+            .signWith(key, Jwts.SIG.HS512) // 서명 키 설정
             .compact(); // 토큰 문자열 생성
     }
 
@@ -73,10 +73,10 @@ public class JwtUtil {
         SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
         return Jwts.builder()
-                .setSubject(email)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date()) // 만료 시간을 현재 시간으로 설정하여 즉시 만료되도록 함
-                .signWith(key, SignatureAlgorithm.HS512)
+                .subject(email)
+                .issuedAt(new Date())
+                .expiration(new Date()) // 만료 시간을 현재 시간으로 설정하여 즉시 만료되도록 함
+                .signWith(key, Jwts.SIG.HS512)
                 .compact();
     }
 
@@ -87,11 +87,11 @@ public class JwtUtil {
 
         try {
             return Jwts.parser()
-                .setSigningKey(key)
-                .setAllowedClockSkewSeconds(30)
+                .verifyWith(key)
+                .clockSkewSeconds(30)
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
 
         } catch (ExpiredJwtException e) {
             // 토큰이 만료된 경우 예외 처리
@@ -109,7 +109,12 @@ public class JwtUtil {
 
         SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
         try {
-            Claims claims = Jwts.parser().setSigningKey(key).build().parseClaimsJws(token).getBody();
+            Claims claims = Jwts.parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+
             return claims.getSubject();
         } catch (Exception e) {
             // 토큰 파싱 또는 유효성 검사 실패 시 예외 처리
