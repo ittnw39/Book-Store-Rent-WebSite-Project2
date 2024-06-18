@@ -1,5 +1,4 @@
 package io.elice.shoppingmall.user.security;
-import io.elice.shoppingmall.user.service.JwtBlacklistService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,12 +20,9 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final UserDetailsService userDetailsService;
-    private final JwtBlacklistService blacklistService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-        FilterChain chain)
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
         throws IOException, ServletException {
         final String authorizationHeader = request.getHeader("Authorization");
 
@@ -37,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Claims claims = jwtUtil.validateToken(jwt);
                 if (claims != null) {
                     String email = claims.getSubject();
-                    UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
+                    UserDetails userDetails = jwtUtil.loadUserByUsername(email);
 
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());

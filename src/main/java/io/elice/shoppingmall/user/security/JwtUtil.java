@@ -3,6 +3,7 @@ package io.elice.shoppingmall.user.security;
 
 import io.elice.shoppingmall.user.entity.CustomOAuth2User;
 import io.elice.shoppingmall.user.repository.UserRepository;
+import io.elice.shoppingmall.user.service.CustomUserDetailsService;
 import io.elice.shoppingmall.user.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -33,6 +34,9 @@ import java.util.Date;
 public class JwtUtil {
 
     // 하드코딩된 시크릿 키 값
+
+
+    private final CustomUserDetailsService customUserDetailsService;
     private static final String SECRET_KEY = "jwtpassword123jwtpassword123jwtpassword123jwtpassword123jwtpassword123jwtpassword123jwtpassword123jwtpassword123jwtpassword123jwtpassword123";
 
     // 토큰 유효 기간 (예: 10시간)
@@ -121,6 +125,11 @@ public class JwtUtil {
             return null;
         }
 
+    }
+
+    public UserDetails loadUserByUsername(String email) {
+
+        return customUserDetailsService.loadUserByUsername(email);
     }
 }
 
