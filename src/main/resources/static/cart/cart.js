@@ -207,6 +207,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     });
+    document.getElementById("purchaseButton").addEventListener("click", function() {
+                    window.location.href = "/orders";
+                });
 
 document.getElementById("purchaseButton").addEventListener("click", function() {
                             window.location.href = "/orders";

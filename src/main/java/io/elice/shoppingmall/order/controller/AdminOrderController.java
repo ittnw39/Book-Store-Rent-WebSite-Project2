@@ -45,6 +45,7 @@ public class AdminOrderController {
     }
 
     @PutMapping("/{orderId}") //주문 수정
+    @ResponseBody
     public ResponseEntity<Orders> updateOrder(@PathVariable Long orderId, @RequestBody OrderDTO orderDTO) {
         Orders updatedOrder = orderService.updateOrder(orderId, orderDTO);
         return ResponseEntity.ok(updatedOrder);

@@ -85,8 +85,8 @@ export const checkLogin = () => {
   export const checkAdmin = async () => {
       const token = sessionStorage.getItem("token");
       if (!token || token === "") {
-          const pathname = window.location.pathname;
-          const search = window.location.search;
+//          const pathname = window.location.pathname;
+//          const search = window.location.search;
           //window.location.replace(`/login?previouspage=${pathname + search}`);
           window.location.replace("/users/login");
           return;

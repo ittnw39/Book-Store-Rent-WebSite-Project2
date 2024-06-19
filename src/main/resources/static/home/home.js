@@ -52,6 +52,18 @@ async function populateCategories() {
   }
 }
 
+// 이미지 슬라이더 기능 구현
+const slides = document.querySelectorAll('.slide');
+let currentSlide = 0;
+
+function showSlide() {
+  slides[currentSlide].classList.remove('active');
+  currentSlide = (currentSlide + 1) % slides.length;
+  slides[currentSlide].classList.add('active');
+}
+
+setInterval(showSlide, 5000); // 3초마다 이미지 변경
+
 // 상위 3위 주문 많은 책 목록을 추가
 async function populateTopOrderedBooks() {
   try {
