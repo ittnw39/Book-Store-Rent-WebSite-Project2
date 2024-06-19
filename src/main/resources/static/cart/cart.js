@@ -1,5 +1,7 @@
 
+
     document.addEventListener('DOMContentLoaded', function() {
+
         fetchCartItems();
 
         const allSelectCheckbox = document.getElementById('allSelectCheckbox');

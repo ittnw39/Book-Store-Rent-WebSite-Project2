@@ -29,6 +29,10 @@ public class CartController {
 
     @GetMapping("/cart")
     public String viewCartPage(Model model, Principal principal, RedirectAttributes redirectAttributes) {
+
+        if(principal == null){
+            return "page-not-found.html";
+        }
         User user = getUserFromPrincipal(principal);
         Cart cart = cartService.getOrCreateCart(user);
         List<CartDetailDto> cartItems = cartService.getCartDetails(cart.getId());
