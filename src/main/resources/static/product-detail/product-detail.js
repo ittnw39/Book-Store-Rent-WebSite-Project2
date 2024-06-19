@@ -78,10 +78,10 @@ async function handlePurchase() {
     const product = await Api.get(`/api/book/${id}`);
     try {
         await insertDb(product);
-        window.location.href = "/order";
+        window.location.href = "/orders";
     } catch (err) {
         console.log(err);
-        window.location.href = "/order";
+        window.location.href = "/orders";
     }
 }
 
