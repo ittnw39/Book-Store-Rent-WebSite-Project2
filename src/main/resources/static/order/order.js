@@ -8,7 +8,7 @@ import {
   createNavbar,
 } from "../useful-functions.js";
 
-// 요소(element), input 혹은 상수
+// 요소(element), input 혹은 상수.
 const subtitleCart = document.querySelector("#subtitleCart");
 const receiverNameInput = document.querySelector("#receiverName");
 const receiverPhoneNumberInput = document.querySelector("#receiverPhoneNumber");
