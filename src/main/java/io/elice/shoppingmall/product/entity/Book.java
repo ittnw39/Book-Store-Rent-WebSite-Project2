@@ -69,6 +69,9 @@ public class Book {
     @Column(name = "review_count", columnDefinition = "int default 0")
     private int reviewCount;
 
+    @Column(name = "order_count", columnDefinition = "int default 0")
+    private int orderCount; // 주문수 추가
+
     @Column(name = "wish_count", columnDefinition = "int default 0")
     private int wishCount;
 
@@ -103,5 +106,7 @@ public class Book {
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL) // book 삭제되면 리뷰도 같이 삭제
     private List<Review> review;
+
+
 
 }

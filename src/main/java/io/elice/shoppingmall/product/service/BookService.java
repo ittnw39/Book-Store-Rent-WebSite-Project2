@@ -100,4 +100,20 @@ public class BookService {
 
         bookRepository.delete(book);
     }
+
+    // 리뷰 수 상위 3위 책 조회
+    public List<BookDTO> getTopBooksByReviewCount() {
+        List<Book> books = bookRepository.findTop3ByOrderByReviewCountDesc();
+        return books.stream()
+                .map(bookMapper::toBookDTO)
+                .collect(Collectors.toList());
+    }
+
+    // 주문 많은 책 상위 3위 책 조회
+    public List<BookDTO> getTopOrderedBooks() {
+        List<Book> books = bookRepository.findTop3ByOrderedBooks();
+        return books.stream()
+                .map(bookMapper::toBookDTO)
+                .collect(Collectors.toList());
+    }
 }
