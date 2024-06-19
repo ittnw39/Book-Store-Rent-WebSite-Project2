@@ -5,23 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Shopping Mall</title>
   <!-- 아이콘 -->
-  <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="/elice-rabbit-favicon.png"
-  />
+  <link rel="icon" type="image/png" sizes="16x16" href="/elice-rabbit-favicon.png" />
   <!-- bulma css -->
-  <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
-  />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" />
   <!-- 폰트 어썸: 아이콘 -->
-  <script
-      defer
-      src="https://kit.fontawesome.com/9daa42bcef.js"
-      crossorigin="anonymous"
-  ></script>
+  <script defer src="https://kit.fontawesome.com/9daa42bcef.js" crossorigin="anonymous"></script>
   <!-- 커스텀 css, js -->
   <link rel="stylesheet" href="/admin-users/admin-users.css" />
   <script src="/admin-users/admin-users.js" type="module" defer></script>
@@ -36,17 +24,10 @@
         <span class="has-text-link">Shopping Mall</span>
       </a>
 
-      <a
-
-      role="button"
-      class="navbar-burger"
-      aria-label="menu"
-      aria-expanded="false"
-      data-target="navbarBasicExample"
-      >
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
       </a>
     </div>
 
@@ -54,9 +35,9 @@
       <ul id="navbar">
         <li>
           <a href="/cart" aria-current="page">
-                <span class="icon">
-                  <i class="fas fa-cart-shopping"></i>
-                </span>
+              <span class="icon">
+                <i class="fas fa-cart-shopping"></i>
+              </span>
             <span>카트</span>
           </a>
         </li>
@@ -74,7 +55,7 @@
     </div>
 
     <!-- 총 요약 -->
-    <nav class="level">
+    <div class="level">
       <div class="level-item has-text-centered">
         <div>
           <p class="heading">총회원수</p>
@@ -87,15 +68,15 @@
           <p class="title" id="adminCount">-</p>
         </div>
       </div>
-    </nav>
+    </div>
 
     <!-- 회원 목록 -->
     <div class="container orders-container">
-      <div class="columns notification is-info is-light is-mobile orders-top">
-        <div class="column is-2">가입날짜</div>
+      <div class="columns orders-top">
+        <div class="column is-1">가입날짜</div>
         <div class="column is-2">이메일</div>
-        <div class="column is-2">이름</div>
-        <div class="column is-2">권한</div>
+        <div class="column is-1">이름</div>
+        <div class="column is-1">권한</div>
         <div class="column is-2">관리</div>
         <div class="column is-2">전화번호</div>
         <div class="column is-2">비밀번호</div>
@@ -115,29 +96,17 @@
       </p>
 
       <div class="buttons">
-        <button
-            class="button mt-5"
-            id="deleteCompleteButton"
-            aria-label="close"
-        >
+        <button class="button mt-5" id="deleteCompleteButton" aria-label="close">
           네
         </button>
-        <button
-            class="button is-primary mt-5"
-            id="deleteCancelButton"
-            aria-label="close"
-        >
+        <button class="button is-primary mt-5" id="deleteCancelButton" aria-label="close">
           아니오
         </button>
       </div>
     </div>
   </div>
 
-  <button
-      class="modal-close is-large"
-      id="modalCloseButton"
-      aria-label="close"
-  ></button>
+  <button class="modal-close is-large" id="modalCloseButton" aria-label="close"></button>
 </div>
 
 <!-- 회원권한 변경을 위한 Modal 창 -->
@@ -150,29 +119,17 @@
       </p>
 
       <div class="buttons">
-        <button
-            class="button mt-5"
-            id="roleChangeConfirmButton"
-            aria-label="close"
-        >
+        <button class="button mt-5" id="roleChangeConfirmButton" aria-label="close">
           네
         </button>
-        <button
-            class="button is-primary mt-5"
-            id="roleChangeCancelButton"
-            aria-label="close"
-        >
+        <button class="button is-primary mt-5" id="roleChangeCancelButton" aria-label="close">
           아니오
         </button>
       </div>
     </div>
   </div>
 
-  <button
-      class="modal-close is-large"
-      id="roleModalCloseButton"
-      aria-label="close"
-  ></button>
+  <button class="modal-close is-large" id="roleModalCloseButton" aria-label="close"></button>
 </div>
 
 <!-- 비밀번호 변경을 위한 Modal 창 -->
@@ -182,36 +139,28 @@
     <div class="box">
       <p class="mb-3">새로운 비밀번호를 입력해 주세요.</p>
 
-      <input
-          class="input is-link mb-3"
-          id="newPasswordInput"
-          type="password"
-          placeholder=""
-          autocomplete="off"
-      />
-      <input
-          class="input is-link mb-3"
-          id="newPasswordConfirmInput"
-          type="password"
-          placeholder="비밀번호 확인"
-          autocomplete="off"
-      />
-      <button
-          class="button is-link mt-5"
-          id="passwordChangeButton"
-          aria-label="close"
-      >
+      <input class="input is-link mb-3" id="newPasswordInput" type="password" placeholder="" autocomplete="off" />
+      <input class="input is-link mb-3" id="newPasswordConfirmInput" type="password" placeholder="비밀번호 확인" autocomplete="off" />
+      <button class="button is-link mt-5" id="passwordChangeButton" aria-label="close">
         비밀번호 변경하기
       </button>
     </div>
   </div>
 
-  <button
-      class="modal-close is-large"
-      id="passwordModalCloseButton"
-      aria-label="close"
-  ></button>
+  <button class="modal-close is-large" id="passwordModalCloseButton" aria-label="close"></button>
 </div>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
