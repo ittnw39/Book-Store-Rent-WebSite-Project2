@@ -31,6 +31,11 @@ public class OrderController {
         return "/account-orders/account-orders.html";
     }
 
+    @GetMapping("/detail")
+    public String detailPage() {
+        return "/order/order-detail.html";
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> createOrder(@RequestBody OrderDTO orderDTO) {
         Orders createdOrder = orderService.createOrder(orderDTO);

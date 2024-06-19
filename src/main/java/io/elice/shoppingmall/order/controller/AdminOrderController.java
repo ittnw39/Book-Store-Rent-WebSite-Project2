@@ -26,6 +26,11 @@ public class AdminOrderController {
         return "/admin-orders/admin-orders.html";
     }
 
+    @GetMapping("/detail")
+    public String detailPage() {
+        return "/order/order-detail.html";
+    }
+
     @GetMapping("/all")// 모든 주문 조회
     @ResponseBody
     public ResponseEntity<Page<OrderDTO>> getAllOrders(

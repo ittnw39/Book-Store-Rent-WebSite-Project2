@@ -13,7 +13,7 @@ let globalUserId = null; // 페이지 전역에서 사용할 userId
 
 async function insertUserData() {
   const userData = await Api.get("/users/data");
-    const { id, username, phNum, address } = userData;
+    const { id } = userData;
 
     if (id) {
       globalUserId = id;
@@ -38,7 +38,7 @@ function addAllEvents() {
           navigate('/login')();
           return;
       }
-      navigate(`/orders/${globalUserId}`)();
+      navigate("/orders/account")();
   });
 
   shoppingButton.addEventListener("click", navigate("/"));

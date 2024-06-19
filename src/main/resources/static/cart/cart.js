@@ -291,4 +291,3 @@ document.addEventListener('DOMContentLoaded', function() {
     // 초기 로드 시 장바구니 아이템 로드
     fetchCartItems();
 });
-

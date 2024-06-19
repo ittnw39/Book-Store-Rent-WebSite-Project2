@@ -22,4 +22,3 @@ public class CartDetailDto {
         this.imageURL = imageURL;
     }
 }
-
