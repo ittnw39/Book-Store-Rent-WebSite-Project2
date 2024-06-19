@@ -81,6 +81,10 @@ public class UserService {
         }
     }
 
+    public boolean verifyPassword(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
 
 
     public String login(String email, String password) {
