@@ -19,7 +19,7 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     List<CartItem> findByCart(Cart cart);
     Optional<CartItem> findByCartAndBook(Cart cart, Book book);
 
-    @Query("select new io.elice.shoppingmall.cart.dto.CartDetailDto(ci.id, b.title, b.price, ci.quantity, b.imageURL) " +
+    @Query("select new io.elice.shoppingmall.cart.dto.CartDetailDto(ci.id, b.id, b.title, b.price, ci.quantity, b.imageURL) " +
             "from CartItem ci " +
             "join ci.book b " +
             "where ci.cart.id = :cartId " +

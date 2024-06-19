@@ -37,7 +37,7 @@ public class OrderService {
 
     //주문 생성 (수정)
     @Transactional
-        public Orders createOrder(OrderDTO orderDTO) {
+    public Orders createOrder(OrderDTO orderDTO) {
         User user = userRepository.findById(orderDTO.getUserId()).orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + orderDTO.getUserId()));
         Orders order = OrderMapper.INSTANCE.toOrderEntity(orderDTO, user);
 
@@ -69,14 +69,14 @@ public class OrderService {
 
     public OrderDTO getOrderById(Long id) { //관리자 - 주문 아이디로 조회
         Orders order = orderRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+            .orElseThrow(() -> new IllegalArgumentException("Order not found"));
         order.getOrderLine().forEach(line -> line.getOrderLineBooks().size());
         return orderMapper.toOrderDTO(order);
     }
 
     public Page<OrderDTO> getAllOrders(Pageable pageable) { //관리자 - 모든 주문조회
         return orderRepository.findAll(pageable)
-                .map(orderMapper::toOrderDTO);
+            .map(orderMapper::toOrderDTO);
     }
 
     public Page<OrderDTO> getOrdersByUserId(Long userId, Pageable pageable) { //사용자 - 사용자 아이디별 주문 조회
@@ -87,7 +87,7 @@ public class OrderService {
 
     public OrderDTO getOrderDetails(Long orderId) { // 관리자,사용자 - 주문 아이디로 주문 상세 조회
         Orders order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+            .orElseThrow(() -> new IllegalArgumentException("Order not found"));
         order.getOrderLine().forEach(line -> line.getOrderLineBooks().size());
         return orderMapper.toOrderDTO(order);
     }
@@ -95,7 +95,7 @@ public class OrderService {
     @Transactional
     public Orders updateOrder(Long id, OrderDTO orderDTO) { //관리자, 사용자 - 주문 수정
         Orders order = orderRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+            .orElseThrow(() -> new IllegalArgumentException("Order not found"));
         orderMapper.updateOrderFromDTO(orderDTO, order);
         return orderRepository.save(order);
     }
@@ -110,7 +110,7 @@ public class OrderService {
     @Transactional
     public void deleteOrder(Long id) {
         Orders order = orderRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+            .orElseThrow(() -> new IllegalArgumentException("Order not found"));
 
         //각 책의 주문 횟수 감소
         order.getOrderLine().forEach(orderLine -> {
@@ -126,7 +126,7 @@ public class OrderService {
     public List<OrderDTO> getAllOrdersByUserId(Long userId) {
         List<Orders> orders = orderRepository.findAllByUserId(userId);
         return orders.stream()
-                .map(order -> new OrderDTO(order))
-                .collect(Collectors.toList());
+            .map(order -> new OrderDTO(order))
+            .collect(Collectors.toList());
     }
 }

@@ -104,7 +104,7 @@ export const checkLogin = () => {
               sessionStorage.removeItem("token");
               sessionStorage.removeItem("isAdmin");
               alert("세션이 만료되었습니다. 다시 로그인해주세요.");
-              window.location.replace("users/login");
+              window.location.replace("/users/login");
               return;
           }
 

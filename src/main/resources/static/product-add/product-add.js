@@ -1,5 +1,5 @@
 import * as Api from "../../api.js";
-import { checkLogin, randomId, createNavbar } from "../../useful-functions.js";
+import { checkLogin, randomId, createNavbar, checkAdmin } from "../../useful-functions.js";
 
 // 요소(element)들과 상수들
 const titleInput = document.querySelector("#titleInput");
@@ -26,6 +26,7 @@ const bookId = params.get('id');
 checkLogin();
 addAllElements();
 addAllEvents();
+checkAdmin();
 
 // html에 요소를 추가하는 함수들을 묶어주어서 코드를 깔끔하게 하는 역할임.
 function addAllElements() {
