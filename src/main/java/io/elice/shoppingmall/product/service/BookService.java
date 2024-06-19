@@ -111,7 +111,7 @@ public class BookService {
 
     // 주문 많은 책 상위 3위 책 조회
     public List<BookDTO> getTopOrderedBooks() {
-        List<Book> books = bookRepository.findTop3ByOrderedBooks();
+        List<Book> books = bookRepository.findTop3ByOrderByOrderCountDesc();
         return books.stream()
                 .map(bookMapper::toBookDTO)
                 .collect(Collectors.toList());

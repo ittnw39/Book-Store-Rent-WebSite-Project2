@@ -203,3 +203,8 @@
             fetchCartItems();
     });
 
+    //주문하기 버튼 클릭 이벤트
+    document.getElementById("purchaseButton").addEventListener("click", function() {
+        window.location.href = "/orders";
+    });
+

@@ -1,6 +1,7 @@
 package io.elice.shoppingmall.order.service;
 
 import io.elice.shoppingmall.order.DTO.OrderDTO;
+import io.elice.shoppingmall.order.entity.OrderLine;
 import io.elice.shoppingmall.order.entity.Orders;
 import io.elice.shoppingmall.order.mapper.OrderMapper;
 import io.elice.shoppingmall.order.repository.OrderRepository;
@@ -36,19 +37,33 @@ public class OrderService {
 
     //주문 생성 (수정)
     @Transactional
-        public Orders createOrder(OrderDTO orderDTO) {
+    public Orders createOrder(OrderDTO orderDTO) {
         User user = userRepository.findById(orderDTO.getUserId()).orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + orderDTO.getUserId()));
         Orders order = OrderMapper.INSTANCE.toOrderEntity(orderDTO, user);
+
+// OrderLine 리스트가 null이 아니면 추가
+        if (orderDTO.getOrderLines() != null) {
+            orderDTO.getOrderLines().forEach(orderLineDTO -> {
+                OrderLine orderLine = OrderMapper.INSTANCE.toOrderLineEntity(orderLineDTO);
+                orderLine.setOrders(order); // OrderLine에 Order 설정
+                order.getOrderLine().add(orderLine);
+            });
+        }
         Orders savedOrder = orderRepository.save(order);
 
-        //각 책의 주문 횟수 업데이트
-        savedOrder.getOrderLine().forEach(orderLine -> {
-            orderLine.getOrderLineBooks().forEach(orderLineBook -> {
-                Book book = orderLineBook.getBook();
-                book.setOrderCount(book.getOrderCount() + 1);
-                bookRepository.save(book);
+        if (savedOrder.getOrderLine() != null) {
+            savedOrder.getOrderLine().forEach(orderLine -> {
+                if (orderLine.getOrderLineBooks() != null) {
+                    orderLine.getOrderLineBooks().forEach(orderLineBook -> {
+                        Book book = orderLineBook.getBook();
+                        if (book != null) {
+                            book.setOrderCount(book.getOrderCount() + 1);
+                            bookRepository.save(book);
+                        }
+                    });
+                }
             });
-        });
+        }
         return savedOrder;
     }
 

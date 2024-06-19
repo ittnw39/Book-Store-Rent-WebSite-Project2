@@ -25,6 +25,10 @@ h1 {
     margin: 0 10px;
 }
 
+#categoryList li button {
+    margin-left: 10px;
+}
+
 #categoryList li:last-child {
     border-bottom: none;
 }
@@ -60,4 +64,8 @@ small {
 
 .date {
     margin-left: 5px;
+}
+
+.has-text-danger {
+    margin-bottom: 10px;
 }

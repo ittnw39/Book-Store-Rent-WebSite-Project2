@@ -51,12 +51,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ name: categoryName })
+        }).then(response => {
+            if (!response.ok) {
+                return response.json().then(error => {
+                    throw new Error(error.message || '동일한 카테고리명입니다. 다시 입력해주세요.');
+                });
+            }
+            return response.json();
         }).then(() => {
             categoryForm.reset();
             categoryIdInput.value = ''; // Reset the hidden input value
             fetchCategories(); // 변경된 데이터를 반영하기 위해 fetchCategories 호출
         }).catch(error => {
-            console.error('Error saving category:', error);
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.innerText = error.message || '카테고리를 저장하는 동안 오류가 발생했습니다.';
         });
     });
 

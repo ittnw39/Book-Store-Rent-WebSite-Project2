@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -49,6 +50,6 @@ public class Orders {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "orders")
-    private List<OrderLine> orderLine;
+    @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderLine> orderLine = new ArrayList<>();;
 }
