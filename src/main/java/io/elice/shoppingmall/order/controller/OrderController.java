@@ -38,11 +38,11 @@ public class OrderController {
     }
 
     @GetMapping("/{userId}") //사용자별 주문 내역 조회
-    public String getAllOrders(@PathVariable Long userId, Model model, @RequestParam(name= "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) { //사용자별 주문내역 조회
+    @ResponseBody
+    public ResponseEntity<Page<OrderDTO>> getAllOrders(@PathVariable Long userId, Model model, @RequestParam(name= "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) { //사용자별 주문내역 조회
         Pageable pageable = PageRequest.of(page, size);
         Page<OrderDTO> orders = orderService.getOrdersByUserId(userId, pageable);
-        model.addAttribute("orders", orders);
-        return "/account-orders/account-orders.html"; //마이페이지->주문정보조회 페이지
+        return ResponseEntity.ok(orders); //마이페이지->주문정보조회 페이지
     }
 
     @GetMapping("/details/{orderId}") //주문 아이디별 주문 상세 조회

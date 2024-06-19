@@ -197,16 +197,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // "상품 더 추가하기" 버튼 클릭 이벤트
-    const addMoreButton = document.getElementById('addMoreButton');
-    addMoreButton.addEventListener('click', () => {
-        window.location.href = '/books'; // 상품 리스트 페이지로 이동 (URL은 실제 페이지 경로에 맞게 수정)
-    });
-
-    //주문하기 버튼 클릭 이벤트
-    document.getElementById("purchaseButton").addEventListener("click", function() {
-                window.location.href = "/orders";
+        // "상품 더 추가하기" 버튼 클릭 이벤트
+            const addMoreButton = document.getElementById('addMoreButton');
+            addMoreButton.addEventListener('click', () => {
+                window.location.href = '/books'; // 상품 리스트 페이지로 이동 (URL은 실제 페이지 경로에 맞게 수정)
             });
 
-    fetchCartItems();
-});
+            fetchCartItems();
+
+
+    });
+
+document.getElementById("purchaseButton").addEventListener("click", function() {
+                            window.location.href = "/orders";
+                        });

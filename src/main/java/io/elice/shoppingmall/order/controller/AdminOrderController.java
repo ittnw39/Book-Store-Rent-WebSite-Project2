@@ -36,6 +36,7 @@ public class AdminOrderController {
         return ResponseEntity.ok(orders);
     }
 
+
     @GetMapping("/{orderId}") //주문 아이디별 주문 상세 조회
     public String getOrderDetail(@PathVariable Long orderId, Model model) {
         OrderDTO orderDTO = orderService.getOrderById(orderId);
