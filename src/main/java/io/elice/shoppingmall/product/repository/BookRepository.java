@@ -30,6 +30,5 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     List<Book> findTop3ByOrderByReviewCountDesc();
 
     // 주문 많은 순 상위 3위
-    @Query("SELECT b FROM Book b ORDER BY b.orderCount DESC")
-    List<Book> findTop3ByOrderedBooks();
+    List<Book> findTop3ByOrderByOrderCountDesc();
 }

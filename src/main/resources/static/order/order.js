@@ -239,7 +239,7 @@ try {
       orderDate: new Date().toISOString(),
       orderStatus: "주문 완료",
       discountRate: discountRate,
-      totalAmount: 150000,
+      totalAmount: totalPrice,
       userAddress: `${address.postalCode} ${address.address1} ${address.address2}`,
       orderOption: 'AVAILABLE',
       request,
@@ -255,23 +255,26 @@ try {
 
     const cartItems = await Api.get("/api/cart");
     for (const item of cartItems) {
-          const orderLine = {
-            quantity: item.quantity,
-            price: item.price,
-            discountRate: 0.1, // 예시 할인율
-            orderId: orderId,
-          };
-          console.log(cartItems);
+            try {
+                const orderLine = {
+                    quantity: item.quantity,
+                    price: item.price,
+                    discountRate: 0.1,
+                    orderId: orderId,
+                };
 
-          const createdOrderLine = await Api.post('/orderLine/create', orderLine);
-            // 각 orderLine에 대해 여러 orderLineBook을 생성
+                const createdOrderLine = await Api.post('/orderLine/create', orderLine);
                 const orderLineBookDTO = {
                     quantity: item.quantity,
                     bookId: item.bookDetailId,
-                    orderLineId: createdOrderLine.id // 서버에서 반환된 ID 사용
+                    orderLineId: createdOrderLine.id
                 };
 
                 await Api.post("/orderLineBook/create", orderLineBookDTO);
+            } catch (innerError) {
+                console.error("Error creating order line:", innerError);
+                // 필요하다면 에러를 사용자에게 알리거나 다른 처리를 할 수 있습니다.
+            }
         }
     alert("결제 및 주문이 정상적으로 완료되었습니다.\n감사합니다.");
     window.location.href = "/order-complete/order-complete.html";

@@ -96,8 +96,6 @@ public class Book {
     @JoinColumn(name = "category_id")
     private Category category;
 
-
-
     @OneToOne(mappedBy = "book")
     private Event event;
 
@@ -107,6 +105,6 @@ public class Book {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL) // book 삭제되면 리뷰도 같이 삭제
     private List<Review> review;
 
-
-
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
+    private List<CartItem> cartItem;
 }
