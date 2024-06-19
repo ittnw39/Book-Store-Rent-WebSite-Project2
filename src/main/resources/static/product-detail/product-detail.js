@@ -111,55 +111,61 @@ async function addToCart(id, quantity) {
 async function insertProductData() {
   console.log("insertProductData called");
   const { id } = getPathParams();
-  const product = await Api.get(`/api/book/${id}`);
-  console.log("Product data:", product);
+  try {
+    const product = await Api.get(`/api/book/${id}`);
+    console.log("Product data:", product);
 
-  // 객체 destructuring
-  const {
-    title,
-    category,
-    author,
-    description,
-    publisher,
-    publishedDate,
-    isRecommended,
-    imageURL,
-    price
-  } = product;
+    // 객체 destructuring
+    const {
+      title,
+      category,
+      author,
+      description,
+      publisher,
+      publishedDate,
+      isRecommended,
+      imageURL,
+      price
+    } = product;
 
-  productImageTag.src = imageURL;
-  titleTag.innerText = title;
-  categoryTag.innerText = category.name;
-  authorTag.innerText = author.name;
-  descriptionTag.innerText = description;
-  publisherTag.innerText = publisher;
-  publishedDateTag.innerText = formatPublishedDate(publishedDate);
-  priceTag.innerText = `${addCommas(price)}원`;
+    productImageTag.src = imageURL;
+    titleTag.innerText = title;
+    categoryTag.innerText = category.name;
+    authorTag.innerText = author.name;
+    descriptionTag.innerText = description;
+    publisherTag.innerText = publisher;
+    publishedDateTag.innerText = formatPublishedDate(publishedDate);
+    priceTag.innerText = `${addCommas(price)}원`;
 
-  function formatPublishedDate(dateString) {
-    const date = new Date(dateString);
-    const year = String(date.getFullYear());
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
+    function formatPublishedDate(dateString) {
+      const date = new Date(dateString);
+      const year = String(date.getFullYear());
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
 
-  if (isRecommended) {
-    titleTag.insertAdjacentHTML(
-      "beforeend",
-      '<span class="tag is-success is-rounded">추천</span>'
-    );
-  }
+    if (isRecommended) {
+      titleTag.insertAdjacentHTML(
+        "beforeend",
+        '<span class="tag is-success is-rounded">추천</span>'
+      );
+    }
 
   // JWT 토큰에서 현재 사용자 이메일 추출
-  const token = getJwtTokenFromCookie();
+  const token = getJwtTokenFromSession();
   if (token) {
       const decodedToken = parseJwt(token);
       currentUserEmail = decodedToken.sub; // JWT의 subject를 email로 가정
   }
 
-  // 리뷰 데이터 불러오기
-  await fetchAndDisplayReviews();
+    // 리뷰 데이터 불러오기
+    await fetchAndDisplayReviews();
+  } catch (error) {
+    console.error("제품 조회 오류: ", error);
+    alert("해당하는 상품이 없습니다."); // 에러 발생 시 사용자에게 경고창 띄우기
+    window.history.back(); // 이전 페이지로 이동
+  }
 }
 
 //// IndexedDB에 제품을 추가하는 함수
@@ -179,7 +185,6 @@ async function insertProductData() {
 //    });
 //}
 
-
 // 리뷰 목록을 정렬 옵션에 따라 가져오는 함수
 async function fetchAndDisplayReviews() {
     const { id } = getPathParams();
@@ -189,13 +194,20 @@ async function fetchAndDisplayReviews() {
     console.log("Fetched reviews:", reviews);
     reviewsContainer.innerHTML = reviews.map(createReviewHtml).join("");
 
+    // 수정 버튼에 이벤트 리스너 추가
     document.querySelectorAll(".edit-review-button").forEach(button => {
         button.addEventListener("click", async () => {
             const reviewId = button.getAttribute("data-id");
-            await editReview(reviewId);
+            if(button.innerText === "수정") {
+                showEditForm(reviewId);
+                button.innerText = "저장";
+            } else {
+                editReview(reviewId);
+            }
         });
     });
 
+    // 삭제 버튼에 이벤트 리스너 추가
     document.querySelectorAll(".delete-review-button").forEach(button => {
         button.addEventListener("click", async() => {
             const reviewId = button.getAttribute("data-id");
@@ -225,11 +237,29 @@ async function addReview(comment) {
 
 // 리뷰를 수정하는 함수
 async function editReview(reviewId) {
-    const newComment = prompt("새로운 리뷰를 입력하세요:");
-    if (newComment) {
+    const newComment = document.getElementById(`edit-comment-${reviewId}`).value;
+    if (newComment.trim()) {
         await Api.put(`/api/book/review/${reviewId}`, { comment: newComment } );
         await fetchAndDisplayReviews();
     }
+}
+
+// 수정 폼 보이기 함수
+function showEditForm(reviewId) {
+    const commentElement = document.getElementById(`comment-${reviewId}`);
+    const editFormElement = document.getElementById(`edit-form-${reviewId}`);
+
+    commentElement.style.display = 'none';
+    editFormElement.style.display = 'block';
+}
+
+// 수정 폼 숨기기 함수
+function hideEditForm(reviewId) {
+    const commentElement = document.getElementById(`comment-${reviewId}`);
+    const editFormElement = document.getElementById(`edit-form-${reviewId}`);
+
+    commentElement.style.display = 'block';
+    editFormElement.style.display = 'none';
 }
 
 // 리뷰를 삭제하는 함수
@@ -247,8 +277,8 @@ async function deleteReview(reviewId) {
 // 리뷰에 좋아요를 추가하는 함수
 async function likeReview(reviewId) {
     await Api.post(`/api/book/review/${reviewId}/like`, {});
-    await fetchAndDisplayReviews();
-}
+        await fetchAndDisplayReviews();
+        }
 
 // 리뷰 HTML을 생성하는 함수
 function createReviewHtml(review) {
@@ -256,10 +286,13 @@ function createReviewHtml(review) {
     const isOwner = currentUserEmail && userDTO && userDTO.email === currentUserEmail;
 
     return `
-    <div class="box review" data-id="${id}">
+        <div class="box review" data-id="${id}">
       <div class="content">
         <p><strong>${userDTO?.username ?? 'Unknown User'}</strong> <small>${new Date(createdAt).toLocaleString()}</small></p>
-        <p>${comment}</p>
+        <p id="comment-${id}">${comment}</p>
+        <div id="edit-form-${id}" style="display: none; margin-bottom: 10px;">
+          <textarea id="edit-comment-${id}" class="textarea">${comment}</textarea>
+        </div>
         <p>
           <span class="icon like-review-button" data-id="${id}">
             <i class="fas fa-heart" style="color: ${likes > 0 ? 'red' : 'gray'};"></i>
@@ -289,11 +322,4 @@ function parseJwt(token) {
 
     return JSON.parse(jsonPayload);
 }
-
-// 페이지 로드 시 리뷰를 기본 정렬 옵션으로 가져오는 함수
-//document.addEventListener("DOMContentLoaded", insertProductData);
-
-window.addEventListener("load", () => {
-    addAllElements();
-});
 

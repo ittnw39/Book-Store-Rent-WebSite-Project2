@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,7 +41,7 @@ public class CategoryService {
 
     public CategoryDto addCategory(CategoryDto categoryDto) {
         if(categoryDto.getName() == null || categoryDto.getName().isEmpty()) {
-            throw new IllegalArgumentException("Category name cannot be null or empty");
+            throw new IllegalArgumentException("카테고리 이름은 공백일 수 없습니다.");
         }
         Category category = new Category();
         category.setName(categoryDto.getName());
@@ -52,7 +51,7 @@ public class CategoryService {
 
     public CategoryDto updateCategory(Long categoryId, CategoryDto categoryDetails) {
         if(categoryDetails.getName() == null || categoryDetails.getName().isEmpty()) {
-            throw new IllegalArgumentException("Category name cannot be null or empty");
+            throw new IllegalArgumentException("카테고리 이름은 공백일 수 없습니다.");
         }
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Category not found with id " + categoryId));

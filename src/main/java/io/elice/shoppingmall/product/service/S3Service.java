@@ -3,6 +3,8 @@ package io.elice.shoppingmall.product.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -33,5 +35,16 @@ public class S3Service {
     //파일 삭제
     public void delete(String s3FileName) {
         amazonS3.deleteObject(bucket, s3FileName);
+    }
+
+    //book 엔티티 imageurl에서 이미지 파일명 추출하는 메서드
+    public String extractObjectKeyFromUrl(String url) {
+        try {
+            URL s3Url = new URL(url);
+            System.out.println(s3Url.getPath().substring(1));
+            return s3Url.getPath().substring(1);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid S3 URL", e);
+        }
     }
 }

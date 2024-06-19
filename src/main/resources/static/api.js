@@ -80,7 +80,7 @@ async function put(endpoint, data) {
   return result;
 }
 
-//put 요청 추가
+//put 요청 추가 -----------------
 async function push(url, data, params = "") {
   try {
     // URL에 파라미터가 포함된 경우를 처리

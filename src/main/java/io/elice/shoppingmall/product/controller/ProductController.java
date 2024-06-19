@@ -2,6 +2,7 @@ package io.elice.shoppingmall.product.controller;
 
 import io.elice.shoppingmall.product.dto.BookDTO;
 import io.elice.shoppingmall.product.dto.ReviewDTO;
+import io.elice.shoppingmall.product.entity.Book;
 import io.elice.shoppingmall.product.mapper.BookMapper;
 import io.elice.shoppingmall.product.service.BookService;
 import io.elice.shoppingmall.product.service.ReviewService;
@@ -117,4 +118,17 @@ public class ProductController {
         ReviewDTO likedReview = reviewService.addLikeReview(reviewId);
         return new ResponseEntity<>(likedReview, HttpStatus.OK);
     }
+
+    //상품 리뷰 수 많은 순 3위까지 조회
+    @GetMapping("/books/top-reviewed")
+    public List<BookDTO> getTopReviewedBooks() {
+        return bookService.getTopBooksByReviewCount();
+    }
+
+    //주문 횟수 많은 순 3위까지 조회
+    @GetMapping("/books/top-ordered")
+    public List<BookDTO> getTopOrderedBooks() {
+        return bookService.getTopOrderedBooks();
+    }
+
 }

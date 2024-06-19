@@ -53,7 +53,7 @@ async function addProductItemsToContainer() {
 
   for (const product of products) {
     // 객체 destructuring
-    const { id, title, description, imageURL, isRecommended, price, publisher, totalStockQuantity, author } =
+    const { id, title, description, imageURL, isRecommended, price, publisher, totalStockQuantity, author, category } =
       product;
     const imageUrl = await getImageUrl(imageURL);
     const random = randomId();
@@ -80,8 +80,8 @@ async function addProductItemsToContainer() {
                 : ""
         }
             </p>
-            <p class="description">저자 : ${author.name}</p>
-            <p class="description">${description}</p>
+            <p class="category">${category.name}</p>
+            <p class="author">작가 : ${author.name}</p>
             <span class="price">${addCommas(price)}원</span>
             <span class="stock"> (재고 : ${totalStockQuantity}개)</span>
           </div>
