@@ -10,11 +10,13 @@ import io.elice.shoppingmall.product.exception.CategoryNotFoundException;
 import io.elice.shoppingmall.product.exception.NoSearchResultException;
 import io.elice.shoppingmall.product.mapper.BookMapper;
 import io.elice.shoppingmall.product.repository.BookRepository;
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BookService {
@@ -23,15 +25,18 @@ public class BookService {
     private final AuthorService authorService;
     private final CategoryService categoryService;
     private final BookMapper bookMapper;
+    private S3Service s3Service;
 
     @Autowired
-    public BookService(BookRepository bookRepository, AuthorService authorService, CategoryService categoryService, BookMapper bookMapper) {
+    public BookService(BookRepository bookRepository, AuthorService authorService, CategoryService categoryService, BookMapper bookMapper, S3Service s3Service) {
         this.bookRepository = bookRepository;
         this.authorService = authorService;
         this.categoryService = categoryService;
         this.bookMapper = bookMapper;
+        this.s3Service = s3Service;
     }
 
+    @Transactional
     public BookDTO saveBook(BookDTO bookDTO) {
         Book book = bookMapper.toBookEntity(bookDTO);
 
@@ -83,9 +88,16 @@ public class BookService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void removeBook(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Book id is not exists : " + id));
+
+        if (book.getImageURL() != null) {
+            String objectKey = s3Service.extractObjectKeyFromUrl(book.getImageURL());
+            s3Service.delete(objectKey);
+        }
+
         bookRepository.delete(book);
     }
 }
