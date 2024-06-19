@@ -17,7 +17,7 @@ public class OrderLineBookController {
     private final OrderLineBookService orderLineBookService;
 
     @PostMapping("/create") //상품이 주문에 생성됨
-    public ResponseEntity<?> createOrderLine(@RequestBody OrderLineBookDTO orderLineBookDTO){
+    public ResponseEntity<OrderLineBook> createOrderLine(@RequestBody OrderLineBookDTO orderLineBookDTO){
         OrderLineBook createdOrderLineBook = orderLineBookService.createOrderLineBook(orderLineBookDTO);
         return ResponseEntity.ok(createdOrderLineBook);
     }

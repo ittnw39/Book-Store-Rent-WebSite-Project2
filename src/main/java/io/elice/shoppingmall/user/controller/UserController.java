@@ -27,6 +27,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -77,7 +78,7 @@ public class UserController {
 
             // 쿠키에 토큰 저장
             Cookie cookie = new Cookie("jwtToken", token);
-            cookie.setMaxAge(0); // 쿠키 유효기간 설정 (예: 24시간)
+            cookie.setMaxAge(3600); // 쿠키 유효기간 설정 (예: 24시간)
             cookie.setPath("/"); // 쿠키 경로 설정
             response.addCookie(cookie);
 
@@ -223,19 +224,23 @@ public class UserController {
     }
 
 
-
     @GetMapping("/data")
     public ResponseEntity<?> getUserData(@RequestHeader("Authorization") String token) {
+        try {
+            String email = jwtUtil.getEmailFromToken(token.substring(7));
 
-        String email = jwtUtil.getEmailFromToken(token.substring(7));
+            Optional<User> optionalUser = userRepository.findByEmail(email);
+            if (optionalUser.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자를 찾을 수 없습니다.");
+            }
 
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        if (optionalUser.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자를 찾을 수 없습니다.");
+            User user = optionalUser.get();
+            UserDTO userDTO = new UserDTO(user);
+
+            return ResponseEntity.ok(userDTO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("토큰이 유효하지 않습니다.");
         }
-        User user = optionalUser.get();
-
-        return ResponseEntity.ok(user);
     }
 
 
