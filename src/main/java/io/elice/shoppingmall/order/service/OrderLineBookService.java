@@ -26,8 +26,8 @@ public class OrderLineBookService {
     public OrderLineBook createOrderLineBook(OrderLineBookDTO orderLineBookDTO) {
         OrderLineBook orderLineBook = OrderMapper.INSTANCE.toOrderLineBookEntity(orderLineBookDTO);
 
-        bookService.addOrderCount(orderLineBook.getBook().getId());
         bookService.reduceStock(orderLineBook.getBook().getId(), orderLineBook.getQuantity());
+        bookService.addOrderCount(orderLineBook.getBook().getId());
         return orderLineBookRepository.save(orderLineBook);
     }
 }
