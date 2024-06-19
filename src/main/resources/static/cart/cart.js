@@ -1,3 +1,7 @@
+import { checkLogin } from "../useful-functions.js";
+
+checkLogin();
+
 document.addEventListener('DOMContentLoaded', function() {
     // 장바구니 아이템 불러오기 함수
     function fetchCartItems() {
