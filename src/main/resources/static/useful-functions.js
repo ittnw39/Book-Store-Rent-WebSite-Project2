@@ -45,10 +45,11 @@ export const checkLogin = () => {
     // 현재 페이지의 url 주소 추출하기
     const pathname = window.location.pathname;
     const search = window.location.search;
-
     // 로그인 후 다시 지금 페이지로 자동으로 돌아가도록 하기 위한 준비작업임.
-    window.location.replace(`/login?previouspage=${pathname + search}`);
-  }
+    //window.location.replace(`/login?previouspage=${pathname + search}`);
+    //그냥 로그인 안되어있으면 pagenotfound 로 보낼꺼야 그럼 위의 저장 코드도 필요없다.
+    window.location.replace("/page-not-found.html");
+    }
   };
 
   // 토큰의 유효성 검사

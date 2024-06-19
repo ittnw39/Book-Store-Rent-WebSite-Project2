@@ -140,7 +140,7 @@ async function insertUserData() {
 
   // 서버에서 온 비밀번호는 해쉬 문자열인데, 이를 빈 문자열로 바꿈
   // 나중에 사용자가 비밀번호 변경을 위해 입력했는지 확인하기 위함임.
-  userData.password = "";
+  userData.password = "비밀번호는 6자리 이상으로 해야 합니다.";
 
   securityTitle.innerText = `회원정보 관리 (${email})`;
   fullNameInput.value = username;
@@ -225,6 +225,7 @@ async function saveUserData(e) {
 
   const username = fullNameInput.value;
   const password = passwordInput.value;
+
   const passwordConfirm = passwordConfirmInput.value;
 //  const postalCode = postalCodeInput.value;
 //  const address1 = address1Input.value;
@@ -232,7 +233,7 @@ async function saveUserData(e) {
   const phone_number = phoneNumberInput.value;
   const currentPassword = currentPasswordInput.value;
 
-  const isPasswordLong = password.length >= 4;
+  const isPasswordLong = password.length >= 6;
   const isPasswordSame = password === passwordConfirm;
 //  const isPostalCodeChanged =
 //    postalCode !== (userData.address?.postalCode || "");
@@ -242,7 +243,7 @@ async function saveUserData(e) {
   // 비밀번호를 새로 작성한 경우
   if (password && !isPasswordLong) {
     closeModal();
-    return alert("비밀번호는 4글자 이상이어야 합니다.");
+    return alert("비밀번호는 6글자 이상이어야 합니다.");
   }
   if (password && !isPasswordSame) {
     closeModal();
