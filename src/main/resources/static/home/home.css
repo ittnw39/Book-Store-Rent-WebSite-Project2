@@ -44,6 +44,93 @@
   opacity: 1;
 }
 
+.event-text {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 1.1em;
+  color: #4a4a4a;
+}
+
+/* 배너 스타일 */
+.banner {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.banner-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f8f8f8;
+  padding: 20px;
+  border-radius: 10px;
+  height: 350px;
+}
+
+.banner-image-container {
+  flex: 0 0 auto;
+  margin-right: 20px;
+  height: 100%;
+}
+
+.banner-image {
+  max-width: 150%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.banner-text .emphasis {
+  font-size: 1.5em;
+  font-weight: bold;
+  line-height: 1.4;
+  color: #333;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.banner-text .highlight {
+  color: #e53935;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.banner-text .expiration {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #555;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.banner-text-container {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.banner-text {
+  text-align: right;
+}
+
+.banner-text h3 {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #003366; /* 짙은 청색 */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.banner-text p {
+  font-size: 1.2em;
+  line-height: 1.6;
+  margin-bottom: 15px;
+  color: #333399; /* 남색 */
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.discount {
+  font-weight: bold;
+  color: #e53935; /* 강렬한 붉은색 */
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
 /* 커스텀 검색 입력 스타일 */
 .header-search-input {
   width: 20rem;
