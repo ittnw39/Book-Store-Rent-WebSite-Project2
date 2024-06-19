@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const categoryIdInput = document.getElementById('categoryId');
     const categoryNameInput = document.getElementById('categoryName');
     const deleteSelectedButton = document.getElementById('deleteSelected');
+    const errorMessage = document.getElementById('errorMessage');
 
     // Fetch all categories and display them
     function fetchCategories() {
@@ -44,6 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const categoryName = categoryNameInput.value;
         const method = categoryId ? 'PUT' : 'POST';
         const url = categoryId ? `/admin/category/${categoryId}` : '/admin/category';
+
+        errorMessage.innerText = '';
 
         fetch(url, {
             method: method,
@@ -98,6 +101,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Error deleting selected categories:', error);
             });
     });
+
+    categoryNameInput.addEventListener('input', () => {
+        errorMessage.innerText = '';
+    })
 
     // Initial fetch of categories
     fetchCategories();
