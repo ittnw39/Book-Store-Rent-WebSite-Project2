@@ -79,27 +79,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Delete category
     window.deleteCategory = id => {
-        fetch(`/admin/category/${id}`, { method: 'DELETE' })
-            .then(() => fetchCategories()) // 변경된 데이터를 반영하기 위해 fetchCategories 호출
-            .catch(error => {
-                console.error('Error deleting category:', error);
-            });
+        if(confirm('정말로 이 카테고리를 삭제하시겠습니까?')) {
+            fetch(`/admin/category/${id}`, { method: 'DELETE' })
+                .then(() => fetchCategories()) // 변경된 데이터를 반영하기 위해 fetchCategories 호출
+                .catch(error => {
+                    console.error('Error deleting category:', error);
+                });
+        }
     };
 
     // Delete selected categories
     deleteSelectedButton.addEventListener('click', () => {
         const selectedIds = Array.from(document.querySelectorAll('.categoryCheckbox:checked'))
             .map(checkbox => checkbox.getAttribute('data-id'));
-        fetch('/admin/category', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(selectedIds)
-        }).then(() => fetchCategories()) // 변경된 데이터를 반영하기 위해 fetchCategories 호출
-            .catch(error => {
-                console.error('Error deleting selected categories:', error);
-            });
+        if(confirm('정말로 선택한 카테고리들을 삭제하시겠습니까?')) {
+            fetch('/admin/category', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(selectedIds)
+            }).then(() => fetchCategories()) // 변경된 데이터를 반영하기 위해 fetchCategories 호출
+                .catch(error => {
+                    console.error('Error deleting selected categories:', error);
+                });
+        }
     });
 
     categoryNameInput.addEventListener('input', () => {
