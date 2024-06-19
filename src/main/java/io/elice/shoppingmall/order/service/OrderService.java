@@ -95,9 +95,17 @@ public class OrderService {
     @Transactional
     public Orders updateOrder(Long id, OrderDTO orderDTO) { //관리자, 사용자 - 주문 수정
         Orders order = orderRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
-        orderMapper.updateOrderFromDTO(orderDTO, order);
-        return orderRepository.save(order);
+                .orElseThrow(() -> new IllegalArgumentException("OrderId not found"));
+
+        System.out.println("Order found: " + order);
+        System.out.println("Updating order status to: " + orderDTO.getOrderStatus());
+
+        order.setOrderStatus(orderDTO.getOrderStatus());
+
+        Orders savedOrder = orderRepository.save(order);
+
+        System.out.println("Order updated: " + savedOrder);
+        return savedOrder;
     }
 
     //관리자, 사용자 - 주문 삭제

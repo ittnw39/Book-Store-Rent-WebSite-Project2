@@ -26,6 +26,11 @@ public class AdminOrderController {
         return "/admin-orders/admin-orders.html";
     }
 
+    @GetMapping("/detail")
+    public String detailPage() {
+        return "/order/order-detail.html";
+    }
+
     @GetMapping("/all")// 모든 주문 조회
     @ResponseBody
     public ResponseEntity<Page<OrderDTO>> getAllOrders(
@@ -45,6 +50,7 @@ public class AdminOrderController {
     }
 
     @PutMapping("/{orderId}") //주문 수정
+    @ResponseBody
     public ResponseEntity<Orders> updateOrder(@PathVariable Long orderId, @RequestBody OrderDTO orderDTO) {
         Orders updatedOrder = orderService.updateOrder(orderId, orderDTO);
         return ResponseEntity.ok(updatedOrder);

@@ -90,7 +90,7 @@
 
                         const itemElement = document.createElement('div');
                         itemElement.classList.add('box', 'media', 'cart-item');
-                        itemElement.dataset.cartItemId = item.bookDetailId; // bookDetailId 사용
+                        itemElement.dataset.cartItemId = item.id; // bookDetailId 사용
                         itemElement.innerHTML = `
 
 
