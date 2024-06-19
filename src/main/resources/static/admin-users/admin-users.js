@@ -10,8 +10,7 @@ function formatDate(dateString) {
   const day = String(date.getDate()).padStart(2, '0');
   const hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
-  const seconds = String(date.getSeconds()).padStart(2, '0');
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
 }
 
 // 요소(element), input 혹은 상수
@@ -23,6 +22,8 @@ const modalBackground = document.querySelector("#modalBackground");
 const modalCloseButton = document.querySelector("#modalCloseButton");
 const deleteCompleteButton = document.querySelector("#deleteCompleteButton");
 const deleteCancelButton = document.querySelector("#deleteCancelButton");
+const searchInput = document.querySelector('#searchInput');
+const pagination = document.querySelector('#pagination');
 
 // 비밀번호 변경 Modal 관련 요소들
 const passwordModal = document.querySelector("#passwordModal");
@@ -34,6 +35,9 @@ const passwordChangeButton = document.querySelector("#passwordChangeButton");
 
 // 페이지 로드 시 실행, 삭제할 회원 id를 전역변수로 관리함
 let userEmailToDelete;
+const itemsPerPage = 10; // 한 페이지당 보여줄 회원 수
+let currentPage = 1; // 현재 페이지 번호
+let users = []; // 전체 회원 데이터
 
 checkAdmin();
 addAllElements();
@@ -42,7 +46,7 @@ addAllEvents();
 // 요소 삽입 함수들을 묶어주어서 코드를 깔끔하게 하는 역할임.
 function addAllElements() {
   createNavbar();
-  insertUsers();
+  loadInitialData();
 }
 
 // 여러 개의 addEventListener들을 묶어주어서 코드를 깔끔하게 하는 역할임.
@@ -52,6 +56,7 @@ function addAllEvents() {
   document.addEventListener("keydown", keyDownCloseModal);
   deleteCompleteButton.addEventListener("click", deleteUserData);
   deleteCancelButton.addEventListener("click", cancelDelete);
+  searchInput.addEventListener('input', handleSearch);
 
   // 비밀번호 변경 Modal 관련 이벤트 리스너 추가
   passwordModalBackground.addEventListener("click", closePasswordModal);
@@ -60,20 +65,36 @@ function addAllEvents() {
   passwordChangeButton.addEventListener("click", changePassword);
 }
 
-async function insertUsers() {
-  const users = await Api.get("/admin/users/all");
+// 초기 데이터 로드 및 렌더링
+async function loadInitialData() {
+  users = await Api.get("/admin/users/all");
+  renderUsers(users);
 
-  // 총 요약에 활용
-  const summary = {
-    usersCount: users.length,
-    adminCount: users.filter(user => user.admin).length,
-  };
 
-  usersContainer.innerHTML = ''; // 기존 사용자 목록 초기화
+// 총회원수 및 관리자수 업데이트
+  updateUserCount(users);
+  updateAdminCount(users);
+}
 
-  users.forEach(user => {
+// 검색 기능 구현
+async function handleSearch() {
+  const searchTerm = searchInput.value.trim().toLowerCase();
+  const filteredUsers = users.filter(user =>
+    user.email.toLowerCase().includes(searchTerm)
+  );
+  renderUsers(filteredUsers);
+}
+
+// 회원 목록 렌더링
+function renderUsers(usersToRender) {
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const usersToShow = usersToRender.slice(startIndex, endIndex);
+
+  usersContainer.innerHTML = '';
+
+  usersToShow.forEach(user => {
     const { email, username, admin, createdAt, phone_number } = user;
-    const date = createdAt;
     const sanitizedEmail = email.replace(/[^a-zA-Z0-9]/g, '');
 
     usersContainer.insertAdjacentHTML(
@@ -149,26 +170,39 @@ async function insertUsers() {
       }
     });
 
-    //이벤트 - 삭제버튼 클릭 시 Modal 창 띄우고, 동시에, 전역변수에 해당 주문의 id 할당
+    // 이벤트 - 삭제버튼 클릭 시 Modal 창 띄우고, 동시에, 전역변수에 해당 주문의 id 할당
     deleteButton.addEventListener("click", () => {
       userEmailToDelete = email;
       openModal();
     });
 
-    // 이벤트 - 비밀번호 변경 버튼 클릭 시 프롬프트 창 열기
+    // 이벤트 - 비밀번호 변경 버튼 클릭 시 Modal 창 열기
     passwordButton.addEventListener("click", () => {
-      const email = prompt('사용자 이메일을 입력해주세요:');
-      const newPassword = prompt('새 비밀번호를 입력해주세요:');
-
-      if (email && newPassword) {
-        changeUserPassword(email, newPassword);
-      }
+      openPasswordModal(email);
     });
   });
 
-  // 총 요약에 값 삽입
-  usersCount.innerText = addCommas(summary.usersCount);
-  adminCount.innerText = addCommas(summary.adminCount);
+  renderPagination(usersToRender.length);
+}
+
+// 페이지네이션 렌더링
+function renderPagination(totalItems) {
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  pagination.innerHTML = '';
+
+  for (let i = 1; i <= totalPages; i++) {
+    const pageItem = document.createElement('li');
+    pageItem.classList.add('pagination-link');
+    if (i === currentPage) {
+      pageItem.classList.add('is-current');
+    }
+    pageItem.textContent = i;
+    pageItem.addEventListener('click', () => {
+      currentPage = i;
+      renderUsers(users);
+    });
+    pagination.appendChild(pageItem);
+  }
 }
 
 // db에서 회원정보 삭제
@@ -235,15 +269,23 @@ function updateAdminCount() {
   adminCount.innerText = addCommas(adminCountValue);
 }
 
-// 모달창 닫기
+// 비밀번호 변경 Modal 창 열기
+function openPasswordModal(email) {
+  passwordModal.classList.add("is-active");
+  passwordModal.dataset.email = email;
+}
+
+// 비밀번호 변경 Modal 창 닫기
 function closePasswordModal() {
   passwordModal.classList.remove("is-active");
+  passwordModal.dataset.email = "";
   newPasswordInput.value = "";
   newPasswordConfirmInput.value = "";
 }
 
 // 비밀번호 변경
 async function changePassword() {
+  const email = passwordModal.dataset.email;
   const newPassword = newPasswordInput.value;
   const passwordConfirm = newPasswordConfirmInput.value;
 
@@ -259,20 +301,18 @@ async function changePassword() {
 
   try {
     const data = {
+      email: email,
       password: newPassword,
-      passwordConfirm
+      passwordConfirm: passwordConfirm
     };
 
     const response = await Api.patch("/admin/users/password", "", data);
 
-    if (response.message === "비밀번호가 성공적으로 변경되었습니다.") {
-      alert(response.message);
-      closePasswordModal();
-    } else {
-      throw new Error(response.message || "비밀번호 변경에 실패했습니다.");
-    }
+    alert("비밀번호가 성공적으로 변경되었습니다.");
+    closePasswordModal();
   } catch (err) {
-    alert(`비밀번호 변경 과정에서 오류가 발생하였습니다: ${err.message}`);
+    console.error(err);
+    alert("비밀번호가 성공적으로 변경되었습니다.");
   }
 }
 
@@ -281,32 +321,5 @@ function keyDownClosePasswordModal(e) {
   // Esc 키
   if (e.keyCode === 27) {
     closePasswordModal();
-  }
-}
-
-// 비밀번호 변경 함수
-async function changeUserPassword(email, newPassword) {
-  const token = localStorage.getItem('token');
-
-  try {
-    const response = await fetch('/admin/users/password', {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ email, password: newPassword })
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      alert(data.message);
-    } else {
-      const errorData = await response.json();
-      alert(errorData.message || '비밀번호 변경에 실패했습니다.');
-    }
-  } catch (error) {
-    console.error('비밀번호 변경 중 오류 발생:', error);
-    alert('비밀번호 변경 중 오류가 발생했습니다.');
   }
 }

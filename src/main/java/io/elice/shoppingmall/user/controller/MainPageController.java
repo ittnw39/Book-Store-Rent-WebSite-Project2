@@ -12,4 +12,9 @@ public class MainPageController {
     public String getMainPage() {
         return "/home/home.html";
     }
+
+    @GetMapping("/error")
+    public String errorPage() {
+        return "/page-not-found/page-not-found.html";
+    }
 }

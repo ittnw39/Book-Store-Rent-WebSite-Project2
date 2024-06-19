@@ -43,6 +43,12 @@ public class CategoryService {
         if(categoryDto.getName() == null || categoryDto.getName().isEmpty()) {
             throw new IllegalArgumentException("카테고리 이름은 공백일 수 없습니다.");
         }
+
+        Optional<Category> existingCategory = categoryRepository.findByName(categoryDto.getName());
+        if(existingCategory.isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 카테고리 이름입니다.");
+        }
+
         Category category = new Category();
         category.setName(categoryDto.getName());
         Category savedCategory = categoryRepository.save(category);

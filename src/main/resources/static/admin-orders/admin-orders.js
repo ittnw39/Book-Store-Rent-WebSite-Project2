@@ -12,6 +12,7 @@ const modalBackground = document.querySelector("#modalBackground");
 const modalCloseButton = document.querySelector("#modalCloseButton");
 const deleteCompleteButton = document.querySelector("#deleteCompleteButton");
 const deleteCancelButton = document.querySelector("#deleteCancelButton");
+const searchInput = document.querySelector('#searchInput');
 
 const paginationList = document.querySelector("#paginationList");
 const prevPageButton = document.querySelector("#prevPage");
@@ -20,6 +21,7 @@ const nextPageButton = document.querySelector("#nextPage");
 let currentPage = 0;
 const pageSize = 10; // 한 페이지에 표시할 주문 수
 let totalPages = 1;
+let orders = [];
 
 checkAdmin();
 addAllElements();
@@ -41,6 +43,18 @@ function addAllEvents() {
   prevPageButton.addEventListener("click", () => changePage(currentPage - 1));
   nextPageButton.addEventListener("click", () => changePage(currentPage + 1));
   addStatusChangeEventListener(); // 추가
+  searchInput.addEventListener('input', handleSearch);
+}
+
+// 검색 기능 구현
+async function handleSearch() {
+  const searchTerm = searchInput.value.trim();
+  const filteredOrders = orders.filter(order =>
+    String(order.id).includes(searchTerm)
+  );
+  renderOrders(filteredOrders);
+  updateSummary(filteredOrders);
+  updatePagination(filteredOrders.length);
 }
 
 // 페이지 로드 시 실행, 삭제할 주문 id를 전역변수로 관리함
@@ -63,12 +77,13 @@ async function insertOrders() {
 
     // JSON으로 변환
     const data = JSON.parse(responseText);
-    const { content: orders, totalPages: newTotalPages } = data;
+    const { content: ordersData, totalPages: newTotalPages } = data;
 
+    orders = ordersData; // 전역 변수에 주문 데이터 할당
     totalPages = newTotalPages;
     renderOrders(orders);
     updateSummary(orders);
-    updatePagination();
+    updatePagination(orders.length);
   } catch (err) {
     console.error("Error fetching orders:", err);
     alert("주문 데이터를 가져오는 중 오류가 발생했습니다.");
@@ -98,7 +113,7 @@ function renderOrders(orders) {
     const orderItemHTML = `
         <div class="columns notification">
           <div class="column is-2">${date}</div>
-          <div class="column is-4">주문번호: ${id}</div>
+          <div class="column is-4">${id}</div>
           <div class="column is-2">${addCommas(Number(totalAmount))}원</div>
           <div class="column is-2">
             <div class="select">
@@ -167,7 +182,8 @@ function changePage(page) {
 }
 
 // 페이지 네비게이션 업데이트 함수
-function updatePagination() {
+function updatePagination(totalItems) {
+  const totalPages = Math.ceil(totalItems / pageSize);
   paginationList.innerHTML = "";
 
   for (let i = 0; i < totalPages; i++) {
@@ -179,7 +195,13 @@ function updatePagination() {
       pageLink.classList.add("is-current");
     }
     pageLink.textContent = i + 1;
-    pageLink.addEventListener("click", () => changePage(i));
+    pageLink.addEventListener("click", () => {
+      currentPage = i;
+      const startIndex = currentPage * pageSize;
+      const endIndex = startIndex + pageSize;
+      const ordersToShow = orders.slice(startIndex, endIndex);
+      renderOrders(ordersToShow);
+    });
 
     pageItem.appendChild(pageLink);
     paginationList.appendChild(pageItem);
