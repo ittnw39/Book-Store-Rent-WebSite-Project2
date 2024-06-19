@@ -49,40 +49,40 @@ async function insertOrders() {
     const { id } = userData;
 
     if (!id) {
-      throw new Error("API 응답에 id 값이 없습니다.");
-    }
+              throw new Error("API 응답에 id 값이 없습니다.");
+        }
 
     userId = id;
 
     const response = await fetch(`/orders/${userId}?page=${currentPage}&size=${pageSize}`);
 
-    console.log('Response status:', response.status);
-    console.log('Response headers:', response.headers);
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
 
-    const responseText = await response.text();
-    console.log('Response text:', responseText);
+      const responseText = await response.text();
+      console.log('Response text:', responseText);
 
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      // JSON으로 변환
+      const data = JSON.parse(responseText);
+      const { content: orders, totalPages: newTotalPages } = data;
+
+      totalPages = newTotalPages;
+      renderOrders(orders);
+      updatePagination();
+
+    } catch (err) {
+        console.error("Error fetching orders:", err);
+        alert("주문 데이터를 가져오는 중 오류가 발생했습니다.");
+      }
     }
 
-    // JSON으로 변환
-    const data = JSON.parse(responseText);
-    const { content: orders, totalPages: newTotalPages } = data;
-
-    totalPages = newTotalPages;
-    renderOrders(orders);
-    updatePagination();
-
-  } catch (err) {
-    console.error("Error fetching orders:", err);
-    alert("주문 데이터를 가져오는 중 오류가 발생했습니다.");
-  }
-}
-
-// 주문 데이터를 HTML 요소로 변환하는 함수
-function renderOrders(orders) {
-  ordersContainer.innerHTML = `
+    // 주문 데이터를 HTML 요소로 변환하는 함수
+    function renderOrders(orders) {
+      ordersContainer.innerHTML = `
         <div class="columns notification is-info is-light is-mobile orders-top">
           <div class="column is-2">날짜</div>
           <div class="column is-4">주문정보</div>
@@ -92,11 +92,11 @@ function renderOrders(orders) {
         </div>
       `;
 
-  orders.forEach(order => {
-    const { id, orderDate, orderStatus, totalAmount } = order;
-    const date = new Date(orderDate).toLocaleDateString();
+      orders.forEach(order => {
+        const { id, orderDate, orderStatus, totalAmount } = order;
+        const date = new Date(orderDate).toLocaleDateString();
 
-    const orderItemHTML = `
+        const orderItemHTML = `
           <div class="columns notification" id="order-${id}">
             <div class="column is-2">${date}</div>
             <div class="column is-4">주문번호: ${id}</div>
@@ -108,15 +108,15 @@ function renderOrders(orders) {
           </div>
         `;
 
-    ordersContainer.innerHTML += orderItemHTML;
+        ordersContainer.innerHTML += orderItemHTML;
 
-    // 삭제 버튼 이벤트 추가
-    document.querySelector(`#deleteButton-${id}`).addEventListener("click", function() {
-      orderIdToDelete = id;
-      openModal();
-    });
-  });
-}
+        // 삭제 버튼 이벤트 추가
+        document.querySelector(`#deleteButton-${id}`).addEventListener("click", function() {
+          orderIdToDelete = id;
+          openModal();
+        });
+      });
+    }
 // 페이지 변경 함수
 function changePage(page) {
   if (page < 0 || page >= totalPages) return;
@@ -151,14 +151,14 @@ function updatePagination() {
 async function deleteOrderData(e) {
   e.preventDefault();
 
-  try {
-    console.log(`Deleting order ${orderIdToDelete}`);
-    const response = await fetch(`/orders/${orderIdToDelete}`, {
-      method: 'DELETE',
-    });
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
+   try {
+      console.log(`Deleting order ${orderIdToDelete}`);
+      const response = await fetch(`/orders/${orderIdToDelete}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
 
     // 삭제 성공
     alert("주문 정보가 삭제되었습니다.");

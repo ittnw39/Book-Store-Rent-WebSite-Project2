@@ -191,6 +191,9 @@ function handleRequestChange(e) {
 
 // 결제 진행
 async function doCheckout() {
+
+const cartItems = await Api.get("/api/cart");
+
 if (!globalUserId) {
         alert('로그인이 필요합니다.');
         return navigate('/login');  // 로그인 페이지로 이동
@@ -233,7 +236,7 @@ if (!globalUserId) {
 
 try {
     // 전체 주문을 등록함
-    const discountRate = 0.1;
+    const discountRate = 0;
     const orderData = await Api.post("/orders/create", {
       userId: globalUserId,
       orderDate: new Date().toISOString(),
@@ -253,7 +256,7 @@ try {
       throw new Error("Order ID를 추출할 수 없습니다.");
     }
 
-    const cartItems = await Api.get("/api/cart");
+
     for (const item of cartItems) {
         try {
             const orderLine = {

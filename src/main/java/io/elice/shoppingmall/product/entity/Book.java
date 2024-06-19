@@ -4,6 +4,7 @@ import io.elice.shoppingmall.cart.entity.Cart;
 import io.elice.shoppingmall.cart.entity.CartItem;
 import io.elice.shoppingmall.category.entity.Category;
 import io.elice.shoppingmall.etc.entity.Event;
+import io.elice.shoppingmall.order.entity.OrderLineBook;
 import io.elice.shoppingmall.user.entity.BookWishList;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -96,8 +97,6 @@ public class Book {
     @JoinColumn(name = "category_id")
     private Category category;
 
-
-
     @OneToOne(mappedBy = "book")
     private Event event;
 
@@ -107,6 +106,9 @@ public class Book {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL) // book 삭제되면 리뷰도 같이 삭제
     private List<Review> review;
 
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
+    private List<CartItem> cartItem;
 
-
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
+    private List<OrderLineBook> orderLineBook;
 }

@@ -85,8 +85,8 @@ export const checkLogin = () => {
   export const checkAdmin = async () => {
       const token = sessionStorage.getItem("token");
       if (!token || token === "") {
-          const pathname = window.location.pathname;
-          const search = window.location.search;
+//          const pathname = window.location.pathname;
+//          const search = window.location.search;
           //window.location.replace(`/login?previouspage=${pathname + search}`);
           window.location.replace("/users/login");
           return;
@@ -104,7 +104,7 @@ export const checkLogin = () => {
               sessionStorage.removeItem("token");
               sessionStorage.removeItem("isAdmin");
               alert("세션이 만료되었습니다. 다시 로그인해주세요.");
-              window.location.replace("users/login");
+              window.location.replace("/users/login");
               return;
           }
 
