@@ -4,6 +4,8 @@ import io.elice.shoppingmall.order.DTO.OrderDTO;
 import io.elice.shoppingmall.order.entity.Orders;
 import io.elice.shoppingmall.order.mapper.OrderMapper;
 import io.elice.shoppingmall.order.repository.OrderRepository;
+import io.elice.shoppingmall.product.entity.Book;
+import io.elice.shoppingmall.product.repository.BookRepository;
 import io.elice.shoppingmall.user.entity.User;
 import io.elice.shoppingmall.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +24,32 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final OrderMapper orderMapper;
+    private final BookRepository bookRepository;
 
-    @Transactional //주문 생성
-    public Orders createOrder(OrderDTO orderDTO) {
+    //주문 생성
+//    @Transactional
+//    public Orders createOrder(OrderDTO orderDTO) {
+//        User user = userRepository.findById(orderDTO.getUserId()).orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + orderDTO.getUserId()));
+//        Orders order = OrderMapper.INSTANCE.toOrderEntity(orderDTO, user);
+//        return orderRepository.save(order);
+//    }
+
+    //주문 생성 (수정)
+    @Transactional
+        public Orders createOrder(OrderDTO orderDTO) {
         User user = userRepository.findById(orderDTO.getUserId()).orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + orderDTO.getUserId()));
         Orders order = OrderMapper.INSTANCE.toOrderEntity(orderDTO, user);
-        return orderRepository.save(order);
+        Orders savedOrder = orderRepository.save(order);
+
+        //각 책의 주문 횟수 업데이트
+        savedOrder.getOrderLine().forEach(orderLine -> {
+            orderLine.getOrderLineBooks().forEach(orderLineBook -> {
+                Book book = orderLineBook.getBook();
+                book.setOrderCount(book.getOrderCount() + 1);
+                bookRepository.save(book);
+            });
+        });
+        return savedOrder;
     }
 
     public OrderDTO getOrderById(Long id) { //관리자 - 주문 아이디로 조회
@@ -63,8 +85,33 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    @Transactional //관리자, 사용자 - 주문 삭제
+    //관리자, 사용자 - 주문 삭제
+//    @Transactional
+//    public void deleteOrder(Long id) {
+//        orderRepository.deleteById(id);
+//    }
+
+    //관리자, 사용자 - 주문 삭제 (수정)
+    @Transactional
     public void deleteOrder(Long id) {
-        orderRepository.deleteById(id);
+        Orders order = orderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+
+        //각 책의 주문 횟수 감소
+        order.getOrderLine().forEach(orderLine -> {
+            orderLine.getOrderLineBooks().forEach(orderLineBook -> {
+                Book book = orderLineBook.getBook();
+                book.setOrderCount(book.getOrderCount() - 1);
+                bookRepository.save(book);
+            });
+        });
+        orderRepository.delete(order);
+    }
+
+    public List<OrderDTO> getAllOrdersByUserId(Long userId) {
+        List<Orders> orders = orderRepository.findAllByUserId(userId);
+        return orders.stream()
+                .map(order -> new OrderDTO(order))
+                .collect(Collectors.toList());
     }
 }

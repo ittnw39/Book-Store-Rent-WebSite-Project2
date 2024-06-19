@@ -150,10 +150,12 @@ async function insertProductData() {
       );
     }
 
-    // JWT 토큰에서 현재 사용자 이메일 추출
-    function getJwtTokenFromSession() {
-        return sessionStorage.getItem("token");
-    }
+  // JWT 토큰에서 현재 사용자 이메일 추출
+  const token = getJwtTokenFromSession();
+  if (token) {
+      const decodedToken = parseJwt(token);
+      currentUserEmail = decodedToken.sub; // JWT의 subject를 email로 가정
+  }
 
     // 리뷰 데이터 불러오기
     await fetchAndDisplayReviews();
@@ -181,7 +183,6 @@ async function insertProductData() {
 //    });
 //}
 
-
 // 리뷰 목록을 정렬 옵션에 따라 가져오는 함수
 async function fetchAndDisplayReviews() {
     const { id } = getPathParams();
@@ -191,13 +192,20 @@ async function fetchAndDisplayReviews() {
     console.log("Fetched reviews:", reviews);
     reviewsContainer.innerHTML = reviews.map(createReviewHtml).join("");
 
+    // 수정 버튼에 이벤트 리스너 추가
     document.querySelectorAll(".edit-review-button").forEach(button => {
         button.addEventListener("click", async () => {
             const reviewId = button.getAttribute("data-id");
-            await editReview(reviewId);
+            if(button.innerText === "수정") {
+                showEditForm(reviewId);
+                button.innerText = "저장";
+            } else {
+                editReview(reviewId);
+            }
         });
     });
 
+    // 삭제 버튼에 이벤트 리스너 추가
     document.querySelectorAll(".delete-review-button").forEach(button => {
         button.addEventListener("click", async() => {
             const reviewId = button.getAttribute("data-id");
@@ -227,11 +235,29 @@ async function addReview(comment) {
 
 // 리뷰를 수정하는 함수
 async function editReview(reviewId) {
-    const newComment = prompt("새로운 리뷰를 입력하세요:");
-    if (newComment) {
+    const newComment = document.getElementById(`edit-comment-${reviewId}`).value;
+    if (newComment.trim()) {
         await Api.put(`/api/book/review/${reviewId}`, { comment: newComment } );
         await fetchAndDisplayReviews();
     }
+}
+
+// 수정 폼 보이기 함수
+function showEditForm(reviewId) {
+    const commentElement = document.getElementById(`comment-${reviewId}`);
+    const editFormElement = document.getElementById(`edit-form-${reviewId}`);
+
+    commentElement.style.display = 'none';
+    editFormElement.style.display = 'block';
+}
+
+// 수정 폼 숨기기 함수
+function hideEditForm(reviewId) {
+    const commentElement = document.getElementById(`comment-${reviewId}`);
+    const editFormElement = document.getElementById(`edit-form-${reviewId}`);
+
+    commentElement.style.display = 'block';
+    editFormElement.style.display = 'none';
 }
 
 // 리뷰를 삭제하는 함수
@@ -249,8 +275,8 @@ async function deleteReview(reviewId) {
 // 리뷰에 좋아요를 추가하는 함수
 async function likeReview(reviewId) {
     await Api.post(`/api/book/review/${reviewId}/like`, {});
-    await fetchAndDisplayReviews();
-}
+        await fetchAndDisplayReviews();
+        }
 
 // 리뷰 HTML을 생성하는 함수
 function createReviewHtml(review) {
@@ -258,10 +284,13 @@ function createReviewHtml(review) {
     const isOwner = currentUserEmail && userDTO && userDTO.email === currentUserEmail;
 
     return `
-    <div class="box review" data-id="${id}">
+        <div class="box review" data-id="${id}">
       <div class="content">
         <p><strong>${userDTO?.username ?? 'Unknown User'}</strong> <small>${new Date(createdAt).toLocaleString()}</small></p>
-        <p>${comment}</p>
+        <p id="comment-${id}">${comment}</p>
+        <div id="edit-form-${id}" style="display: none; margin-bottom: 10px;">
+          <textarea id="edit-comment-${id}" class="textarea">${comment}</textarea>
+        </div>
         <p>
           <span class="icon like-review-button" data-id="${id}">
             <i class="fas fa-heart" style="color: ${likes > 0 ? 'red' : 'gray'};"></i>
@@ -291,3 +320,4 @@ function parseJwt(token) {
 
     return JSON.parse(jsonPayload);
 }
+

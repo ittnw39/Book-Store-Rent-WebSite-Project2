@@ -28,4 +28,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findByBookOrderByCreatedAtDesc(@Param("book") Book book);
 
     void delete(Review review);
+
+    @Query("SELECT COUNT(r) FROM Review r WHERE r.book.id = :bookId")
+    int countByBookId(@Param("bookId") Long bookId);
 }

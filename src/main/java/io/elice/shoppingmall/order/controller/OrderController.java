@@ -12,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/orders")
 @RequiredArgsConstructor
@@ -60,5 +62,12 @@ public class OrderController {
     public ResponseEntity<Void> deleteOrder(@PathVariable Long orderId) {
         orderService.deleteOrder(orderId);
         return ResponseEntity.noContent().build();
+    }
+
+    // 새로운 메서드 추가 - 페이징 없이 사용자별 모든 주문 내역 조회
+    @GetMapping("/user/{userId}/all")
+    public ResponseEntity<List<OrderDTO>> getAllOrdersWithoutPaging(@PathVariable Long userId) {
+        List<OrderDTO> orders = orderService.getAllOrdersByUserId(userId);
+        return ResponseEntity.ok(orders);
     }
 }

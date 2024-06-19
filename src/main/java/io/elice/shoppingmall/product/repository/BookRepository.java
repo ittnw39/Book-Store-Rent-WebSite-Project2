@@ -25,4 +25,11 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     //책 제목, 저자명 부분 검색 가능
     @Query("SELECT b FROM Book b WHERE b.title LIKE %:keyword% OR b.author.name LIKE %:keyword%")
     List<Book> findByTitleOrAuthor(@Param("keyword") String keyword);
+
+    // 리뷰 많은 순 상위 3위
+    List<Book> findTop3ByOrderByReviewCountDesc();
+
+    // 주문 많은 순 상위 3위
+    @Query("SELECT b FROM Book b ORDER BY b.orderCount DESC")
+    List<Book> findTop3ByOrderedBooks();
 }

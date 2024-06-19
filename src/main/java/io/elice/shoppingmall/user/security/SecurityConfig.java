@@ -24,7 +24,6 @@ public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final CustomUserDetailsService customUserDetailsService;
-    private final JwtBlacklistService jwtBlacklistService;
     private final OAuth2UserServiceImplement oAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
@@ -39,11 +38,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtUtil, customUserDetailsService, jwtBlacklistService);
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -64,7 +58,7 @@ public class SecurityConfig {
                 .userInfoEndpoint(endpoint -> endpoint.userService(oAuth2UserService))
                 .successHandler(oAuth2SuccessHandler)
             )
-            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, customUserDetailsService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
