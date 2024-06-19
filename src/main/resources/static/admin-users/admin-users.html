@@ -70,6 +70,15 @@
       </div>
     </div>
 
+    <!-- 회원 목록 위에 검색창 추가 -->
+    <div class="field mb-5">
+      <div class="control has-icons-left">
+        <input class="input" type="text" id="searchInput" placeholder="이메일 검색">
+        <span class="icon is-small is-left"><i class="fas fa-search"></i></span>
+      </div>
+    </div>
+
+
     <!-- 회원 목록 -->
     <div class="container orders-container">
       <div class="columns orders-top">
@@ -85,6 +94,11 @@
     </div>
   </div>
 </section>
+
+<!-- 회원 목록 아래에 페이지네이션 추가 -->
+<nav class="pagination is-centered mt-6" role="navigation" aria-label="pagination">
+  <ul class="pagination-list" id="pagination"></ul>
+</nav>
 
 <!-- 회원정보를 정말 삭제할 지 묻는 Modal 창 -->
 <div id="modal" class="modal">

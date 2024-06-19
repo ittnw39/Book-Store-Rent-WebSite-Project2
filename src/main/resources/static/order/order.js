@@ -239,7 +239,7 @@ try {
       orderDate: new Date().toISOString(),
       orderStatus: "주문 완료",
       discountRate: discountRate,
-      totalAmount: 150000,
+      totalPrice: totalPrice,
       userAddress: `${address.postalCode} ${address.address1} ${address.address2}`,
       orderOption: 'AVAILABLE',
       request,
