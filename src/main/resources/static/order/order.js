@@ -218,7 +218,10 @@ function handleRequestChange(e) {
 
 // 결제 진행
 async function doCheckout() {
-    if (!globalUserId) {
+
+const cartItems = await Api.get("/api/cart");
+
+if (!globalUserId) {
         alert('로그인이 필요합니다.');
         return navigate('/login');  // 로그인 페이지로 이동
     }
@@ -236,76 +239,64 @@ async function doCheckout() {
         return alert("배송지 정보를 모두 입력해 주세요.");
     }
 
-    // 요청사항의 종류에 따라 request 문구가 달라짐
-    let request;
-    if (requestType === "0") {
-        request = "요청사항 없음.";
-    } else if (requestType === "6") {
-        if (!customRequest) {
-            return alert("요청사항을 작성해 주세요.");
-        }
-        request = customRequest;
-    } else {
-        request = requestOption[requestType];
+  const address = {
+    postalCode,
+    address1,
+    address2,
+    receiverName,
+    receiverPhoneNumber
+  };
+
+
+try {
+    // 전체 주문을 등록함
+    const discountRate = 0;
+    const orderData = await Api.post("/orders/create", {
+      userId: globalUserId,
+      orderDate: new Date().toISOString(),
+      orderStatus: "주문 완료",
+      discountRate: discountRate,
+      totalAmount: totalPrice,
+      userAddress: `${address.postalCode} ${address.address1} ${address.address2}`,
+      orderOption: 'AVAILABLE',
+      request,
+    });
+
+    // orderId를 가져오기 위해 새로 생성된 주문을 GET 요청으로 가져옴
+    const orders = await Api.get(`/orders/user/${globalUserId}/all`);
+    const orderId = orders[orders.length - 1].id;  // 마지막으로 생성된 주문의 ID 추출
+
+    if (!orderId) {
+      throw new Error("Order ID를 추출할 수 없습니다.");
     }
 
-    const address = {
-        postalCode,
-        address1,
-        address2,
-        receiverName,
-        receiverPhoneNumber
-    };
 
-    try {
-        const discountRate = 0.1;
-        const orderData = await Api.post("/orders/create", {
-            userId: globalUserId,
-            orderDate: new Date().toISOString(),
-            orderStatus: "주문 완료",
-            discountRate: discountRate,
-            totalAmount: totalPrice,
-            userAddress: `${address.postalCode} ${address.address1} ${address.address2}`,
-            orderOption: 'AVAILABLE',
-            request,
-        });
+    for (const item of cartItems) {
+        try {
+            const orderLine = {
+                quantity: item.quantity,
+                price: item.price,
+                discountRate: 0.1,
+                orderId: orderId,
+            };
 
-        // orderId를 가져오기 위해 새로 생성된 주문을 GET 요청으로 가져옴
-        const orders = await Api.get(`/orders/user/${globalUserId}/all`);
-        const orderId = orders[orders.length - 1].id;  // 마지막으로 생성된 주문의 ID 추출
+            const createdOrderLine = await Api.post('/orderLine/create', orderLine);
+            const orderLineBookDTO = {
+                quantity: item.quantity,
+                bookId: item.bookDetailId,
+                orderLineId: createdOrderLine.id
+            };
 
-        if (!orderId) {
-            throw new Error("Order ID를 추출할 수 없습니다.");
+            await Api.post("/orderLineBook/create", orderLineBookDTO);
+        } catch (innerError) {
+            console.error("Error creating order line:", innerError);
+            // 필요하다면 에러를 사용자에게 알리거나 다른 처리를 할 수 있습니다.
         }
-
-        const selectedItems = JSON.parse(window.localStorage.getItem('orderData')).cartOrderDtoList;
-
-        for (const item of selectedItems) {
-            try {
-                const orderLine = {
-                    quantity: item.quantity,
-                    price: item.price,
-                    discountRate: 0.1,
-                    orderId: orderId,
-                };
-
-                const createdOrderLine = await Api.post('/orderLine/create', orderLine);
-                const orderLineBookDTO = {
-                    quantity: item.quantity,
-                    bookId: item.bookDetailId,
-                    orderLineId: createdOrderLine.id
-                };
-
-                await Api.post("/orderLineBook/create", orderLineBookDTO);
-            } catch (innerError) {
-                console.error("Error creating order line:", innerError);
-            }
-        }
-
-        alert("결제 및 주문이 정상적으로 완료되었습니다.\n감사합니다.");
-        window.location.href = "/order-complete/order-complete.html";
-    } catch (err) {
-        console.log(err);
-        alert(`결제 중 문제가 발생하였습니다: ${err.message}`);
     }
+    alert("결제 및 주문이 정상적으로 완료되었습니다.\n감사합니다.");
+    window.location.href = "/order-complete/order-complete.html";
+  } catch (err) {
+    console.log(err);
+    alert(`결제 중 문제가 발생하였습니다: ${err.message}`);
+  }
 }

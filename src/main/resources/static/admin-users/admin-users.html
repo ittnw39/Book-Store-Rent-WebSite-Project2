@@ -21,7 +21,7 @@
     <div class="navbar-brand">
       <a class="navbar-item" href="/">
         <img src="/elice-rabbit.png" width="30" height="30" />
-        <span class="has-text-link">Shopping Mall</span>
+        <span class="has-text-link">북팔이</span>
       </a>
 
       <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
@@ -70,6 +70,15 @@
       </div>
     </div>
 
+    <!-- 회원 목록 위에 검색창 추가 -->
+    <div class="field mb-5">
+      <div class="control has-icons-left">
+        <input class="input" type="text" id="searchInput" placeholder="이메일 검색">
+        <span class="icon is-small is-left"><i class="fas fa-search"></i></span>
+      </div>
+    </div>
+
+
     <!-- 회원 목록 -->
     <div class="container orders-container">
       <div class="columns orders-top">
@@ -85,6 +94,11 @@
     </div>
   </div>
 </section>
+
+<!-- 회원 목록 아래에 페이지네이션 추가 -->
+<nav class="pagination is-centered mt-6" role="navigation" aria-label="pagination">
+  <ul class="pagination-list" id="pagination"></ul>
+</nav>
 
 <!-- 회원정보를 정말 삭제할 지 묻는 Modal 창 -->
 <div id="modal" class="modal">
@@ -139,7 +153,7 @@
     <div class="box">
       <p class="mb-3">새로운 비밀번호를 입력해 주세요.</p>
 
-      <input class="input is-link mb-3" id="newPasswordInput" type="password" placeholder="" autocomplete="off" />
+      <input class="input is-link mb-3" id="newPasswordInput" type="password" placeholder="6자리 이상입력하세요" autocomplete="off" />
       <input class="input is-link mb-3" id="newPasswordConfirmInput" type="password" placeholder="비밀번호 확인" autocomplete="off" />
       <button class="button is-link mt-5" id="passwordChangeButton" aria-label="close">
         비밀번호 변경하기

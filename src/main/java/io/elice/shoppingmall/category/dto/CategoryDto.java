@@ -1,5 +1,6 @@
 package io.elice.shoppingmall.category.dto;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,6 +16,7 @@ public class CategoryDto {
     private Long id;
 
     @NotEmpty(message = "이름은 공백일 수 없습니다.")
+    @Column(unique = true)
     private String name;
     private String createdAt;
     private String updatedAt;

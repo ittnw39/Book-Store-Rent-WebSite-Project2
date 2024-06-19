@@ -4,6 +4,7 @@ import io.elice.shoppingmall.cart.entity.Cart;
 import io.elice.shoppingmall.cart.entity.CartItem;
 import io.elice.shoppingmall.category.entity.Category;
 import io.elice.shoppingmall.etc.entity.Event;
+import io.elice.shoppingmall.order.entity.OrderLineBook;
 import io.elice.shoppingmall.user.entity.BookWishList;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -107,4 +108,7 @@ public class Book {
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     private List<CartItem> cartItem;
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
+    private List<OrderLineBook> orderLineBook;
 }

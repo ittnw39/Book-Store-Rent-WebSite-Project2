@@ -26,6 +26,7 @@ public class Category {
     private Long id;
 
     @NotEmpty(message = "이름은 공백일 수 없습니다.")
+    @Column(unique = true)
     private String name;
 
     @CreatedDate
