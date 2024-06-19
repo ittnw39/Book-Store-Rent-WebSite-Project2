@@ -113,7 +113,9 @@ function renderOrders(orders) {
     const orderItemHTML = `
         <div class="columns notification">
           <div class="column is-2">${date}</div>
-          <div class="column is-4">${id}</div>
+          <div class="column is-4">
+                                <a href="/orders/detail?orderId=${id}" class="order-link">주문 번호 : ${id}</a>
+                      </div>
           <div class="column is-2">${addCommas(Number(totalAmount))}원</div>
           <div class="column is-2">
             <div class="select">
@@ -131,7 +133,7 @@ function renderOrders(orders) {
             </div>
           </div>
           <div class="column is-2">
-            <button class="button deleteButton" id=${id} >취소</button>
+            <button class="button is-danger deleteButton" id=${id} >취소</button>
           </div>
         </div>
       `;

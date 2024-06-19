@@ -80,7 +80,7 @@
                 <div class="box delivery-info">
 
                     <!-- 배송지 정보 -->
-                    <p class="subtitle is-4">배송지정보</p>
+                    <p class="subtitle is-4">배송지 정보</p>
                     <div class="field is-horizontal">
 
                         <!-- 이름 표시 -->
@@ -89,7 +89,7 @@
                         </div>
                         <div class="field-body">
                             <div class="field">
-                                <p class="input is-static">받는 분 이름</p>
+                                <p class="input is-static">-</p>
                             </div>
                         </div>
 
@@ -103,7 +103,7 @@
                         </div>
                         <div class="field-body">
                             <div class="field">
-                                <p class="input is-static">010-1234-5678</p>
+                                <p class="input is-static">-</p>
                             </div>
                         </div>
                     </div>
@@ -115,32 +115,32 @@
                         </div>
                         <div class="field-body">
                             <div class="field">
-                                <p class="input is-static">서울특별시 강남구 어딘가 123번지</p>
+                                <p class="input is-static">-</p>
                             </div>
                         </div>
                     </div>
-
-                    <div class="field is-horizontal">
-                        <!-- 상세주소 표시 -->
-                        <div class="field-label is-normal">
-                            <label class="label">상세주소</label>
-                        </div>
-                        <div class="field-body">
-                            <div class="field">
-                                <p class="input is-static">101동 101호</p>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- 요청사항 표시 -->
                     <div class="field is-horizontal">
                         <div class="field-label is-normal">
                             <label class="label">요청사항</label>
                         </div>
                         <div class="field-body">
-                            <p class="input is-static">부재 시 문 앞에 놓아주세요.</p>
+                            <p class="input is-static">-</p>
                         </div>
                     </div>
+
+                    <div class="field is-horizontal">
+                        <!-- 상세주소 표시 -->
+                        <div class="field-label is-normal">
+                            <label class="label">주문상태</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="field">
+                                <p class="input is-static">-</p>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -153,31 +153,33 @@
                     <div class="order-info">
                         <div class="info">
                             <p>주문상품</p>
-                            <p class="products-title">상품명</p>
+                            <p class="products-title">-</p>
                         </div>
                         <div class="info">
                             <p>배송비</p>
-                            <p>무료</p>
+                            <p id="deliveryFee">-</p>
                         </div>
                         <div class="info">
                             <p>할인율</p>
-                            <p>10%</p>
+                            <p id="discountRate">-</p>
                         </div>
                     </div>
                     <div class="total">
                         <p class="total-label">총 결제금액</p>
-                        <p class="total-price">100,000원</p>
+                        <p class="total-price" id="orderTotal">-</p>
                     </div>
                     <div class="purchase">
                         <button class="button is-info" id="checkoutButton"
-                                style = "background-color: crimson;"
+                                style = "background-color: #485fc7;"
                         >
-                            결제 취소
+                            배송지 정보 수정
                         </button>
                     </div>
                 </div>
             </div>
         </div>
+        배송지 정보 유의사항 -<br>
+        • 배송 전 일때만 배송지 주소를 변경하실 수 있습니다. (상품 준비중 단계까지만 가능)
     </div>
 </section>
 </body>

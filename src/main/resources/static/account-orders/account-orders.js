@@ -105,7 +105,7 @@ async function insertOrders() {
             <div class="column is-2">${addCommas(Number(totalAmount))}원</div>
             <div class="column is-2">${orderStatus}</div>
             <div class="column is-2">
-              <button class="button deleteButton" id=${id} >취소</button>
+              <button class="button is-danger deleteButton" id=${id} >취소</button>
             </div>
           </div>
         `;
@@ -121,14 +121,6 @@ async function insertOrders() {
               openModal();
            });
       });
-
-      // 주문 ID 클릭 이벤트 추가
-        document.querySelectorAll(`.order-link`).forEach((el) => {
-          el.addEventListener("click", function (e) {
-            const id = e.target.getAttribute('data-id');
-            fetchOrderDetails(id);
-          });
-        });
     }
 
 
