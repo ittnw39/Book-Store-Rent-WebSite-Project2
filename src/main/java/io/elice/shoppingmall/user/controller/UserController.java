@@ -266,6 +266,7 @@ public class UserController {
                     String encodedPassword = passwordEncoder.encode((String) value);
                     user.setPassword(encodedPassword);
                     break;
+
             }
         });
         userRepository.save(user);

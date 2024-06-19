@@ -5,16 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Shopping Mall</title>
     <!-- 아이콘 -->
-    <link rel="icon" type="image/png" sizes="16x16" href="/elice-rabbit-favicon.png" />
+    <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/elice-rabbit-favicon.png"
+    />
     <!-- bulma css 관련 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" />
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+    />
     <!-- 폰트 어썸: 아이콘 -->
-    <script defer src="https://kit.fontawesome.com/9daa42bcef.js" crossorigin="anonymous"></script>
+    <script
+            defer
+            src="https://kit.fontawesome.com/9daa42bcef.js"
+            crossorigin="anonymous"
+    ></script>
     <!-- AWS S3 사용하기 위한 파일 -->
     <script src="https://sdk.amazonaws.com/js/aws-sdk-2.410.0.min.js"></script>
     <!-- 커스텀 css, js -->
     <link rel="stylesheet" href="/cart/cart.css" />
-    <script src="/cart/cart.js" defer></script>
+    <script src="/cart/cart.js" type="module" defer></script>
 </head>
 <body>
 <!-- 헤더 -->
@@ -22,22 +34,30 @@
     <div class="container mt-3">
         <div class="navbar-brand">
             <a class="navbar-item" href="/">
-                <img src="/elice-rabbit.png" width="30" height="30">
+                <img src="/elice-rabbit.png" width="30" height="30" />
                 <span class="has-text-link">Shopping Mall</span>
             </a>
-            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+
+            <a
+                    role="button"
+                    class="navbar-burger"
+                    aria-label="menu"
+                    aria-expanded="false"
+                    data-target="navbarBasicExample"
+            >
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
             </a>
         </div>
+
         <div class="navbar-end breadcrumb my-auto" aria-label="breadcrumbs">
             <ul id="navbar">
                 <li>
                     <a href="/cart" aria-current="page">
-                        <span class="icon">
-                            <i class="fas fa-cart-shopping"></i>
-                        </span>
+                <span class="icon">
+                  <i class="fas fa-cart-shopping"></i>
+                </span>
                         <span>카트</span>
                     </a>
                 </li>
@@ -59,28 +79,32 @@
                 </p>
             </div>
         </div>
+
         <div class="tile is-ancestor">
             <div class="tile is-8 is-parent cart-products">
-                <!-- 장바구니 상품 목록 -->
+                <!-- 장바구니에 담긴 상품 모음 -->
                 <div class="box cart-products-container" id="cartProductsContainer">
                     <div class="cart-products-header">
                         <label class="checkbox">
-                            <input type="checkbox" id="allSelectCheckbox">
+                            <input type="checkbox" id="allSelectCheckbox" />
                             <p class="help">전체선택</p>
                         </label>
                         <label class="seperator">
-                            <p class="help help-separator">&nbsp;&nbsp;|&nbsp;&nbsp;</p>
+                            <p class="help help-seperator">&nbsp;&nbsp;|&nbsp;&nbsp;</p>
                         </label>
                         <label class="delete-part" id="partialDeleteLabel">
                             <p class="help">선택삭제</p>
                         </label>
                     </div>
+
                     <div id="cartItemsContainer">
                         <!-- 장바구니 아이템이 여기에 추가됩니다 -->
                     </div>
+
                 </div>
+
             </div>
-            <!-- 주문 요약 정보 -->
+            <!-- 선택한 상품 총 요약 -->
             <div class="tile is-parent tile-order-summary">
                 <div class="box order-summary">
                     <div class="header">
@@ -97,7 +121,7 @@
                         </div>
                         <div class="info">
                             <p>배송비</p>
-                            <p id="deliveryFee">$5.00</p>
+                            <p id="deliveryFee"></p>
                         </div>
                     </div>
                     <div class="total">
@@ -105,192 +129,31 @@
                         <p class="total-price" id="orderTotal"></p>
                     </div>
                     <div class="purchase">
-                        <button class="button is-info" id="purchaseButton">구매하기</button>
+                        <button class="button is-info" id="purchaseButton">
+                            구매하기
+                        </button>
+                        <br>
+                        <br>
+                        <button class="button is-link" id="addMoreButton">상품 더 추가하기</button>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- 장바구니 유의사항 섹션 -->
+        <div class="box cart-notes" id="cartNotes">
+            <div class="header">
+                <p class="is-size-4">장바구니 유의사항</p>
+            </div>
+            <div class="content">
+                <ul>
+                    <li>장바구니에 담긴 상품은 결제 시점에 재고가 확보됩니다.</li>
+                    <li>상품 가격은 변동될 수 있습니다.</li>
+                    <li>장바구니에 담긴 상품은 한정 수량으로 조기 품절될 수 있습니다.</li>
+                </ul>
+            </div>
+        </div>
     </div>
 </section>
-
-
-<script>
-
-    document.addEventListener('DOMContentLoaded', function() {
-        fetchCartItems();
-
-        const allSelectCheckbox = document.getElementById('allSelectCheckbox');
-        const partialDeleteButton = document.getElementById('partialDeleteButton');
-        const purchaseButton = document.getElementById('purchaseButton');
-
-        // 전체 선택 체크박스 이벤트 리스너
-        allSelectCheckbox.addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('.productCheckbox');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
-        });
-
-        // 선택 삭제 버튼 클릭 이벤트 리스너
-        partialDeleteButton.addEventListener('click', async () => {
-            const checkboxes = document.querySelectorAll('.productCheckbox:checked');
-            const itemIds = Array.from(checkboxes).map(checkbox => checkbox.closest('.cart-item').dataset.cartItemId);
-
-            if (itemIds.length === 0) {
-                alert('삭제할 상품을 선택해주세요.');
-                return;
-            }
-
-            const confirmed = confirm(`선택한 ${itemIds.length}개의 상품을 삭제하시겠습니까?`);
-            if (!confirmed) {
-                return;
-            }
-
-            try {
-                const fetchPromises = itemIds.map(itemId => deleteCartItemFetch(itemId));
-                const responses = await Promise.all(fetchPromises);
-                const successfulDeletes = responses.filter(response => response.ok);
-
-                if (successfulDeletes.length === itemIds.length) {
-                    alert('선택한 상품이 삭제되었습니다.');
-                    fetchCartItems(); // 장바구니 아이템 다시 불러오기
-                } else {
-                    alert('일부 상품 삭제하는데 실패했습니다.');
-                }
-            } catch (error) {
-                console.error('Error deleting items:', error);
-                alert('상품 삭제하는 중 오류가 발생했습니다.');
-            }
-        });
-
-        // 구매하기 버튼 클릭 이벤트 리스너
-        purchaseButton.addEventListener('click', async () => {
-            const checkboxes = document.querySelectorAll('.productCheckbox:checked');
-            const itemIds = Array.from(checkboxes).map(checkbox => checkbox.closest('.cart-item').dataset.cartItemId);
-
-            if (itemIds.length === 0) {
-                alert('구매할 상품을 선택해주세요.');
-                return;
-            }
-
-            try {
-                const response = await fetch('/cart/purchase', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ itemIds: itemIds })
-                });
-
-                if (response.ok) {
-                    alert('주문이 성공적으로 처리되었습니다.');
-                    fetchCartItems(); // 장바구니 아이템 다시 불러오기
-                } else {
-                    alert('주문 처리하는데 실패했습니다.');
-                }
-            } catch (error) {
-                console.error('Error processing order:', error);
-                alert('주문 처리 중 오류가 발생했습니다.');
-            }
-        });
-
-        function fetchCartItems() {
-            fetch('/api/cart')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    const cartItemsContainer = document.getElementById('cartItemsContainer');
-                    const productsCount = document.getElementById('productsCount');
-                    const productsTotal = document.getElementById('productsTotal');
-                    const deliveryFee = document.getElementById('deliveryFee');
-                    const orderTotal = document.getElementById('orderTotal');
-
-                    let totalQuantity = 0;
-                    let totalPrice = 0;
-
-                    cartItemsContainer.innerHTML = ''; // 기존 카트 아이템을 모두 지우고 다시 렌더링
-
-                    data.forEach(item => {
-                        totalQuantity += item.quantity;
-                        totalPrice += item.quantity * item.price;
-
-                        const itemElement = document.createElement('div');
-                        itemElement.classList.add('box', 'media', 'cart-item');
-                        itemElement.dataset.cartItemId = item.id;
-                        itemElement.innerHTML = `
-                            <div class="media-left">
-                                <figure class="image is-64x64">
-                                    <img src="${item.imageURL}" alt="Product image">
-                                </figure>
-                            </div>
-                            <div class="media-content">
-                                <div class="content">
-                                    <label class="checkbox">
-                                        <input type="checkbox" class="productCheckbox">
-                                        <strong>${item.title}</strong><br>
-                                        수량: ${item.quantity}<br>
-                                        가격: ${item.price}원
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="media-right">
-                                <button class="button is-danger is-small delete-button" onclick="deleteCartItem(${item.id})">삭제</button>
-
-                            </div>
-                        `;
-
-                        cartItemsContainer.appendChild(itemElement);
-                    });
-
-                    productsCount.textContent = `${totalQuantity}개`;
-                    productsTotal.textContent = `₩${totalPrice.toLocaleString()}원`;
-                    deliveryFee.textContent = `3000원`;
-                    orderTotal.textContent = `${(totalPrice + 3000).toLocaleString()}원`;
-                })
-                .catch(error => console.error('Error fetching cart items:', error));
-        }
-
-        async function deleteCartItemFetch(cartItemId) {
-            try {
-                const response = await fetch(`/cart/item/${cartItemId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                return response;
-            } catch (error) {
-                console.error('Error deleting item:', error);
-                throw error;
-            }
-        }
-
-        function deleteCartItem(cartItemId) {
-        const confirmed = confirm('이 상품을 삭제하시겠습니까?');
-        if (!confirmed) {
-            return;
-        }
-
-        deleteCartItemFetch(cartItemId)
-            .then(response => {
-                if (response.ok) {
-                    alert('상품이 성공적으로 삭제되었습니다.');
-                    fetchCartItems(); // 장바구니 아이템 다시 불러오기
-                } else {
-                    alert('상품 삭제하는데 실패했습니다.');
-                }
-            })
-            .catch(error => {
-                console.error('Error deleting item:', error);
-                alert('상품 삭제 중 오류가 발생했습니다.');
-            });
-    }
-    });
-
-</script>
 </body>
 </html>

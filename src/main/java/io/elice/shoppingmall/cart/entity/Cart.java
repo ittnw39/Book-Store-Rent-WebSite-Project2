@@ -46,6 +46,5 @@ public class Cart {
         cartItem.setCart(null);
     }
 
-    // 기타 필요한 메서드들
 
 }

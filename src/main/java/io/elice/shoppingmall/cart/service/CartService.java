@@ -32,13 +32,13 @@ public class CartService {
 
 
 
-    // 사용자의 장바구니를 가져오거나 없으면 생성합니다.
+    // 사용자의 장바구니를 가져오거나 없으면 생성
     public Cart getOrCreateCart(User user) {
-        Optional<Cart> cartOptional = cartRepository.findByUser(user);
-        return cartOptional.orElseGet(() -> createCartForUser(user));
+        return cartRepository.findByUser(user)
+                .orElseGet(() -> createCartForUser(user));
     }
 
-    // 장바구니에 상품을 추가합니다.
+    // 장바구니에 상품을 추가 , switch 문으로 변경함
     public void addCart(Long userId, CartItemDto cartItemDto) {
         User user = new User();
         user.setId(userId);
@@ -46,22 +46,27 @@ public class CartService {
         Cart cart = getOrCreateCart(user);
 
         Book book = bookRepository.findById(cartItemDto.getBookId())
-                .orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + cartItemDto.getBookId()));
+                .orElseThrow(() -> new EntityNotFoundException("책을 찾을 수 없습니다: " + cartItemDto.getBookId()));
 
         Optional<CartItem> existingCartItemOptional = cartItemRepository.findByCartAndBook(cart, book);
-        if (existingCartItemOptional.isPresent()) {
-            CartItem existingCartItem = existingCartItemOptional.get();
-            existingCartItem.addQuantity(cartItemDto.getQuantity());
-            cartItemRepository.save(existingCartItem);
-        } else {
-            CartItem newCartItem = new CartItem(cart, book);
-            newCartItem.setQuantity(cartItemDto.getQuantity());
-            cartItemRepository.save(newCartItem);
-        }
+
+        existingCartItemOptional.ifPresentOrElse(
+                // ifPresent case
+                existingCartItem -> {
+                    existingCartItem.addQuantity(cartItemDto.getQuantity());
+                    cartItemRepository.save(existingCartItem);
+                },
+                // else case
+                () -> {
+                    CartItem newCartItem = new CartItem(cart, book);
+                    newCartItem.setQuantity(cartItemDto.getQuantity());
+                    cartItemRepository.save(newCartItem);
+                }
+        );
     }
 
 
-    // 사용자를 위한 새로운 장바구니를 생성합니다.
+    // 사용자를 위한 새로운 장바구니를 생성
     private Cart createCartForUser(User user) {
         Cart cart = new Cart();
         cart.setUser(user);
@@ -70,7 +75,6 @@ public class CartService {
 
 
     // 장바구니에서 상품을 삭제
-
     @Transactional
     public void deleteCartItem(Long cartItemId) {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
@@ -78,10 +82,17 @@ public class CartService {
         cartItemRepository.delete(cartItem);
     }
 
+    @Transactional
+    public void updateCartItemQuantity(Long cartItemId, int quantity) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new EntityNotFoundException("장바구니 항목을 찾을 수 없습니다"));
+        cartItem.setQuantity(quantity);
+        cartItemRepository.save(cartItem);
+    }
+
 
     public List<CartDetailDto> getCartDetails(Long cartId) {
         return cartItemRepository.findCartDetailDtoList(cartId);
     }
-
 
 }

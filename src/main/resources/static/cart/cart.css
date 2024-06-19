@@ -265,4 +265,9 @@ input[type="number"]::-webkit-outer-spin-button {
     margin-left: 0;
     width: 100%;
   }
+
+.price {
+    color: blue !important;
+    font-weight: bold;
+}
 }
