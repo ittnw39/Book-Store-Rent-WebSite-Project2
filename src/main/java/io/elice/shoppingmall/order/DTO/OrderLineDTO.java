@@ -21,6 +21,8 @@ public class OrderLineDTO {
 
     private BigDecimal discountRate;
 
+    private Long bookId; // 추가된 bookId 필드
+
     @JsonBackReference
     private Long orderId;
 
