@@ -64,9 +64,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }).then(() => {
             categoryForm.reset();
             categoryIdInput.value = ''; // Reset the hidden input value
+            errorMessage.innerText = '';
             fetchCategories(); // 변경된 데이터를 반영하기 위해 fetchCategories 호출
         }).catch(error => {
-            const errorMessage = document.getElementById('errorMessage');
             errorMessage.innerText = error.message || '카테고리를 저장하는 동안 오류가 발생했습니다.';
         });
     });

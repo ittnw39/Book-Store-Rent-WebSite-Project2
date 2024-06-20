@@ -221,27 +221,27 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
 
-                // 초기 로드 시 주문하기 버튼 이벤트 리스너 추가
-                document.getElementById("purchaseButton").addEventListener("click", function() {
-                    const selectedItems = [];
-                    document.querySelectorAll('.productCheckbox:checked').forEach(checkbox => {
-                        selectedItems.push(parseInt(checkbox.closest('.cart-item').dataset.cartItemId));
-                    });
-
-                    // 선택된 항목 ID를 콘솔에 출력
-                    console.log('Selected items:', selectedItems);
-
-                    if (selectedItems.length === 0) {
-                        alert('주문할 상품을 선택해주세요.');
-                        return;
-                    }
-
-                    // 선택된 상품 데이터를 로컬 스토리지에 저장
-                    localStorage.setItem('selectedItems', JSON.stringify(selectedItems));
-
-                    // 주문 요약 페이지로 이동
-                    window.location.href = '/orders';
-                });
+//                // 초기 로드 시 주문하기 버튼 이벤트 리스너 추가
+//                document.getElementById("purchaseButton").addEventListener("click", function() {
+//                    const selectedItems = [];
+//                    document.querySelectorAll('.productCheckbox:checked').forEach(checkbox => {
+//                        selectedItems.push(parseInt(checkbox.closest('.cart-item').dataset.cartItemId));
+//                    });
+//
+//                    // 선택된 항목 ID를 콘솔에 출력
+//                    console.log('Selected items:', selectedItems);
+//
+//                    if (selectedItems.length === 0) {
+//                        alert('주문할 상품을 선택해주세요.');
+//                        return;
+//                    }
+//
+//                    // 선택된 상품 데이터를 로컬 스토리지에 저장
+//                    localStorage.setItem('selectedItems', JSON.stringify(selectedItems));
+//
+//                    // 주문 요약 페이지로 이동
+//                    window.location.href = '/orders';
+//                });
 
                 // 초기 로드 시 장바구니 아이템 수량 및 가격 업데이트
                 updateCartSummary();
@@ -291,3 +291,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // 초기 로드 시 장바구니 아이템 로드
     fetchCartItems();
 });
+
+document.getElementById("purchaseButton").addEventListener("click", function() {
+    window.location.href = "/orders";
+});
+
+
