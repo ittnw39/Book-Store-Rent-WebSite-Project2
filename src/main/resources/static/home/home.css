@@ -96,7 +96,283 @@
 .banner-text .expiration {
   font-size: 1.2em;
   font-weight: bold;
-  color: #555;
+  color: #555;/* 이미지 슬라이더 스타일 */
+              .slider {
+                position: relative;
+                width: 100%;
+                height: 400px;
+                overflow: hidden;
+              }
+
+              .slide {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                opacity: 0;
+                transition: opacity 0.5s ease-in-out;
+              }
+
+              .slide.active {
+                opacity: 1;
+              }
+
+              .slide img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+              }
+
+              .slide-text {
+                position: absolute;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                color: white;
+                  padding: 10px;
+                font-size: 30px;
+                text-align: center;
+                opacity: 0;
+                transition: opacity 0.5s ease-in-out;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+              }
+
+              .slide.active .slide-text {
+                opacity: 1;
+              }
+
+              .event-text {
+                text-align: center;
+                margin-top: 10px;
+                font-size: 1.1em;
+                color: #4a4a4a;
+              }
+
+              /* 배너 스타일 */
+              .banner {
+                display: block;
+                text-decoration: none;
+                color: inherit;
+              }
+
+              .banner-content {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background-color: #f8f8f8;
+                padding: 20px;
+                border-radius: 10px;
+                height: 350px;
+              }
+
+              .banner-image-container {
+                flex: 0 0 auto;
+                margin-right: 20px;
+                height: 100%;
+              }
+
+              .banner-image {
+                max-width: 150%;
+                max-height: 100%;
+                object-fit: contain;
+              }
+
+              .banner-text .emphasis {
+                font-size: 1.5em;
+                font-weight: bold;
+                line-height: 1.4;
+                color: #333;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+              }
+
+              .banner-text .highlight {
+                color: #e53935;
+                text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+              }
+
+              .banner-text .expiration {
+                font-size: 1.2em;
+                font-weight: bold;
+                color: #555;
+                text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+              }
+
+              .banner-text-container {
+                flex: 1;
+                display: flex;
+                justify-content: flex-end;
+              }
+
+              .banner-text {
+                text-align: right;
+              }
+
+              .banner-text h3 {
+                font-size: 2em;
+                font-weight: bold;
+                margin-bottom: 15px;
+                color: #003366; /* 짙은 청색 */
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+              }
+
+              .banner-text p {
+                font-size: 1.2em;
+                line-height: 1.6;
+                margin-bottom: 15px;
+                color: #333399; /* 남색 */
+                text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+              }
+
+              .discount {
+                font-weight: bold;
+                color: #e53935; /* 강렬한 붉은색 */
+                text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+              }
+              /* 커스텀 검색 입력 스타일 */
+              .header-search-input {
+                width: 20rem;
+              }
+
+
+
+              .navbar-menu .is-info:focus {
+                outline: none;
+                box-shadow: none;
+              }
+
+              .navbar-dropdown {
+                max-height: 300px;
+                overflow-y: auto;
+              }
+
+              .navbar-item.ml-2 {
+                margin-left: 0.5rem;
+              }
+
+              #search-form .input {
+                width: 35rem;
+              }
+
+              .quote-section {
+                background-color: #f5f5f5;
+                padding: 2rem 0;
+                text-align: center;
+              }
+
+              .quote {
+                font-size: 1.5rem;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 1rem;
+              }
+
+              .quote-divider {
+                border: none;
+                border-top: 2px solid #333;
+                width: 50%;
+                margin: 0 auto;
+              }
+
+              /*리뷰 많은 책 top3*/
+              .title.is-3 {
+                font-size: 1.4rem;
+                text-align: center;
+                margin-bottom: 1.5rem;
+              }
+
+              .section {
+                padding: 3rem 1.5rem;
+                margin-top: 20px;
+                margin-bottom: 20px;
+              }
+
+              #top-books-container,
+              #top-ordered-books-container {
+                display: flex;
+                justify-content: center;
+                align-items: stretch;
+                margin-top: 1rem;
+                margin-bottom: 10px;
+              }
+
+              .card-content {
+                background-color: transparent;
+                padding: 1rem;
+                height: auto;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+              }
+
+              #top-books-container .column,
+              #top-ordered-books-container .column {
+                margin: 0 1rem;
+                display: flex;
+              }
+
+              .top-book,
+              .top-ordered-book {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+              }
+
+              .top-book .rank,
+              .top-ordered-book .rank {
+                font-size: 1.5rem;
+                font-weight: bold;
+                text-align: center;
+                margin-bottom: 10px;
+              }
+
+              .top-book .title.is-4,
+              .top-ordered-book .title.is-4 {
+                font-size: 1rem;
+                text-align: center;
+                margin-bottom: 0.5rem;
+              }
+
+              .top-book .subtitle.is-6,
+              .top-ordered-book .subtitle.is-6 {
+                font-size: 0.9rem;
+                text-align: center;
+                margin-top: auto;
+              }
+
+              @media screen and (min-width: 769px), print {
+                .column.is-one-third,
+                .column.is-one-third-tablet {
+                  flex: none;
+                  width: 33.33%;
+                }
+              }
+
+              @media screen and (min-width: 1024px) {
+                .container {
+                  max-width: 960px;
+                  margin-top: 1rem;
+                }
+                .section {
+                  padding: 1.5rem 3rem;
+                }
+              }
+
+              /* 책 카드에 마우스를 올렸을 때 색깔 변경 */
+              .top-reviewed-book:hover,
+              .top-ordered-book:hover {
+                background-color: #f0f8ff;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+              }
+
+              /*구분선*/
+              .jb-division-line {
+                border-top: 1px solid #444444;
+                margin: 20px auto;
+                width: 80%;
+                max-width: 400px;
+              }
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
 }
 

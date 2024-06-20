@@ -129,115 +129,98 @@ async function insertUserData() {
 
 // 주문 요약 정보를 불러와 화면에 표시하는 함수
 async function insertOrderSummary() {
-    const selectedItems = JSON.parse(window.localStorage.getItem('selectedItems')); // 로컬 스토리지에서 선택된 상품들의 ID를 가져옴
-    console.log('Selected items:', selectedItems);
-    if (!selectedItems || selectedItems.length === 0) {
-        alert("주문할 상품을 선택해주세요.");
-        return;
-    }
-
     try {
+        const response = await Api.get("/api/cart");
+        const cartDetails = response;
+
+        console.log(cartDetails);
+
+        if (!cartDetails.length) {
+            alert("장바구니에 상품이 없습니다. 상품을 먼저 추가해 주세요.");
+            return;
+        }
+
         let productsTitle = "";
         let productsTotal = 0;
 
-        // 선택된 상품들의 정보를 가져와서 화면에 표시
-        for (const selectedItem of selectedItems) {
-            // 이 부분에서 selectedItem에 있는 title, quantity, price를 출력
-            console.log('Title:', selectedItem.title);
-            console.log('Quantity:', selectedItem.quantity);
-            console.log('Price:', selectedItem.price);
+        cartDetails.forEach((item, index) => {
+            productsTitle += `${index + 1}. ${item.title} - ${item.quantity}개\n`;
+            productsTotal += item.price * item.quantity;
+        });
 
-            const item = await fetchItemDetails(selectedItem.book_id); // book_id를 이용해 서버에서 상품 정보를 가져오는 함수
-            if (!item) {
-                throw new Error(`상품 ${selectedItem.book_id} 정보를 가져오는 데 실패했습니다.`);
-            }
-
-            // 화면에 표시할 상품 정보 구성
-            productsTitle += `${item.title} - ${selectedItem.quantity}개\n`;
-            productsTotal += item.price * selectedItem.quantity;
-        }
-
-        // 상품 정보를 화면에 표시
         productsTitleElem.innerText = productsTitle;
-        orderTotalElem.innerText = `${addCommas(productsTotal)}원`;
 
-        // 기타 정보 설정 (배송비, 할인율 등)
+        const totalPrice = productsTotal;
+        orderTotalElem.innerText = `${addCommas(totalPrice)}원`;
+
         const shippingFee = 3000;
         deliveryFeeElem.innerText = `${addCommas(shippingFee)}원`;
 
         const discountRateValue = 0.1;
         discountRate.innerText = `${(discountRateValue * 100).toFixed(0)}%`;
 
-        const totalWithDeliveryAndDiscount = (productsTotal + shippingFee) * (1 - discountRateValue);
+        const totalWithDeliveryAndDiscount = (totalPrice + shippingFee) * (1 - discountRateValue);
         orderTotalElem.innerText = `${addCommas(totalWithDeliveryAndDiscount)}원`;
 
-        // 필요한 경우 포커스 설정 등 추가 작업 수행
         receiverNameInput.focus();
-
     } catch (error) {
-        console.error("주문 요약 정보 표시 중 오류 발생:", error);
-        alert("주문 요약 정보를 표시하는 중 오류가 발생했습니다.");
+        console.error("장바구니 정보를 가져오는 중 오류가 발생했습니다.", error);
+        alert("장바구니 정보를 불러오는 중 문제가 발생했습니다.");
     }
 }
-
-// 선택된 상품의 상세 정보를 서버에서 가져오는 함수
-async function fetchItemDetails(itemId) {
-    try {
-        const response = await fetch(`/api/cart/item/${itemId}`);
-        if (!response.ok) {
-            throw new Error(`상품 ${itemId} 정보를 가져오는 데 실패했습니다.`);
-        }
-        const item = await response.json();
-        return item;
-    } catch (error) {
-        console.error("상품 정보를 가져오는 중 오류 발생:", error);
-        throw error;
-    }
-}
-// 주문 요약 정보를 로드
-insertOrderSummary();
 
 // "직접 입력" 선택 시 input칸 보이게 함
 // default값(배송 시 요청사항을 선택해 주세여) 이외를 선택 시 글자가 진해지도록 함
 function handleRequestChange(e) {
-    const type = e.target.value;
+  const type = e.target.value;
 
-    if (type === "6") {
-        customRequestContainer.style.display = "flex";
-        customRequestInput.focus();
-    } else {
-        customRequestContainer.style.display = "none";
-    }
+  if (type === "6") {
+    customRequestContainer.style.display = "flex";
+    customRequestInput.focus();
+  } else {
+    customRequestContainer.style.display = "none";
+  }
 
-    if (type === "0") {
-        requestSelectBox.style.color = "rgba(0, 0, 0, 0.3)";
-    } else {
-        requestSelectBox.style.color = "rgba(0, 0, 0, 1)";
-    }
+  if (type === "0") {
+    requestSelectBox.style.color = "rgba(0, 0, 0, 0.3)";
+  } else {
+    requestSelectBox.style.color = "rgba(0, 0, 0, 1)";
+  }
 }
+
 
 // 결제 진행
 async function doCheckout() {
-
-const cartItems = await Api.get("/api/cart");
-
 if (!globalUserId) {
         alert('로그인이 필요합니다.');
         return navigate('/login');  // 로그인 페이지로 이동
     }
-    const receiverName = receiverNameInput.value;
-    const receiverPhoneNumber = receiverPhoneNumberInput.value;
-    const postalCode = postalCodeInput.value;
-    const address1 = address1Input.value;
-    const address2 = address2Input.value;
-    const requestType = requestSelectBox.value;
-    const customRequest = customRequestInput.value;
-    const summaryTitle = productsTitleElem.innerText;
-    const totalPrice = convertToNumber(orderTotalElem.innerText); // 백엔드가 BigDecimal을 요구한다면 문자열 형태로 전송
+  const receiverName = receiverNameInput.value;
+  const receiverPhoneNumber = receiverPhoneNumberInput.value;
+  const postalCode = postalCodeInput.value;
+  const address1 = address1Input.value;
+  const address2 = address2Input.value;
+  const requestType = requestSelectBox.value;
+  const customRequest = customRequestInput.value;
+  const summaryTitle = productsTitleElem.innerText;
+  const totalPrice = convertToNumber(orderTotalElem.innerText); // 백엔드가 BigDecimal을 요구한다면 문자열 형태로 전송
 
-    if (!receiverName || !receiverPhoneNumber || !postalCode || !address2) {
-        return alert("배송지 정보를 모두 입력해 주세요.");
+  if (!receiverName || !receiverPhoneNumber || !postalCode || !address2) {
+    return alert("배송지 정보를 모두 입력해 주세요.");
+  }
+
+  // 요청사항의 종류에 따라 request 문구가 달라짐
+  let request;
+  if (requestType === "0") {
+    request = "요청사항 없음.";
+  } else if (requestType === "6") {
+    if (!customRequest) {
+      return alert("요청사항을 작성해 주세요.");
     }
+    request = customRequest;
+  } else {
+    request = requestOption[requestType];
+  }
 
   const address = {
     postalCode,
@@ -250,7 +233,7 @@ if (!globalUserId) {
 
 try {
     // 전체 주문을 등록함
-    const discountRate = 0;
+    const discountRate = 0.1;
     const orderData = await Api.post("/orders/create", {
       userId: globalUserId,
       orderDate: new Date().toISOString(),
@@ -270,29 +253,29 @@ try {
       throw new Error("Order ID를 추출할 수 없습니다.");
     }
 
-
+    const cartItems = await Api.get("/api/cart");
     for (const item of cartItems) {
-        try {
-            const orderLine = {
-                quantity: item.quantity,
-                price: item.price,
-                discountRate: 0.1,
-                orderId: orderId,
-            };
+            try {
+                const orderLine = {
+                    quantity: item.quantity,
+                    price: item.price,
+                    discountRate: 0.1,
+                    orderId: orderId,
+                };
 
-            const createdOrderLine = await Api.post('/orderLine/create', orderLine);
-            const orderLineBookDTO = {
-                quantity: item.quantity,
-                bookId: item.bookDetailId,
-                orderLineId: createdOrderLine.id
-            };
+                const createdOrderLine = await Api.post('/orderLine/create', orderLine);
+                const orderLineBookDTO = {
+                    quantity: item.quantity,
+                    bookId: item.bookDetailId,
+                    orderLineId: createdOrderLine.id
+                };
 
-            await Api.post("/orderLineBook/create", orderLineBookDTO);
-        } catch (innerError) {
-            console.error("Error creating order line:", innerError);
-            // 필요하다면 에러를 사용자에게 알리거나 다른 처리를 할 수 있습니다.
+                await Api.post("/orderLineBook/create", orderLineBookDTO);
+            } catch (innerError) {
+                console.error("Error creating order line:", innerError);
+                // 필요하다면 에러를 사용자에게 알리거나 다른 처리를 할 수 있습니다.
+            }
         }
-    }
     alert("결제 및 주문이 정상적으로 완료되었습니다.\n감사합니다.");
     window.location.href = "/order-complete/order-complete.html";
   } catch (err) {
