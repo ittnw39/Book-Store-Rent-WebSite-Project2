@@ -57,10 +57,16 @@ public class OrderController {
         return "/order/order-detail.html";
     }
 
-    @PutMapping("/{orderId}") //주문 수정
-    public ResponseEntity<Orders> updateOrder(@PathVariable Long orderId, @RequestBody OrderDTO orderDTO) {
+    @PutMapping("/{orderId}") //주문상태 수정
+    public ResponseEntity<Orders> updateOrderStatus(@PathVariable Long orderId, @RequestBody OrderDTO orderDTO) {
         Orders updatedOrder = orderService.updateOrder(orderId, orderDTO);
         return ResponseEntity.ok(updatedOrder);
+    }
+
+    @PutMapping("/address/{orderId}") //배송지 수정
+    public ResponseEntity<Orders> updateOrderAddress(@PathVariable Long orderId, @RequestBody OrderDTO orderDTO) {
+        Orders updatedAddress = orderService.updateAddress(orderId, orderDTO);
+        return ResponseEntity.ok(updatedAddress);
     }
 
     @DeleteMapping("/{orderId}") //주문 삭제

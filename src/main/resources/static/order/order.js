@@ -130,8 +130,7 @@ async function insertUserData() {
 // 주문 요약 정보를 불러와 화면에 표시하는 함수
 async function insertOrderSummary() {
     try {
-        const response = await Api.get("/api/cart");
-        const cartDetails = response;
+        const cartDetails = JSON.parse(localStorage.getItem('selectedItems')) || [];
 
         console.log(cartDetails);
 
@@ -191,6 +190,9 @@ function handleRequestChange(e) {
 
 // 결제 진행
 async function doCheckout() {
+
+const cartItems = JSON.parse(localStorage.getItem('selectedItems')) || [];
+
 if (!globalUserId) {
         alert('로그인이 필요합니다.');
         return navigate('/login');  // 로그인 페이지로 이동
@@ -237,7 +239,7 @@ try {
     const orderData = await Api.post("/orders/create", {
       userId: globalUserId,
       orderDate: new Date().toISOString(),
-      orderStatus: "주문 완료",
+      orderStatus: "상품 준비중",
       discountRate: discountRate,
       totalAmount: totalPrice,
       userAddress: `${address.postalCode} ${address.address1} ${address.address2}`,
@@ -255,27 +257,34 @@ try {
 
     const cartItems = await Api.get("/api/cart");
     for (const item of cartItems) {
-            try {
-                const orderLine = {
-                    quantity: item.quantity,
-                    price: item.price,
-                    discountRate: 0.1,
-                    orderId: orderId,
-                };
+         try {
+                     const orderLine = {
+                         quantity: item.quantity,
+                         price: item.price,
+                         discountRate: 0,
+                         orderId: orderId,
+                     };
 
-                const createdOrderLine = await Api.post('/orderLine/create', orderLine);
-                const orderLineBookDTO = {
-                    quantity: item.quantity,
-                    bookId: item.bookDetailId,
-                    orderLineId: createdOrderLine.id
-                };
+                      const createdOrderLine = await Api.post('/orderLine/create', orderLine);
+                             console.log("Order line created:", createdOrderLine);
 
-                await Api.post("/orderLineBook/create", orderLineBookDTO);
-            } catch (innerError) {
-                console.error("Error creating order line:", innerError);
-                // 필요하다면 에러를 사용자에게 알리거나 다른 처리를 할 수 있습니다.
-            }
-        }
+                             const orderLineId = createdOrderLine.id;
+
+                             if (!orderLineId) {
+                               throw new Error("Order line ID를 추출할 수 없습니다.");
+                             }
+
+                     const orderLineBookDTO = {
+                         quantity: item.quantity,
+                         bookId: item.bookDetailId,
+                         orderLineId: orderLineId,
+                     };
+
+                     await Api.post("/orderLineBook/create", orderLineBookDTO);
+                 } catch (innerError) {
+                     console.error("Error creating order line:", innerError);
+                 }
+    }
     alert("결제 및 주문이 정상적으로 완료되었습니다.\n감사합니다.");
     window.location.href = "/order-complete/order-complete.html";
   } catch (err) {

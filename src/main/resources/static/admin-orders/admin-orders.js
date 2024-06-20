@@ -127,7 +127,7 @@ function renderOrders(orders) {
           </div>
         </div>
         <div class="column is-2">
-          <button class="button deleteButton" id=${id}>취소</button>
+          <button class="button is-danger deleteButton" id=${id}>취소</button>
         </div>
       </div>
     `;

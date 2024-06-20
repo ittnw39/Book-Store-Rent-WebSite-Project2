@@ -28,20 +28,12 @@ public class OrderService {
     private final BookRepository bookRepository;
 
     //주문 생성
-//    @Transactional
-//    public Orders createOrder(OrderDTO orderDTO) {
-//        User user = userRepository.findById(orderDTO.getUserId()).orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + orderDTO.getUserId()));
-//        Orders order = OrderMapper.INSTANCE.toOrderEntity(orderDTO, user);
-//        return orderRepository.save(order);
-//    }
-
-    //주문 생성 (수정)
     @Transactional
     public Orders createOrder(OrderDTO orderDTO) {
         User user = userRepository.findById(orderDTO.getUserId()).orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + orderDTO.getUserId()));
         Orders order = OrderMapper.INSTANCE.toOrderEntity(orderDTO, user);
 
-// OrderLine 리스트가 null이 아니면 추가
+        // OrderLine 리스트가 null이 아니면 추가
         if (orderDTO.getOrderLines() != null) {
             orderDTO.getOrderLines().forEach(orderLineDTO -> {
                 OrderLine orderLine = OrderMapper.INSTANCE.toOrderLineEntity(orderLineDTO);
@@ -108,12 +100,6 @@ public class OrderService {
         return savedOrder;
     }
 
-    //관리자, 사용자 - 주문 삭제
-//    @Transactional
-//    public void deleteOrder(Long id) {
-//        orderRepository.deleteById(id);
-//    }
-
     //관리자, 사용자 - 주문 삭제 (수정)
     @Transactional
     public void deleteOrder(Long id) {
@@ -136,5 +122,20 @@ public class OrderService {
         return orders.stream()
             .map(order -> new OrderDTO(order))
             .collect(Collectors.toList());
+    }
+
+    public Orders updateAddress(Long orderId, OrderDTO orderDTO) {
+        Orders order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("OrderId not found"));
+
+        System.out.println("Order found: " + order);
+        System.out.println("Updating order address to: " + orderDTO.getUserAddress());
+
+        order.setUserAddress(orderDTO.getUserAddress());
+
+        Orders savedOrder = orderRepository.save(order);
+
+        System.out.println("Order updated: " + savedOrder);
+        return savedOrder;
     }
 }
