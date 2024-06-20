@@ -259,7 +259,7 @@ public class UserController {
                 case "email":
                     user.setEmail((String) value);
                     break;
-                case "phNum":
+                case "phone_number":
                     user.setPhone_number((String) value);
                     break;
                 case "password":

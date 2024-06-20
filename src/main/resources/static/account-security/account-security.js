@@ -73,7 +73,6 @@ function addAllEvents() {
         console.error('비밀번호 검증 중 에러가 발생했습니다:', error);
       }
     });
-
 }
 
 // input 및 주소찾기 버튼의 disabled <-> abled 상태를 토글함.
@@ -139,8 +138,8 @@ async function insertUserData() {
 //  const { username, email, address, phone_number } = userData;
 
   // 서버에서 온 비밀번호는 해쉬 문자열인데, 이를 빈 문자열로 바꿈
-  // 나중에 사용자가 비밀번호 변경을 위해 입력했는지 확인하기 위함임.
-  userData.password = "비밀번호는 6자리 이상으로 해야 합니다.";
+  // 나중에 사용자가 비밀번호 변경을 위해 입력했는지 확인하기 위함임. d******
+  userData.password = "";
 
   securityTitle.innerText = `회원정보 관리 (${email})`;
   fullNameInput.value = username;
@@ -233,7 +232,7 @@ async function saveUserData(e) {
   const phone_number = phoneNumberInput.value;
   const currentPassword = currentPasswordInput.value;
 
-  const isPasswordLong = password.length >= 6;
+  const isPasswordLong = password.length >= 4;
   const isPasswordSame = password === passwordConfirm;
 //  const isPostalCodeChanged =
 //    postalCode !== (userData.address?.postalCode || "");
@@ -243,7 +242,7 @@ async function saveUserData(e) {
   // 비밀번호를 새로 작성한 경우
   if (password && !isPasswordLong) {
     closeModal();
-    return alert("비밀번호는 6글자 이상이어야 합니다.");
+    return alert("비밀번호는 4글자 이상이어야 합니다.");
   }
   if (password && !isPasswordSame) {
     closeModal();
