@@ -22,6 +22,7 @@ public class OrderLineBookService {
     private final OrderLineRepository orderLineRepository;
     private final OrderMapper orderMapper;
     private final BookRepository bookRepository;
+    private final BookService bookService;
 
     public OrderLineBookDTO getOrderLineBookById(Long orderLineId){
         OrderLineBook orderLineBook = orderLineBookRepository.findByOrderLineId(orderLineId);
@@ -40,6 +41,9 @@ public class OrderLineBookService {
         orderLineBook.setBook(book);
         orderLineBook.setOrderLine(orderLine);
         orderLineBook.setQuantity(orderLineBookDTO.getQuantity());
+
+        bookService.reduceStock(orderLineBook.getBook().getId(), orderLineBook.getQuantity());
+        bookService.addOrderCount(orderLineBook.getBook().getId());
 
         // Save the order line book entity
         return orderLineBookRepository.save(orderLineBook);
