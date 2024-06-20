@@ -158,7 +158,7 @@ async function insertOrderSummary() {
         const discountRateValue = 0.1;
         discountRate.innerText = `${(discountRateValue * 100).toFixed(0)}%`;
 
-        const totalWithDeliveryAndDiscount = (totalPrice + shippingFee) * (1 - discountRateValue);
+        const totalWithDeliveryAndDiscount = (totalPrice + shippingFee - (totalPrice * discountRateValue));
         orderTotalElem.innerText = `${addCommas(totalWithDeliveryAndDiscount)}원`;
 
         receiverNameInput.focus();

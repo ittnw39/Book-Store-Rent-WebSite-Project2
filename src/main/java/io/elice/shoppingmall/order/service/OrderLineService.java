@@ -32,11 +32,4 @@ public class OrderLineService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    public OrderLine updateOrderLine(Long orderId, OrderLineDTO orderLineDTO) {
-        OrderLine orderLine = orderLineRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("OrderLine not found"));
-        orderMapper.updateOrderLineFromDTO(orderLineDTO, orderLine);
-        return orderLineRepository.save(orderLine);
-    }
 }

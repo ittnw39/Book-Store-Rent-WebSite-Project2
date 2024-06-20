@@ -57,13 +57,6 @@ public class OrderController {
         return ResponseEntity.ok(orderDTO);
     }
 
-//    @GetMapping("/details/{orderId}") //주문 아이디별 주문 상세 조회
-//    public String getOrderDetail(@PathVariable Long orderId, Model model) {
-//        OrderDTO orderDTO = orderService.getOrderDetails(orderId);
-//        model.addAttribute("order", orderDTO);
-//        return "/order/order-detail.html";
-//    }
-
     @PutMapping("/{orderId}") //주문상태 수정
     public ResponseEntity<Orders> updateOrderStatus(@PathVariable Long orderId, @RequestBody OrderDTO orderDTO) {
         Orders updatedOrder = orderService.updateOrder(orderId, orderDTO);

@@ -36,11 +36,9 @@ function addAllEvents() {
   checkoutButton.addEventListener("click", enableAddressEdit);
 }
 
-
 // 주문 상세 정보 가져오기
 async function loadOrderDetails() {
-
- const token = sessionStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
   const urlParams = new URLSearchParams(window.location.search);
   orderId = urlParams.get("orderId");
@@ -50,34 +48,34 @@ async function loadOrderDetails() {
     return navigate("/");
   }
 
-   try {
-      const response = await fetch(`/orders/details/${orderId}`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const responseText = await response.text();
-      const orderData = JSON.parse(responseText);
+  try {
+    const response = await fetch(`/orders/details/${orderId}`);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const responseText = await response.text();
+    const orderData = JSON.parse(responseText);
 
-      console.log("Order Data:", orderData);
+    console.log("Order Data:", orderData);
 
-      globalUserId = orderData.userId;
+    globalUserId = orderData.userId;
 
-      displayOrderDetails({
-            userAddress: orderData.userAddress,
-            request: orderData.request,
-            orderStatus: orderData.orderStatus,
-          });
+    displayOrderDetails({
+      userAddress: orderData.userAddress,
+      request: orderData.request,
+      orderStatus: orderData.orderStatus,
+    });
 
-      const userData = await Api.get("/users/data");
+    const userData = await Api.get("/users/data");
 
-      console.log("User Data:", userData);
+    console.log("User Data:", userData);
 
-      displayUserDetails({
-            username: userData.username,
-            phone_number: userData.phone_number,
-         });
+    displayUserDetails({
+      username: userData.username,
+      phone_number: userData.phone_number,
+    });
 
-      await loadOrderLineDetails(orderId);
+    await loadOrderLineDetails(orderId);
 
   } catch (error) {
     console.error("Error loading order details:", error);
@@ -120,22 +118,20 @@ async function updateAddress() {
   }
 
   try {
+    console.log("Updating address to:", newAddress);
+    // 서버에 새로운 주소를 업데이트하는 API 호출
+    const response = await Api.put(`/orders/address/${orderId}`, { userAddress: newAddress });
+    console.log("Response from update:", response);
 
-       console.log("Updating address to:", newAddress);
-       // 서버에 새로운 주소를 업데이트하는 API 호출
-       const response = await Api.put(`/orders/address/${orderId}`, { userAddress: newAddress });
-       console.log("Response from update:", response);
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
 
-       if (!response.ok) {
-         throw new Error("Network response was not ok");
-       }
-
-       addressElem.innerHTML = `<p class="input userAddress is-static">${newAddress}</p>`;
-       alert("주소가 성공적으로 업데이트되었습니다.");
+    addressElem.innerHTML = `<p class="input userAddress is-static">${newAddress}</p>`;
+    alert("주소가 성공적으로 업데이트되었습니다.");
 
     // 페이지 리다이렉트
     window.location.href = `/orders/detail?orderId=${orderId}`;
-
 
   } catch (error) {
     console.error("주소 업데이트 중 오류가 발생했습니다.", error);
@@ -146,34 +142,35 @@ async function updateAddress() {
 // 주문 라인과 주문 라인북 상세 정보를 가져옴
 async function loadOrderLineDetails(orderId) {
   try {
-    const orderLines = await Api.get(`/orderLine/${orderId}`);
+    const [orderLines, books] = await Promise.all([
+      Api.get(`/orderLine/${orderId}`),
+      Api.get("/api/books")
+    ]);
+
     console.log("Order Line Data:", orderLines);
-
-    if (!orderLines.ok) {
-            throw new Error('Network response was not ok');
-          }
-
-    const responseText = await orderLines.text();
-    const orderLineData = JSON.parse(responseText);
-
-    console.log("Order Line Data:", orderLineData);
+    console.log("Books Data:", books);
 
     let productsTitle = "";
     let totalAmount = 0;
     const deliveryFee = 3000; // 배송비
     const discountRate = 0.1; // 할인율
 
-    orderLineResponse.forEach(orderLine => {
-          orderLine.orderLineBooks.forEach(book => {
-            productsTitle += `${book.bookTitle} x ${book.quantity}\n`;
-          });
-          totalAmount += orderLine.price * orderLine.quantity;
-        });
+    for (const orderLine of orderLines) {
+      for (const book of orderLine.orderLineBooks) {
+        const bookData = books.find(b => b.id === book.bookId);
+        if (bookData) {
+          productsTitle += `${bookData.title} x ${book.quantity}\n`;
+        } else {
+          productsTitle += `알 수 없는 제목 x ${book.quantity}\n`;
+        }
+      }
+      totalAmount += orderLine.price * orderLine.quantity;
+    }
 
-        productsTitleElem.innerText = productsTitle;
-        deliveryFeeElem.innerText = addCommas(deliveryFee) + "원";
-        discountRateElem.innerText = (discountRate * 100).toFixed(0) + "%";
-        orderTotalElem.innerText = addCommas(totalAmount + deliveryFee - (totalAmount * discountRate)) + "원";
+    productsTitleElem.innerText = productsTitle;
+    deliveryFeeElem.innerText = addCommas(deliveryFee) + "원";
+    discountRateElem.innerText = (discountRate * 100).toFixed(0) + "%";
+    orderTotalElem.innerText = addCommas(totalAmount + deliveryFee - (totalAmount * discountRate)) + "원";
 
   } catch (error) {
     console.error("Error loading order line details:", error);
