@@ -97,6 +97,93 @@
   </div>
 </nav>
 
+<section class="section">
+  <div class="container">
+    <a href="/users/register" class="banner">
+      <div class="banner-content">
+        <div class="banner-image-container">
+          <img src="/images/image8.png" alt="회원 가입 이벤트" class="banner-image" />
+        </div>
+        <div class="banner-text-container">
+          <div class="banner-text">
+            <h3>책 읽는 즐거움을 가장 합리적인 가격에 만나보세요!</h3>
+            <br />
+            <p class="emphasis">회원 가입하고 <span class="highlight">독서의 새로운 차원</span>으로 진입하세요.</p>
+            <p class="emphasis"><span class="highlight">지금 바로 클릭</span>하고 특별 혜택을 누리세요!</p>
+            <br />
+            <br />
+            <br />
+            <br />
+            <p class="expiration">2024년 6월 30일까지</p>
+          </div>
+      </div>
+        </div>
+    </a>
+  </div>
+</section>
+
+
+
+
+
+<style>
+  .modal-content {
+    width: 800px;
+    max-width: 90%;
+  }
+
+  .box {
+    background-color: #e6f2ff;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .content-wrapper {
+    flex-grow: 1;
+  }
+
+  .buttons-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding: 20px;
+    border-top: 1px solid #dbdbdb;
+  }
+</style>
+
+
+<div id="event-popup" class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-content">
+    <div class="box">
+      <div class="columns">
+        <div class="column">
+          <img src="/images/image5.png" alt="Event Image">
+        </div>
+        <div class="column">
+          <h3 class="title is-4">회원 가입 이벤트!</h3>
+          <p>
+            똑똑한 독자라면 놓칠 수 없는 기회!<br />
+            회원 가입하고 10% 할인 혜택을 잡으세요.<br />
+            <br />
+            북팔이 회원이 되어 특별한 혜택을 누려보세요.<br />
+            이벤트 기간: 2024년 6월 30일까지
+            <br />
+            <br />
+            <br />
+            <br />
+          </p>
+          <div class="buttons">
+            <a href="/users/register" class="button is-primary">회원 가입하기</a>
+            <button id="close-for-today" class="button is-text">오늘 하루 보지 않기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="modal-close is-large" aria-label="close"></button>
+</div>
 <!-- 네비바 아래에 이미지 슬라이더 추가 -->
 <section class="hero is-medium">
   <div class="hero-body">

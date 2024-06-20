@@ -11,6 +11,7 @@ const topOrderedBooksContainer = document.querySelector("#top-ordered-books-cont
 addAllElements();
 addAllEvents();
 
+
 // html에 요소를 추가하는 함수들을 묶어주어서 코드를 깔끔하게 하는 역할임.
 async function addAllElements() {
   createNavbar();
@@ -51,6 +52,36 @@ async function populateCategories() {
     );
   }
 }
+
+// 팝업창 열기
+window.addEventListener('DOMContentLoaded', () => {
+  const popupClosedAt = localStorage.getItem('eventPopupClosedAt');
+  const currentTime = new Date().getTime();
+
+  if (!popupClosedAt || currentTime > popupClosedAt) {
+    const popup = document.getElementById('event-popup');
+    popup.classList.add('is-active');
+  }
+});
+
+// 팝업창 닫기
+const closeButton = document.querySelector('#event-popup .modal-close');
+closeButton.addEventListener('click', () => {
+  const popup = document.getElementById('event-popup');
+  popup.classList.remove('is-active');
+});
+
+// "오늘 하루 보지 않기" 버튼 클릭 이벤트 처리
+const closeForTodayButton = document.querySelector('#close-for-today');
+closeForTodayButton.addEventListener('click', () => {
+  const popup = document.getElementById('event-popup');
+  popup.classList.remove('is-active');
+
+  // 로컬 스토리지에 팝업창 닫힘 정보와 타임스탬프 저장
+  const midnight = new Date();
+  midnight.setHours(24, 0, 0, 0);
+  localStorage.setItem('eventPopupClosedAt', midnight.getTime());
+});
 
 // 이미지 슬라이더 기능 구현
 const slides = document.querySelectorAll('.slide');

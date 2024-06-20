@@ -1,4 +1,4 @@
-/* 헤더  */
+/* 헤더 */
 .header-search-input {
   width: 20rem;
 }
@@ -32,13 +32,24 @@
   padding: 0;
 }
 
+.orders-top .column {
+  font-weight: bold;
+  padding: 0.75rem;
+}
+
 .orders-item {
   text-align: center;
   align-items: center;
+  display: flex;
+  padding: 1rem 0.75rem;
 }
 
 .orders-item:not(:last-child) {
   border-bottom: #bbb 1px solid;
+}
+
+.orders-item .column {
+  padding: 1rem 0.75rem;
 }
 
 .order-summary {

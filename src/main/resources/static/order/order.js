@@ -255,7 +255,7 @@ try {
       throw new Error("Order ID를 추출할 수 없습니다.");
     }
 
-
+    const cartItems = await Api.get("/api/cart");
     for (const item of cartItems) {
          try {
                      const orderLine = {

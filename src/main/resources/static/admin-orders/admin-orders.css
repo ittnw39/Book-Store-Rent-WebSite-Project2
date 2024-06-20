@@ -1,4 +1,4 @@
-/* 헤더  */
+/* 헤더 */
 .header-search-input {
   width: 20rem;
 }
@@ -25,22 +25,41 @@
 }
 
 .orders-top {
+  font-size: 0.9rem;
   text-align: center;
-  border-bottom: #aaa 1px solid;
-  padding: 0;
+  border-bottom: 1px solid #aaa;
+  padding: 0.5rem 0;
 }
 
 .orders-item {
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.orders-item > div {
   text-align: center;
+  flex: 1;
+}
+
+.orders-top,
+.orders-item {
+  display: flex;
+  justify-content: center;
   align-items: center;
 }
 
-.orders-item:not(:last-child) {
-  border-bottom: #bbb 1px solid;
+.orders-top > div,
+.orders-item > div {
+  flex: 1;
 }
+
 
 .order-summary {
   white-space: pre-line;
+  font-size: 0.85rem;
 }
 
 .modal .box {

@@ -1,7 +1,6 @@
 import { addCommas, checkLogin, createNavbar } from "../../useful-functions.js";
 import * as Api from "../../api.js";
 
-
 // 요소(element), input 혹은 상수
 const ordersContainer = document.querySelector("#ordersContainer");
 const modal = document.querySelector("#modal");
@@ -49,80 +48,89 @@ async function insertOrders() {
     const { id } = userData;
 
     if (!id) {
-              throw new Error("API 응답에 id 값이 없습니다.");
-        }
+      throw new Error("API 응답에 id 값이 없습니다.");
+    }
 
     userId = id;
 
     const response = await fetch(`/orders/${userId}?page=${currentPage}&size=${pageSize}`);
 
-      console.log('Response status:', response.status);
-      console.log('Response headers:', response.headers);
+    console.log('Response status:', response.status);
+    console.log('Response headers:', response.headers);
 
-      const responseText = await response.text();
-      console.log('Response text:', responseText);
+    const responseText = await response.text();
+    console.log('Response text:', responseText);
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      // JSON으로 변환
-      const data = JSON.parse(responseText);
-      const { content: orders, totalPages: newTotalPages } = data;
-
-      totalPages = newTotalPages;
-      renderOrders(orders);
-      updatePagination();
-
-    } catch (err) {
-        console.error("Error fetching orders:", err);
-        alert("주문 데이터를 가져오는 중 오류가 발생했습니다.");
-      }
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
     }
 
-    // 주문 데이터를 HTML 요소로 변환하는 함수
-    function renderOrders(orders) {
-      ordersContainer.innerHTML = `
-        <div class="columns notification is-info is-light is-mobile orders-top">
-          <div class="column is-2">날짜</div>
-          <div class="column is-4">주문정보</div>
-          <div class="column is-2">주문총액</div>
-          <div class="column is-2">상태</div>
-          <div class="column is-2">신청</div>
+    // JSON으로 변환
+    const data = JSON.parse(responseText);
+    const { content: orders, totalPages: newTotalPages } = data;
+
+    totalPages = newTotalPages;
+    renderOrders(orders);
+    updatePagination();
+
+  } catch (err) {
+    console.error("Error fetching orders:", err);
+    alert("주문 데이터를 가져오는 중 오류가 발생했습니다.");
+  }
+}
+
+// 주문 데이터를 HTML 요소로 변환하는 함수
+function renderOrders(orders) {
+  const ordersContainer = document.getElementById('ordersContainer');
+  ordersContainer.innerHTML = `
+    <div class="columns notification is-info is-light is-mobile orders-top">
+      <div class="column is-2">날짜</div>
+      <div class="column is-4">주문정보</div>
+      <div class="column is-2">주문총액</div>
+      <div class="column is-2">상태</div>
+      <div class="column is-2">신청</div>
+    </div>
+  `;
+
+  orders.forEach(order => {
+    const { id, orderDate, orderStatus, totalAmount } = order;
+    const date = new Date(orderDate).toLocaleDateString();
+
+    const orderItemHTML = `
+      <div class="columns notification orders-item" id="order-${id}">
+        <div class="column is-2">${date}</div>
+        <div class="column is-4">
+          <a href="/orders/detail?orderId=${id}" class="order-link">주문 번호 : ${id}</a>
         </div>
-      `;
+        <div class="column is-2">${addCommas(Number(totalAmount))}원</div>
+        <div class="column is-2">${orderStatus}</div>
+        <div class="column is-2">
+          <button class="button deleteButton" id=${id}>취소</button>
+        </div>
+      </div>
+    `;
 
-      orders.forEach(order => {
-        const { id, orderDate, orderStatus, totalAmount } = order;
-        const date = new Date(orderDate).toLocaleDateString();
+    ordersContainer.innerHTML += orderItemHTML;
+  });
 
-        const orderItemHTML = `
-          <div class="columns notification" id="order-${id}">
-            <div class="column is-2">${date}</div>
-            <div class="column is-4">
-                      <a href="/orders/detail?orderId=${id}" class="order-link">주문 번호 : ${id}</a>
-            </div>
-            <div class="column is-2">${addCommas(Number(totalAmount))}원</div>
-            <div class="column is-2">${orderStatus}</div>
-            <div class="column is-2">
-              <button class="button is-danger deleteButton" id=${id} >취소</button>
-            </div>
-          </div>
-        `;
+  // 삭제 버튼 이벤트 추가
+  document.querySelectorAll(`.deleteButton`).forEach((el) => {
+    el.addEventListener("click", function (e) {
+      const id = e.target.id;
+      console.log("id", id);
+      orderIdToDelete = id;
+      openModal();
+    });
+  });
 
-        ordersContainer.innerHTML += orderItemHTML;
-        });
-        // 삭제 버튼 이벤트 추가
-          document.querySelectorAll(`.deleteButton`).forEach((el) => {
-            el.addEventListener("click", function (e) {
-              const id = e.target.id;
-              console.log("id", id);
-              orderIdToDelete = id;
-              openModal();
-           });
-      });
-    }
-
+  // 주문 ID 클릭 이벤트 추가
+  document.querySelectorAll(`.order-link`).forEach((el) => {
+    el.addEventListener("click", function (e) {
+      const id = e.target.getAttribute('data-id');
+      fetchOrderDetails(id);
+    });
+  });
+}
 
 // 페이지 변경 함수
 function changePage(page) {
@@ -158,14 +166,14 @@ function updatePagination() {
 async function deleteOrderData(e) {
   e.preventDefault();
 
-   try {
-      console.log(`Deleting order ${orderIdToDelete}`);
-      const response = await fetch(`/orders/${orderIdToDelete}`, {
-        method: 'DELETE',
-      });
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
+  try {
+    console.log(`Deleting order ${orderIdToDelete}`);
+    const response = await fetch(`/orders/${orderIdToDelete}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
 
     // 삭제 성공
     alert("주문 정보가 삭제되었습니다.");
