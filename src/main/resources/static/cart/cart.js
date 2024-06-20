@@ -2,7 +2,9 @@ import { checkLogin } from "../useful-functions.js";
 
 checkLogin();
 
+
 document.addEventListener('DOMContentLoaded', function() {
+
 
     console.log("Document is ready!");
 
@@ -75,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     decreaseButton.classList.add('button', 'is-small', 'quantity-decrease');
                     decreaseButton.textContent = '-';
                     decreaseButton.style.position = 'relative'; // 위치 설정
-                    decreaseButton.style.top = '0rem'; // 원하는 위치로 이동
+                    decreaseButton.style.top = '-0.5rem'; // 원하는 위치로 이동
                     decreaseButton.style.left = '15rem'; // 원하는 위치로 이동
                     label.appendChild(decreaseButton);
 
@@ -84,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     quantitySpan.classList.add('quantity');
                     quantitySpan.textContent = item.quantity;
                     quantitySpan.style.position = 'relative'; // 위치 설정
-                    quantitySpan.style.top = '0rem'; // 원하는 위치로 이동
+                    quantitySpan.style.top = '-0.5rem'; // 원하는 위치로 이동
                     quantitySpan.style.left = '16rem'; // 원하는 위치로 이동
                     label.appendChild(quantitySpan);
 
@@ -93,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     increaseButton.classList.add('button', 'is-small', 'quantity-increase');
                     increaseButton.textContent = '+';
                     increaseButton.style.position = 'relative'; // 위치 설정
-                    increaseButton.style.top = '0rem'; // 원하는 위치로 이동
+                    increaseButton.style.top = '-0.5rem'; // 원하는 위치로 이동
                     increaseButton.style.left = '17rem'; // 원하는 위치로 이동
                     label.appendChild(increaseButton);
 
@@ -102,6 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     //priceText.style.color = '#485fc7'; // 가격 텍스트 색상 설정
                     priceText.style.position = 'relative'; // 상대 위치 설정
                     priceText.style.left = '20rem'; // 원하는 위치로 이동
+                    priceText.style.top = '-0.5rem';
                     priceText.style.fontSize = '1.5rem';
                     label.appendChild(priceText);
 
@@ -337,8 +340,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-
-
     // 초기 로드 시 장바구니 아이템 로드
 
 });
@@ -347,3 +348,4 @@ document.addEventListener('DOMContentLoaded', function() {
 document.getElementById('addMoreButton').addEventListener('click', function() {
     window.location.href = '/books';
     });
+

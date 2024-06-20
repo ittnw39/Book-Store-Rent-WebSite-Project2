@@ -294,10 +294,10 @@ input[type="number"]::-webkit-outer-spin-button {
         }
 
     .product-title {
-        padding-bottom: 2rem;
-        box-sizing: border-box;
-        width:2rem;
-        height:2rem;
+        position:relative;
+        top: 1.4rem;
+        font-size: 1.5rem;
+
     }
 
     .media-content .quantity {
@@ -329,9 +329,9 @@ input[type="number"]::-webkit-outer-spin-button {
         opacity: 0.8; /* 호버 시 투명도 변경 */
     }
 
-    .quantity-container {
-        position: relative; /* 위치 설정 */
-        top: 20px; /* 원하는 위치로 이동 */
-        left: 10px; /* 원하는 위치로 이동 */
-        /* 기타 스타일 추가 가능 */
+
+    .delete-button {
+        position:relative;
+        top:2.5rem;
     }
+
