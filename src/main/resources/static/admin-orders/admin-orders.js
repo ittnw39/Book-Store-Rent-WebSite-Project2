@@ -111,30 +111,26 @@ function renderOrders(orders) {
     const date = new Date(orderDate).toLocaleDateString();
 
     const orderItemHTML = `
-        <div class="columns notification">
-          <div class="column is-2">${date}</div>
-          <div class="column is-4">${id}</div>
-          <div class="column is-2">${addCommas(Number(totalAmount))}원</div>
-          <div class="column is-2">
-            <div class="select">
-              <select id="statusSelectBox-${id}">
-                <option ${
-                  orderStatus === "상품 준비중" ? "selected" : ""
-                } value="상품 준비중">상품 준비중</option>
-                <option ${
-                  orderStatus === "상품 배송중" ? "selected" : ""
-                } value="상품 배송중">상품 배송중</option>
-                <option ${
-                  orderStatus === "배송완료" ? "selected" : ""
-                } value="배송완료">배송완료</option>
-              </select>
-            </div>
-          </div>
-          <div class="column is-2">
-            <button class="button deleteButton" id=${id} >취소</button>
+      <div class="columns notification orders-item">
+        <div class="column is-2">${date}</div>
+        <div class="column is-4">
+          <a href="/orders/detail?orderId=${id}" class="order-link">주문 번호 : ${id}</a>
+        </div>
+        <div class="column is-2">${addCommas(Number(totalAmount))}원</div>
+        <div class="column is-2">
+          <div class="select">
+            <select id="statusSelectBox-${id}">
+              <option ${orderStatus === "상품 준비중" ? "selected" : ""} value="상품 준비중">상품 준비중</option>
+              <option ${orderStatus === "상품 배송중" ? "selected" : ""} value="상품 배송중">상품 배송중</option>
+              <option ${orderStatus === "배송완료" ? "selected" : ""} value="배송완료">배송완료</option>
+            </select>
           </div>
         </div>
-      `;
+        <div class="column is-2">
+          <button class="button deleteButton" id=${id}>취소</button>
+        </div>
+      </div>
+    `;
 
     ordersContainer.innerHTML += orderItemHTML;
   });
@@ -237,11 +233,17 @@ async function deleteOrderData(e) {
     // 전역변수 초기화
     orderIdToDelete = null;
     closeModal();
-  } catch (err) {
-    console.error(`Error deleting order ${orderIdToDelete}:`, err);
-    alert(`주문정보 삭제 과정에서 오류가 발생하였습니다: ${err.message}`);
-  }
-}
+//  } catch (err) {
+//    console.error(`Error deleting order ${orderIdToDelete}:`, err);
+//    alert(`주문정보 삭제 과정에서 오류가 발생하였습니다: ${err.message}`);
+
+    // 삭제 후 admin/orders 페이지로 이동
+        window.location.href = "/admin/orders";
+      } catch (err) {
+        console.error(`Error deleting order ${orderIdToDelete}:`, err);
+        alert(`주문정보 삭제 과정에서 오류가 발생하였습니다: ${err.message}`);
+      }
+    }
 
 // Modal 창에서 아니오 클릭할 시, 전역 변수를 다시 초기화함.
 function cancelDelete() {
