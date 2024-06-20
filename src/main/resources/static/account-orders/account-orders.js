@@ -132,8 +132,9 @@ function renderOrders(orders) {
               orderIdToDelete = id;
               openModal();
            });
-      });
-    }
+          });
+    })
+  }
 
 
 // 페이지 변경 함수

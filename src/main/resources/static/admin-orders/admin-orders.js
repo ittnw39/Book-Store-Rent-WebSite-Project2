@@ -90,7 +90,6 @@ async function insertOrders() {
   }
 }
 
-// 주문 데이터를 HTML 요소로 변환하는 함수
 function renderOrders(orders) {
   ordersContainer.innerHTML = ""; // 기존 주문 정보 초기화
 
@@ -131,7 +130,7 @@ function renderOrders(orders) {
         </div>
       </div>
     `;
-
+   )
     ordersContainer.innerHTML += orderItemHTML;
   });
 
@@ -144,7 +143,7 @@ function renderOrders(orders) {
       openModal();
     });
   });
-
+ })
 }
 
 function updateSummary(orders) {
