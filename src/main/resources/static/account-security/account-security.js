@@ -140,7 +140,7 @@ async function insertUserData() {
 
   // 서버에서 온 비밀번호는 해쉬 문자열인데, 이를 빈 문자열로 바꿈
   // 나중에 사용자가 비밀번호 변경을 위해 입력했는지 확인하기 위함임.
-  userData.password = "비밀번호는 6자리 이상으로 해야 합니다.";
+  userData.password = "";
 
   securityTitle.innerText = `회원정보 관리 (${email})`;
   fullNameInput.value = username;

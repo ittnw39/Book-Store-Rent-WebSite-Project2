@@ -131,6 +131,8 @@ async function processData(title, authorName, publisher, publishedDate, descript
     }
 
     alert(`정상적으로 ${title} 제품이 ${bookId ? '업데이트' : '등록'} 되었습니다.`);
+    // admin/books 페이지로 이동
+      window.location.href = '/admin/books';
 
     // 폼 초기화
     registerProductForm.reset();

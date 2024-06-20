@@ -61,7 +61,7 @@ public class UserController {
             return ResponseEntity.ok(Collections.singletonMap("message", "회원 가입이 완료되었습니다."));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
-                    .body(Collections.singletonMap("reason", e.getMessage()));
+                .body(Collections.singletonMap("reason", e.getMessage()));
         }
     }
 
@@ -86,8 +86,8 @@ public class UserController {
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
             Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
             List<String> roles = authorities.stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.toList());
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
 
             Map<String, Object> responseData = new HashMap<>();
             responseData.put("message", "로그인되었습니다.");
@@ -184,7 +184,7 @@ public class UserController {
 
     @PostMapping("/password-check")
     public ResponseEntity<?> checkPassword(@RequestHeader("Authorization") String token,
-                                           @RequestBody Map<String, String> passwordData) {
+        @RequestBody Map<String, String> passwordData) {
         String email = jwtUtil.getEmailFromToken(token.substring(7));
 
         Optional<User> optionalUser = userRepository.findByEmail(email);
@@ -259,7 +259,7 @@ public class UserController {
                 case "email":
                     user.setEmail((String) value);
                     break;
-                case "phNum":
+                case "phone_number":
                     user.setPhone_number((String) value);
                     break;
                 case "password":
@@ -275,7 +275,7 @@ public class UserController {
 
     @PostMapping("/verify-password")
     public ResponseEntity<?> verifyPassword(@RequestHeader("Authorization") String token,
-                                            @RequestBody Map<String, String> body) {
+        @RequestBody Map<String, String> body) {
         Map<String, Boolean> response = new HashMap<>();
         try {
             String email = jwtUtil.getEmailFromToken(token.substring(7));
