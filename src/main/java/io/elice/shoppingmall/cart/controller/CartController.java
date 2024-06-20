@@ -71,24 +71,7 @@ public class CartController {
     }
 
 
-    //주문 후 장바구니 비우는 코드
-//    @PostMapping("/orders")
-//    public ResponseEntity<String> createOrder(@RequestBody CartOrderDto cartOrderDto, Principal principal) {
-//        User user = getUserFromPrincipal(principal);
-//        List<Long> selectedItems = cartOrderDto.getCartOrderDtoList()
-//                .stream()
-//                .map(CartOrderDto::getCartItemId)
-//                .collect(Collectors.toList());
-//
-//        Long orderId = cartService.createOrder(user, selectedItems);
-//
-//        // 주문 생성 후 장바구니 비우기
-//        cartService.clearCart(user, selectedItems);
-//
-//        // 여기서 필요한 추가적인 작업을 수행할 수 있음 (예: 사용자에게 알림 보내기 등)
-//
-//        return new ResponseEntity<>("주문이 성공적으로 생성되었습니다. 주문 ID: " + orderId, HttpStatus.CREATED);
-//    }
+
 
     private User getUserFromPrincipal(Principal principal) {
         String username = principal.getName();
