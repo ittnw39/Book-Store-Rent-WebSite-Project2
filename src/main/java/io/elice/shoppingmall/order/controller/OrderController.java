@@ -44,18 +44,25 @@ public class OrderController {
 
     @GetMapping("/{userId}") //사용자별 주문 내역 조회
     @ResponseBody
-    public ResponseEntity<Page<OrderDTO>> getAllOrders(@PathVariable Long userId, Model model, @RequestParam(name= "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) { //사용자별 주문내역 조회
+    public ResponseEntity<Page<OrderDTO>> getAllOrders(@PathVariable Long userId, @RequestParam(name= "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) { //사용자별 주문내역 조회
         Pageable pageable = PageRequest.of(page, size);
         Page<OrderDTO> orders = orderService.getOrdersByUserId(userId, pageable);
         return ResponseEntity.ok(orders); //마이페이지->주문정보조회 페이지
     }
 
-    @GetMapping("/details/{orderId}") //주문 아이디별 주문 상세 조회
-    public String getOrderDetail(@PathVariable Long orderId, Model model) {
+    @GetMapping("/details/{orderId}") // 주문 아이디별 주문 상세 조회 (JSON 응답)
+    @ResponseBody
+    public ResponseEntity<OrderDTO> getOrderDetail(@PathVariable Long orderId) {
         OrderDTO orderDTO = orderService.getOrderDetails(orderId);
-        model.addAttribute("order", orderDTO);
-        return "/order/order-detail.html";
+        return ResponseEntity.ok(orderDTO);
     }
+
+//    @GetMapping("/details/{orderId}") //주문 아이디별 주문 상세 조회
+//    public String getOrderDetail(@PathVariable Long orderId, Model model) {
+//        OrderDTO orderDTO = orderService.getOrderDetails(orderId);
+//        model.addAttribute("order", orderDTO);
+//        return "/order/order-detail.html";
+//    }
 
     @PutMapping("/{orderId}") //주문상태 수정
     public ResponseEntity<Orders> updateOrderStatus(@PathVariable Long orderId, @RequestBody OrderDTO orderDTO) {

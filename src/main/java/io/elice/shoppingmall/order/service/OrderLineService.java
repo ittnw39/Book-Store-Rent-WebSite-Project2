@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class OrderLineService {
@@ -22,10 +25,11 @@ public class OrderLineService {
         return orderLineRepository.save(orderLine);
     }
 
-    public OrderLineDTO getOrderLineById(Long orderId) { //주문 상세 조회
-        OrderLine orderLine = orderLineRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("OrderLine not found"));
-        return orderMapper.toOrderLineDTO(orderLine);
+    public List<OrderLineDTO> getOrderLineByOrderId(Long orderId) { //주문 상세 조회
+        List<OrderLine> orderLines = orderLineRepository.findByOrders_Id(orderId);
+        return orderLines.stream()
+                .map(orderMapper::toOrderLineDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional
