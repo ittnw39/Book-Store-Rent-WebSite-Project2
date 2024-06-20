@@ -22,7 +22,7 @@ public class OrderLineController {
         return ResponseEntity.ok(createdOrderLine);
     }
 
-    @GetMapping("/{orderId}") //주문 아이디별 주문 상세내역 조회
+    @GetMapping("/{orderId}") //주문 아이디별 주문 라인 조회
     public ResponseEntity<OrderLineDTO> getOrderDetail(@PathVariable Long orderId, Model model) {
         OrderLineDTO orderLineDTO = orderLineService.getOrderLineById(orderId);
         return ResponseEntity.ok(orderLineDTO);
