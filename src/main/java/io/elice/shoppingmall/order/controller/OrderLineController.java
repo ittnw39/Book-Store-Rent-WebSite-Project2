@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/orderLine")
 @RequiredArgsConstructor
@@ -16,21 +18,17 @@ public class OrderLineController {
 
     private final OrderLineService orderLineService;
 
-    @PostMapping("/create")
+    @PostMapping("/create") //주문라인 생성
     public ResponseEntity<OrderLine> createOrderLine(@RequestBody OrderLineDTO orderLineDTO){
         OrderLine createdOrderLine = orderLineService.createOrderLine(orderLineDTO);
         return ResponseEntity.ok(createdOrderLine);
     }
 
     @GetMapping("/{orderId}") //주문 아이디별 주문 라인 조회
-    public ResponseEntity<OrderLineDTO> getOrderDetail(@PathVariable Long orderId, Model model) {
-        OrderLineDTO orderLineDTO = orderLineService.getOrderLineById(orderId);
-        return ResponseEntity.ok(orderLineDTO);
+    @ResponseBody
+    public ResponseEntity<List<OrderLineDTO>> getOrderDetail(@PathVariable Long orderId) {
+        List<OrderLineDTO> orderLineDTOs = orderLineService.getOrderLineByOrderId(orderId);
+        return ResponseEntity.ok(orderLineDTOs);
     }
 
-    @PutMapping("/{orderId}") //주문 정보 수정
-    public ResponseEntity<OrderLine> updateOrderLine(@PathVariable Long orderId, @RequestBody OrderLineDTO orderLineDTO) {
-        OrderLine updatedOrderLine = orderLineService.updateOrderLine(orderId, orderLineDTO);
-        return ResponseEntity.ok(updatedOrderLine);
-    }
 }

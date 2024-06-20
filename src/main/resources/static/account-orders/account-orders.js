@@ -102,35 +102,39 @@ function renderOrders(orders) {
         <div class="column is-4">
           <a href="/orders/detail?orderId=${id}" class="order-link">주문 번호 : ${id}</a>
         </div>
-        <div class="column is-2">${addCommas(Number(totalAmount))}원</div>
-        <div class="column is-2">${orderStatus}</div>
-        <div class="column is-2">
-          <button class="button deleteButton" id=${id}>취소</button>
-        </div>
-      </div>
-    `;
+      `;
 
-    ordersContainer.innerHTML += orderItemHTML;
-  });
+      orders.forEach(order => {
+        const { id, orderDate, orderStatus, totalAmount } = order;
+        const date = new Date(orderDate).toLocaleDateString();
 
-  // 삭제 버튼 이벤트 추가
-  document.querySelectorAll(`.deleteButton`).forEach((el) => {
-    el.addEventListener("click", function (e) {
-      const id = e.target.id;
-      console.log("id", id);
-      orderIdToDelete = id;
-      openModal();
-    });
-  });
+        const orderItemHTML = `
+          <div class="columns notification" id="order-${id}">
+            <div class="column is-2">${date}</div>
+            <div class="column is-4">
+                      <a href="/orders/detail?orderId=${id}" class="order-link">주문 번호 : ${id}</a>
+            </div>
+            <div class="column is-2">${addCommas(Number(totalAmount))}원</div>
+            <div class="column is-2">${orderStatus}</div>
+            <div class="column is-2">
+              <button class="button is-danger deleteButton" id=${id} ${orderStatus !== "상품 준비중" ? "disabled" : ""}>취소</button>
+            </div>
+          </div>
+        `;
 
-  // 주문 ID 클릭 이벤트 추가
-  document.querySelectorAll(`.order-link`).forEach((el) => {
-    el.addEventListener("click", function (e) {
-      const id = e.target.getAttribute('data-id');
-      fetchOrderDetails(id);
-    });
-  });
-}
+        ordersContainer.innerHTML += orderItemHTML;
+        });
+        // 삭제 버튼 이벤트 추가
+          document.querySelectorAll(`.deleteButton`).forEach((el) => {
+            el.addEventListener("click", function (e) {
+              const id = e.target.id;
+              console.log("id", id);
+              orderIdToDelete = id;
+              openModal();
+           });
+      });
+    }
+
 
 // 페이지 변경 함수
 function changePage(page) {

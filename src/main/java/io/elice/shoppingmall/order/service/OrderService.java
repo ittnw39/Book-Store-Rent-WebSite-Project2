@@ -124,6 +124,7 @@ public class OrderService {
             .collect(Collectors.toList());
     }
 
+    @Transactional
     public Orders updateAddress(Long orderId, OrderDTO orderDTO) {
         Orders order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("OrderId not found"));
