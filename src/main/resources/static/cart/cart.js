@@ -64,30 +64,47 @@ document.addEventListener('DOMContentLoaded', function() {
                     label.classList.add('checkbox');
                     const strong = document.createElement('strong');
                     strong.textContent = item.title;
+                    strong.classList.add('product-title'); // CSS 클래스 추가
+                    strong.style.paddingBottom = '2rem'; // 아래쪽 여백 설정
                     label.appendChild(strong);
                     label.appendChild(document.createElement('br'));
-                    label.appendChild(document.createTextNode('수량: '));
+
 
                     // 수량 감소 버튼
                     const decreaseButton = document.createElement('button');
                     decreaseButton.classList.add('button', 'is-small', 'quantity-decrease');
                     decreaseButton.textContent = '-';
+                    decreaseButton.style.position = 'relative'; // 위치 설정
+                    decreaseButton.style.top = '0rem'; // 원하는 위치로 이동
+                    decreaseButton.style.left = '15rem'; // 원하는 위치로 이동
                     label.appendChild(decreaseButton);
 
                     // 수량 표시
                     const quantitySpan = document.createElement('span');
                     quantitySpan.classList.add('quantity');
                     quantitySpan.textContent = item.quantity;
+                    quantitySpan.style.position = 'relative'; // 위치 설정
+                    quantitySpan.style.top = '0rem'; // 원하는 위치로 이동
+                    quantitySpan.style.left = '16rem'; // 원하는 위치로 이동
                     label.appendChild(quantitySpan);
 
                     // 수량 증가 버튼
                     const increaseButton = document.createElement('button');
                     increaseButton.classList.add('button', 'is-small', 'quantity-increase');
                     increaseButton.textContent = '+';
+                    increaseButton.style.position = 'relative'; // 위치 설정
+                    increaseButton.style.top = '0rem'; // 원하는 위치로 이동
+                    increaseButton.style.left = '17rem'; // 원하는 위치로 이동
                     label.appendChild(increaseButton);
 
-                    label.appendChild(document.createElement('br'));
-                    label.appendChild(document.createTextNode(`가격: ${item.price}원`));
+                    const priceText = document.createElement('span');
+                    priceText.textContent = `${item.price}원`;
+                    //priceText.style.color = '#485fc7'; // 가격 텍스트 색상 설정
+                    priceText.style.position = 'relative'; // 상대 위치 설정
+                    priceText.style.left = '20rem'; // 원하는 위치로 이동
+                    priceText.style.fontSize = '1.5rem';
+                    label.appendChild(priceText);
+
                     content.appendChild(label);
                     mediaContent.appendChild(content);
                     itemElement.appendChild(mediaContent);
