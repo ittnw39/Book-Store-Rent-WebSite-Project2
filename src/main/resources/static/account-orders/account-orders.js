@@ -82,6 +82,9 @@ async function insertOrders() {
 // 주문 데이터를 HTML 요소로 변환하는 함수
 function renderOrders(orders) {
   const ordersContainer = document.getElementById('ordersContainer');
+
+  ordersContainer.innerHTML = "";
+
   ordersContainer.innerHTML = `
     <div class="columns notification is-info is-light is-mobile orders-top">
       <div class="column is-2">날짜</div>
@@ -92,19 +95,7 @@ function renderOrders(orders) {
     </div>
   `;
 
-  orders.forEach(order => {
-    const { id, orderDate, orderStatus, totalAmount } = order;
-    const date = new Date(orderDate).toLocaleDateString();
-
-    const orderItemHTML = `
-      <div class="columns notification orders-item" id="order-${id}">
-        <div class="column is-2">${date}</div>
-        <div class="column is-4">
-          <a href="/orders/detail?orderId=${id}" class="order-link">주문 번호 : ${id}</a>
-        </div>
-      `;
-
-      orders.forEach(order => {
+      orders.forEach((order => {
         const { id, orderDate, orderStatus, totalAmount } = order;
         const date = new Date(orderDate).toLocaleDateString();
 
@@ -123,7 +114,8 @@ function renderOrders(orders) {
         `;
 
         ordersContainer.innerHTML += orderItemHTML;
-        });
+        }));
+
         // 삭제 버튼 이벤트 추가
           document.querySelectorAll(`.deleteButton`).forEach((el) => {
             el.addEventListener("click", function (e) {
@@ -131,9 +123,9 @@ function renderOrders(orders) {
               console.log("id", id);
               orderIdToDelete = id;
               openModal();
-           });
-      });
-    }
+          });
+        });
+  }
 
 
 // 페이지 변경 함수

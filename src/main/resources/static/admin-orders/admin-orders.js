@@ -90,7 +90,6 @@ async function insertOrders() {
   }
 }
 
-// 주문 데이터를 HTML 요소로 변환하는 함수
 function renderOrders(orders) {
   ordersContainer.innerHTML = ""; // 기존 주문 정보 초기화
 
@@ -135,17 +134,16 @@ function renderOrders(orders) {
     ordersContainer.innerHTML += orderItemHTML;
   });
 
-  // 삭제 버튼 이벤트 추가
-  document.querySelectorAll(`.deleteButton`).forEach((el) => {
-    el.addEventListener("click", function (e) {
-      const id = e.target.id;
-      console.log("id", id);
-      orderIdToDelete = id;
-      openModal();
-    });
-  });
-
-}
+      // 삭제 버튼 이벤트 추가
+      document.querySelectorAll(`.deleteButton`).forEach((el) => {
+        el.addEventListener("click", function (e) {
+          const id = e.target.id;
+          console.log("id", id);
+          orderIdToDelete = id;
+          openModal();
+        });
+      });
+ }
 
 function updateSummary(orders) {
   const summary = orders.reduce(
@@ -179,26 +177,19 @@ function changePage(page) {
 }
 
 // 페이지 네비게이션 업데이트 함수
-function updatePagination(totalItems) {
-  const totalPages = Math.ceil(totalItems / pageSize);
-  paginationList.innerHTML = "";
+function updatePagination() {
+  paginationList.innerHTML = '';
 
   for (let i = 0; i < totalPages; i++) {
-    const pageItem = document.createElement("li");
-    const pageLink = document.createElement("a");
+    const pageItem = document.createElement('li');
+    const pageLink = document.createElement('a');
 
-    pageLink.classList.add("pagination-link");
+    pageLink.classList.add('pagination-link');
     if (i === currentPage) {
-      pageLink.classList.add("is-current");
+      pageLink.classList.add('is-current');
     }
     pageLink.textContent = i + 1;
-    pageLink.addEventListener("click", () => {
-      currentPage = i;
-      const startIndex = currentPage * pageSize;
-      const endIndex = startIndex + pageSize;
-      const ordersToShow = orders.slice(startIndex, endIndex);
-      renderOrders(ordersToShow);
-    });
+    pageLink.addEventListener('click', () => changePage(i));
 
     pageItem.appendChild(pageLink);
     paginationList.appendChild(pageItem);
