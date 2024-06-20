@@ -1,4 +1,4 @@
-/* 헤더  */
+/* 헤더 */
 .header-search-input {
   width: 20rem;
 }
@@ -14,6 +14,12 @@
   padding-bottom: 0.7rem;
 }
 
+.column.is-2, .column.is-2-tablet {
+        flex: none;
+        width: 17.5%;
+        text-align: center;
+}
+
 /* 주문 리스트 */
 .orders-container {
   max-width: 1000px !important;
@@ -26,13 +32,24 @@
   padding: 0;
 }
 
+.orders-top .column {
+  font-weight: bold;
+  padding: 0.75rem;
+}
+
 .orders-item {
   text-align: center;
   align-items: center;
+  display: flex;
+  padding: 1rem 0.75rem;
 }
 
 .orders-item:not(:last-child) {
   border-bottom: #bbb 1px solid;
+}
+
+.orders-item .column {
+  padding: 1rem 0.75rem;
 }
 
 .order-summary {
