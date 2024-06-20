@@ -320,7 +320,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+
+
     // 초기 로드 시 장바구니 아이템 로드
     fetchCartItems();
 });
 
+//상품 더 추가하기
+document.getElementById('addMoreButton').addEventListener('click', function() {
+    window.location.href = '/books';
+    });

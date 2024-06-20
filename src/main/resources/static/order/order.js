@@ -155,8 +155,8 @@ async function insertOrderSummary() {
         const shippingFee = 3000;
         deliveryFeeElem.innerText = `${addCommas(shippingFee)}원`;
 
-    const shippingFee = 3000;
-    deliveryFeeElem.innerText = `${addCommas(shippingFee)}원`;
+        const discountRateValue = 0.1;
+        discountRate.innerText = `${(discountRateValue * 100).toFixed(0)}%`;
 
         const totalWithDeliveryAndDiscount = (totalPrice + shippingFee) * (1 - discountRateValue);
         orderTotalElem.innerText = `${addCommas(totalWithDeliveryAndDiscount)}원`;
@@ -190,7 +190,6 @@ function handleRequestChange(e) {
 
 // 결제 진행
 async function doCheckout() {
-    const selectedItems = JSON.parse(localStorage.getItem('selectedItems')) || [];
 
 const cartItems = JSON.parse(localStorage.getItem('selectedItems')) || [];
 
@@ -256,7 +255,7 @@ try {
       throw new Error("Order ID를 추출할 수 없습니다.");
     }
 
-    const cartItems = await Api.get("/api/cart");
+
     for (const item of cartItems) {
          try {
                      const orderLine = {

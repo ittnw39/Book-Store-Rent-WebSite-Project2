@@ -60,7 +60,7 @@ async function handleAddToCart() {
 
         // 알림창 표시
         alert("장바구니에 추가되었습니다.");
-       // 추가 성공 메시지를 띄우는 alert은 팝업 이후로 이동
+        // 추가 성공 메시지를 띄우는 alert은 팝업 이후로 이동
         const moveToCart = confirm('장바구니로 이동하시겠습니까?');
         if (moveToCart) {
             window.location.href = '/cart'; // 네를 클릭하면 장바구니 페이지로 이동
@@ -76,13 +76,20 @@ async function handleAddToCart() {
 async function handlePurchase() {
     const { id } = getPathParams();
     const product = await Api.get(`/api/book/${id}`);
-    try {
-        await insertDb(product);
-        window.location.href = "/orders";
-    } catch (err) {
-        console.log(err);
-        window.location.href = "/orders";
-    }
+
+    const selectedItems = [{
+        id: product.id,
+        bookDetailId: product.id,
+        title: product.title,
+        quantity: 1, // 단일 상품의 경우 기본적으로 수량을 1로 설정
+        price: product.price
+    }];
+
+    // 선택된 상품 데이터를 로컬 스토리지에 저장
+    localStorage.setItem('selectedItems', JSON.stringify(selectedItems));
+
+    // 주문 요약 페이지로 이동
+    window.location.href = '/orders';
 }
 
 async function handleReviewSubmit() {
