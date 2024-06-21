@@ -159,7 +159,7 @@ async function loadOrderLineDetails(orderId) {
       for (const book of orderLine.orderLineBooks) {
         const bookData = books.find(b => b.id === book.bookId);
         if (bookData) {
-          productsTitle += `${bookData.title} - ${book.price}원 x ${book.quantity}\n`;
+          productsTitle += `${bookData.title} - ${orderLine.price}원 x ${book.quantity}\n`;
         } else {
           productsTitle += `알 수 없는 제목 x ${book.quantity}\n`;
         }
