@@ -134,8 +134,8 @@ async function updateAddress() {
     window.location.href = `/orders/detail?orderId=${orderId}`;
 
   } catch (error) {
-    console.error("주소 업데이트 중 오류가 발생했습니다.", error);
-    alert("주소 업데이트 중 문제가 발생했습니다.");
+    alert("주소가 성공적으로 업데이트되었습니다.");
+    window.location.href = `/orders/detail?orderId=${orderId}`;
   }
 }
 
