@@ -327,7 +327,7 @@ async function saveUserData(e) {
     data.phone_number = phone_number;
   }
 
-  // 만약 업데이트할 것이 없다면 (디폴트인 currentPassword만 있어서 1개라면), 종료함
+  // 만약 업데이트할 것이 없다면 (디폴트인 currentPassword만 있어서 1개라면), 종료함dd
   const toUpdate = Object.keys(data);
   if (toUpdate.length === 1) {
     disableForm();
