@@ -38,6 +38,8 @@ let userEmailToDelete;
 const itemsPerPage = 10; // 한 페이지당 보여줄 회원 수
 let currentPage = 1; // 현재 페이지 번호
 let users = []; // 전체 회원 데이터
+let totalUsers = 0;
+let totalAdmins = 0;
 
 checkAdmin();
 addAllElements();
@@ -68,12 +70,11 @@ function addAllEvents() {
 // 초기 데이터 로드 및 렌더링
 async function loadInitialData() {
   users = await Api.get("/admin/users/all");
+  totalUsers = users.length;
+  totalAdmins = users.filter(user => user.admin).length;
+  updateUserCount();
+  updateAdminCount();
   renderUsers(users);
-
-
-// 총회원수 및 관리자수 업데이트
-  updateUserCount(users);
-  updateAdminCount(users);
 }
 
 // 검색 기능 구현
@@ -155,10 +156,15 @@ function renderUsers(usersToRender) {
         const index = roleSelectBox.selectedIndex;
         roleSelectBox.className = roleSelectBox[index].className;
 
-        console.log(response);
-
         if (response.message === '권한이 성공적으로 변경되었습니다.') {
           alert(response.message);
+          // 관리자 수 업데이트
+          if (newRole) {
+            totalAdmins++;
+          } else {
+            totalAdmins--;
+          }
+          updateAdminCount();
         } else {
           throw new Error(response.message || "권한 변경에 실패했습니다.");
         }
@@ -217,14 +223,24 @@ async function deleteUserData(e) {
 
     // 삭제한 아이템 화면에서 지우기
     const deletedItem = document.querySelector(`#user-${userEmailToDelete.replace(/[^a-zA-Z0-9]/g, '')}`);
+
+    // 삭제된 사용자가 관리자였다면 관리자 수 감소
+    if (deletedItem.querySelector("select").value === "ADMIN") {
+      totalAdmins--;
+    }
+
     deletedItem.remove();
+
+    // 전체 사용자 수 감소
+    totalUsers--;
+
+    // 카운트 업데이트
+    updateUserCount();
+    updateAdminCount();
 
     // 전역변수 초기화
     userEmailToDelete = "";
 
-    // 삭제 후 카운트 업데이트
-    updateUserCount();
-    updateAdminCount();
   } catch (err) {
     alert(`회원정보 삭제 과정에서 오류가 발생하였습니다: ${err}`);
   } finally {
@@ -258,15 +274,12 @@ function keyDownCloseModal(e) {
 
 // 유저 수 업데이트
 function updateUserCount() {
-  const userCount = document.querySelectorAll(".orders-item").length;
-  usersCount.innerText = addCommas(userCount);
+  usersCount.innerText = addCommas(totalUsers);
 }
 
 // 관리자 수 업데이트
 function updateAdminCount() {
-  const adminElements = document.querySelectorAll("option[value='ADMIN']:checked");
-  const adminCountValue = adminElements.length;
-  adminCount.innerText = addCommas(adminCountValue);
+  adminCount.innerText = addCommas(totalAdmins);
 }
 
 // 비밀번호 변경 Modal 창 열기
@@ -312,7 +325,7 @@ async function changePassword() {
     closePasswordModal();
   } catch (err) {
     console.error(err);
-    alert("비밀번호가 성공적으로 변경되었습니다.");
+    alert("비밀번호 변경 중 오류가 발생했습니다.");
   }
 }
 

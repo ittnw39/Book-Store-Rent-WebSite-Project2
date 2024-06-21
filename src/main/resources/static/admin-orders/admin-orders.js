@@ -22,6 +22,10 @@ let currentPage = 0;
 const pageSize = 10; // 한 페이지에 표시할 주문 수
 let totalPages = 1;
 let orders = [];
+let totalOrdersCount = 0;
+
+// 페이지 로드 시 실행, 삭제할 주문 id를 전역변수로 관리함
+let orderIdToDelete;
 
 checkAdmin();
 addAllElements();
@@ -42,7 +46,7 @@ function addAllEvents() {
   deleteCancelButton.addEventListener("click", cancelDelete);
   prevPageButton.addEventListener("click", () => changePage(currentPage - 1));
   nextPageButton.addEventListener("click", () => changePage(currentPage + 1));
-  addStatusChangeEventListener(); // 추가
+  addStatusChangeEventListener();
   searchInput.addEventListener('input', handleSearch);
 }
 
@@ -53,37 +57,29 @@ async function handleSearch() {
     String(order.id).includes(searchTerm)
   );
   renderOrders(filteredOrders);
-  updateSummary(filteredOrders);
   updatePagination(filteredOrders.length);
 }
 
-// 페이지 로드 시 실행, 삭제할 주문 id를 전역변수로 관리함
-let orderIdToDelete;
 async function insertOrders() {
   try {
     const response = await fetch(
       `/admin/orders/all?page=${currentPage}&size=${pageSize}`
     );
 
-    console.log("Response status:", response.status);
-    console.log("Response headers:", response.headers);
-
-    const responseText = await response.text();
-    //        console.log('Response text:', responseText);
-
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
 
-    // JSON으로 변환
-    const data = JSON.parse(responseText);
-    const { content: ordersData, totalPages: newTotalPages } = data;
+    const data = await response.json();
+    const { content: ordersData, totalPages: newTotalPages, totalElements } = data;
 
-    orders = ordersData; // 전역 변수에 주문 데이터 할당
+    orders = ordersData;
     totalPages = newTotalPages;
+    totalOrdersCount = totalElements;
+
     renderOrders(orders);
     updateSummary(orders);
-    updatePagination(orders.length);
+    updatePagination(totalOrdersCount);
   } catch (err) {
     console.error("Error fetching orders:", err);
     alert("주문 데이터를 가져오는 중 오류가 발생했습니다.");
@@ -91,7 +87,7 @@ async function insertOrders() {
 }
 
 function renderOrders(orders) {
-  ordersContainer.innerHTML = ""; // 기존 주문 정보 초기화
+  ordersContainer.innerHTML = "";
 
   const headerHTML = `
     <div class="columns notification is-info is-light is-mobile orders-top">
@@ -134,19 +130,18 @@ function renderOrders(orders) {
     ordersContainer.innerHTML += orderItemHTML;
   });
 
-      // 삭제 버튼 이벤트 추가
-      document.querySelectorAll(`.deleteButton`).forEach((el) => {
-        el.addEventListener("click", function (e) {
-          const id = e.target.id;
-          console.log("id", id);
-          orderIdToDelete = id;
-          openModal();
-        });
-      });
- }
+  // 삭제 버튼 이벤트 추가
+  document.querySelectorAll(`.deleteButton`).forEach((el) => {
+    el.addEventListener("click", function (e) {
+      const id = e.target.id;
+      orderIdToDelete = id;
+      openModal();
+    });
+  });
+}
 
-function updateSummary(orders) {
-  const summary = orders.reduce(
+function updateSummary(ordersToCount) {
+  const summary = ordersToCount.reduce(
     (acc, order) => {
       acc.ordersCount += 1;
 
@@ -163,7 +158,7 @@ function updateSummary(orders) {
     { ordersCount: 0, prepareCount: 0, deliveryCount: 0, completeCount: 0 }
   );
 
-  ordersCount.innerText = addCommas(summary.ordersCount);
+  ordersCount.innerText = addCommas(totalOrdersCount);
   prepareCount.innerText = addCommas(summary.prepareCount);
   deliveryCount.innerText = addCommas(summary.deliveryCount);
   completeCount.innerText = addCommas(summary.completeCount);
@@ -177,8 +172,9 @@ function changePage(page) {
 }
 
 // 페이지 네비게이션 업데이트 함수
-function updatePagination() {
+function updatePagination(totalItems) {
   paginationList.innerHTML = '';
+  totalPages = Math.ceil(totalItems / pageSize);
 
   for (let i = 0; i < totalPages; i++) {
     const pageItem = document.createElement('li');
@@ -199,13 +195,11 @@ function updatePagination() {
   nextPageButton.disabled = currentPage === totalPages - 1;
 }
 
-// db에서 주문정보 삭제
 async function deleteOrderData(e) {
   e.preventDefault();
 
   try {
     const orderId = orderIdToDelete;
-    console.log(`Deleting order ${orderId}`);
     const response = await fetch(`/orders/${orderId}`, {
       method: "DELETE",
     });
@@ -214,28 +208,22 @@ async function deleteOrderData(e) {
       throw new Error("Network response was not ok");
     }
 
-    // 삭제 성공
     alert("주문 정보가 삭제되었습니다.");
+    window.location.href = "/admin/orders";
 
-    // 주문 정보 화면에서 제거
-    const updatedOrders = orders.filter((order) => order.id !== orderId);
-    renderOrders(updatedOrders);
-    updateSummary(updatedOrders);
+//    totalOrdersCount--;
+//    orders = orders.filter((order) => order.id !== orderId);
+//    renderOrders(orders);
+//    updateSummary(orders);
+//    updatePagination(totalOrdersCount);
 
-    // 전역변수 초기화
     orderIdToDelete = null;
     closeModal();
-//  } catch (err) {
-//    console.error(`Error deleting order ${orderIdToDelete}:`, err);
-//    alert(`주문정보 삭제 과정에서 오류가 발생하였습니다: ${err.message}`);
-
-    // 삭제 후 admin/orders 페이지로 이동
-        window.location.href = "/admin/orders";
-      } catch (err) {
-        console.error(`Error deleting order ${orderIdToDelete}:`, err);
-        alert(`주문정보 삭제 과정에서 오류가 발생하였습니다: ${err.message}`);
-      }
-    }
+  } catch (err) {
+    console.error(`Error deleting order ${orderIdToDelete}:`, err);
+    alert(`주문정보 삭제 과정에서 오류가 발생하였습니다: ${err.message}`);
+  }
+}
 
 // Modal 창에서 아니오 클릭할 시, 전역 변수를 다시 초기화함.
 function cancelDelete() {
@@ -264,10 +252,10 @@ function keyDownCloseModal(e) {
 // 주문 상태 변경 이벤트 리스너 추가
 function addStatusChangeEventListener() {
   ordersContainer.addEventListener("change", async (event) => {
-    if (!event.target.matches("select")) return; // 선택박스가 아닌 경우 무시
+    if (!event.target.matches("select")) return;
 
     const selectBox = event.target;
-    const orderId = selectBox.id.split("-")[1]; // 주문 ID 추출
+    const orderId = selectBox.id.split("-")[1];
     const newStatus = selectBox.value;
 
     try {
@@ -283,17 +271,11 @@ function addStatusChangeEventListener() {
         throw new Error("Network response was not ok");
       }
 
-      const updatedOrder = await response.json();
-      console.log("Updated order:", updatedOrder);
-
-      // 주문 상태 업데이트 후 화면 갱신
-      const updatedOrders = orders.map((order) =>
-        order.id === orderId ? updatedOrder : order
-      );
-      renderOrders(updatedOrders);
-      updateSummary(updatedOrders);
+      // 상태 변경 성공 시 페이지 새로고침
+      window.location.href = "/admin/orders";
     } catch (error) {
       console.error(`Error updating status for order ${orderId}:`, error);
+      // 에러 발생 시에도 페이지 새로고침
       window.location.href = "/admin/orders";
     }
   });

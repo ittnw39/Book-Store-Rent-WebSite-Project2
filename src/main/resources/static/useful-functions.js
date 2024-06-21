@@ -89,7 +89,7 @@ export const checkLogin = () => {
 //          const pathname = window.location.pathname;
 //          const search = window.location.search;
           //window.location.replace(`/login?previouspage=${pathname + search}`);
-          window.location.replace("/users/login");
+          window.location.replace("/");
           return;
       }
 
@@ -101,11 +101,8 @@ export const checkLogin = () => {
           });
 
           if (res.status === 401) {
-              // 토큰이 만료된 경우 로그아웃 처리 후 로그인 페이지로 이동
-              sessionStorage.removeItem("token");
-              sessionStorage.removeItem("isAdmin");
-              alert("세션이 만료되었습니다. 다시 로그인해주세요.");
-              window.location.replace("/users/login");
+              alert("메인페이지로 가세요~");
+              window.location.replace("/");
               return;
           }
 
@@ -116,7 +113,7 @@ export const checkLogin = () => {
                   window.document.body.style.display = "block";
               } else {
                   alert("관리자 전용 페이지입니다.");
-                  window.location.replace("/users/login");
+                  window.location.replace("/");
               }
           } else {
               throw new Error("관리자 인증 실패");

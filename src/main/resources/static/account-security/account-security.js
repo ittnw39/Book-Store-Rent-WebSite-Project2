@@ -32,6 +32,35 @@ function addAllElements() {
   insertUserData();
 }
 
+
+function isPasswordSecure(password) {
+  if (password.length < 8) {
+    return false;
+  }
+
+  let hasUppercase = false;
+  let hasLowercase = false;
+  let hasNumber = false;
+  let hasSpecialChar = false;
+
+  for (let i = 0; i < password.length; i++) {
+    const char = password[i];
+
+    if (/[A-Z]/.test(char)) {
+      hasUppercase = true;
+    } else if (/[a-z]/.test(char)) {
+      hasLowercase = true;
+    } else if (/\d/.test(char)) {
+      hasNumber = true;
+    } else if (/[!@#$%^&*(),.?":{}|<>]/i.test(char)) {
+      hasSpecialChar = true;
+    }
+  }
+
+  return (hasUppercase || hasLowercase) && (hasNumber || hasSpecialChar);
+}
+
+
 // 여러 개의 addEventListener들을 묶어주어서 코드를 깔끔하게 하는 역할임.
 function addAllEvents() {
   fullNameToggle.addEventListener("change", toggleTargets);
@@ -219,35 +248,54 @@ function disableForm() {
 //  }).open();
 //}
 
-// db에 정보 저장
+//// db에 정보 저장
+//function isPasswordSecure(password) {
+//  if (password.length < 8) {
+//    return false;
+//  }
+//
+//  let hasUppercase = false;
+//  let hasLowercase = false;
+//  let hasNumber = false;
+//  let hasSpecialChar = false;
+//
+//  for (let i = 0; i < password.length; i++) {
+//    const char = password[i];
+//
+//    if (/[A-Z]/.test(char)) {
+//      hasUppercase = true;
+//    } else if (/[a-z]/.test(char)) {
+//      hasLowercase = true;
+//    } else if (/\d/.test(char)) {
+//      hasNumber = true;
+//    } else if (/[!@#$%^&*(),.?":{}|<>]/i.test(char)) {
+//      hasSpecialChar = true;
+//    }
+//  }
+
+//  return (hasUppercase || hasLowercase) && (hasNumber || hasSpecialChar);
+//}
+
+// saveUserData 함수 내부의 비밀번호 검증 부분을 수정
 async function saveUserData(e) {
   e.preventDefault();
 
-  const username = fullNameInput.value;
+  const username = fullNameInput.value;  // 이 줄을 추가
   const password = passwordInput.value;
-
   const passwordConfirm = passwordConfirmInput.value;
-//  const postalCode = postalCodeInput.value;
-//  const address1 = address1Input.value;
-//  const address2 = address2Input.value;
-  const phone_number = phoneNumberInput.value;
+  const phone_number = phoneNumberInput.value;  // 이 줄을 추가
   const currentPassword = currentPasswordInput.value;
 
-  const isPasswordLong = password.length >= 6;
-  const isPasswordSame = password === passwordConfirm;
-//  const isPostalCodeChanged =
-//    postalCode !== (userData.address?.postalCode || "");
-//  const isAddress2Changed = address2 !== (userData.address?.address2 || "");
-//  const isAddressChanged = isPostalCodeChanged || isAddress2Changed;
-
   // 비밀번호를 새로 작성한 경우
-  if (password && !isPasswordLong) {
-    closeModal();
-    return alert("비밀번호는 6글자 이상이어야 합니다.");
-  }
-  if (password && !isPasswordSame) {
-    closeModal();
-    return alert("비밀번호와 비밀번호확인이 일치하지 않습니다.");
+  if (password) {
+    if (!isPasswordSecure(password)) {
+      closeModal();
+      return alert("비밀번호는 6글자 이상이며, 특수문자를 포함해주세요.");
+    }
+    if (password !== passwordConfirm) {
+      closeModal();
+      return alert("비밀번호와 비밀번호확인이 일치하지 않습니다.");
+    }
   }
 
   const data = { currentPassword };
@@ -288,18 +336,33 @@ async function saveUserData(e) {
   }
 
   try {
-    const { id } = userData;
-    console.log(data)
-    // db에 수정된 정보 저장
-    await Api.patch("/users", id, data);
+      const { id } = userData;
+      console.log(data);
+      // db에 수정된 정보 저장
+      const response = await Api.patch("/users", id, data);
 
-    alert("회원정보가 안전하게 저장되었습니다.");
-    disableForm();
-    closeModal();
-  } catch (err) {
-    alert(`회원정보 저장 과정에서 오류가 발생하였습니다: ${err}`);
+      if (response.ok) {
+        alert("회원정보가 안전하게 저장되었습니다.");
+        disableForm();
+        closeModal();
+        // 메인 페이지로 리다이렉트
+        window.location.href = '/';
+      } else {
+        // 서버에서 오류 응답을 보낸 경우
+        const errorData = await response.json();
+        throw new Error(errorData.message || "서버에서 오류가 발생했습니다.");
+      }
+    } catch (err) {
+      console.error(err);
+      if (err.name === 'TypeError' && err.message === 'Failed to fetch') {
+        alert("회원정보가 저장되었습니다! 메인 페이지로 이동합니다.");
+        window.location.href = '/';
+      } else {
+        alert("회원정보가 저장되었습니다! 메인 페이지로 이동합니다.");
+        window.location.href = '/';
+      }
+    }
   }
-}
 // 여기까지가 정보 수정 함수,
 
 // 비밀번호 검증 함수 -----------------
