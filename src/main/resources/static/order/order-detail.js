@@ -159,7 +159,7 @@ async function loadOrderLineDetails(orderId) {
       for (const book of orderLine.orderLineBooks) {
         const bookData = books.find(b => b.id === book.bookId);
         if (bookData) {
-          productsTitle += `${bookData.title} - ${orderLine.price}원 x ${book.quantity}\n`;
+          productsTitle += `${bookData.title} - ${orderLine.price}원 x ${book.quantity}   |   ${addCommas(orderLine.price * orderLine.quantity)}원\n`;
         } else {
           productsTitle += `알 수 없는 제목 x ${book.quantity}\n`;
         }
@@ -169,7 +169,7 @@ async function loadOrderLineDetails(orderId) {
 
     productsTitleElem.innerText = productsTitle;
     deliveryFeeElem.innerText = addCommas(deliveryFee) + "원";
-    discountRateElem.innerText = (discountRate * 100).toFixed(0) + "%";
+    discountRateElem.innerText = (discountRate * 100).toFixed(0) + "%  (-" + (totalAmount * discountRate) + "원)";
     orderTotalElem.innerText = addCommas(totalAmount + deliveryFee - (totalAmount * discountRate)) + "원";
 
   } catch (error) {
