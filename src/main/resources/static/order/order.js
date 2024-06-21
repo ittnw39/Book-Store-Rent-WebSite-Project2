@@ -143,7 +143,7 @@ async function insertOrderSummary() {
         let productsTotal = 0;
 
         cartDetails.forEach((item, index) => {
-            productsTitle += `${index + 1}. ${item.title} - ${item.quantity}개 × ${item.price}원\n`;
+            productsTitle += `${index + 1}. ${item.title} - ${item.price}원 × ${item.quantity}개\n`;
             productsTotal += item.price * item.quantity;
         });
 
