@@ -143,7 +143,7 @@ async function insertOrderSummary() {
         let productsTotal = 0;
 
         cartDetails.forEach((item, index) => {
-            productsTitle += `${index + 1}. ${item.title} - ${item.price}원 × ${item.quantity}개\n`;
+            productsTitle += `${index + 1}. ${item.title} - ${item.price}원 × ${item.quantity}개   |   ${addCommas(item.price * item.quantity)}원\n`;
             productsTotal += item.price * item.quantity;
         });
 
@@ -156,7 +156,7 @@ async function insertOrderSummary() {
         deliveryFeeElem.innerText = `${addCommas(shippingFee)}원`;
 
         const discountRateValue = 0.1;
-        discountRate.innerText = `${(discountRateValue * 100).toFixed(0)}%`;
+        discountRate.innerText = `${(discountRateValue * 100).toFixed(0)}% (-${addCommas(totalPrice * discountRateValue)}원)`;
 
         const totalWithDeliveryAndDiscount = (totalPrice + shippingFee - (totalPrice * discountRateValue));
         orderTotalElem.innerText = `${addCommas(totalWithDeliveryAndDiscount)}원`;
