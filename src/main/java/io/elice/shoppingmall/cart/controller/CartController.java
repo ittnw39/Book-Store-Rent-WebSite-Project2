@@ -53,21 +53,21 @@ public class CartController {
     public ResponseEntity<String> addCart(@RequestBody CartItemDto cartItemDto, Principal principal) {
         User user = getUserFromPrincipal(principal);
         cartService.addCart(user.getId(), cartItemDto);
-        return new ResponseEntity<>("상품이 장바구니에 추가되었습니다", HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/cart/item/{cartItemId}")
     public ResponseEntity<String> updateCartItemQuantity(@PathVariable("cartItemId") Long cartItemId, @RequestParam("quantity") int quantity, Principal principal) {
         User user = getUserFromPrincipal(principal);
         cartService.updateCartItemQuantity(cartItemId, quantity);
-        return ResponseEntity.ok("장바구니 항목 수량이 성공적으로 업데이트되었습니다");
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/cart/item/{cartItemId}")
     public ResponseEntity<String> deleteCartItem(@PathVariable("cartItemId") Long cartItemId, Principal principal) {
         User user = getUserFromPrincipal(principal);
         cartService.deleteCartItem(cartItemId);
-        return ResponseEntity.ok("장바구니 항목이 성공적으로 삭제되었습니다");
+        return ResponseEntity.ok().build();
     }
 
 
