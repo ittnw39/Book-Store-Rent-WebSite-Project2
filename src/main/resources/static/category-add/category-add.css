@@ -1,0 +1,31 @@
+.account-header {
+  display: block;
+  border-bottom: #ddd 1px solid;
+  padding-bottom: 0.7rem;
+}
+
+.register-category-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5rem;
+}
+
+.register-category-form-box {
+  width: 40rem;
+}
+
+.register-category-form-box .title {
+  text-align: center;
+}
+
+.register-category-form-box .button {
+  font-weight: bold;
+}
+
+.register-category-form-box .input:focus,
+.register-category-form-box .textarea:focus,
+.register-category-form-box select:focus {
+  border-color: #00d1b2;
+  box-shadow: 0 0 0 0.125em rgba(0, 209, 178, 0.25);
+}

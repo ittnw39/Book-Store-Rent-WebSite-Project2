@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shopping Mall</title>
+    <!-- 아이콘 -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/elice-rabbit-favicon.png"
+    />
+    <!-- bulma css 관련 -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+    />
+    <!-- 폰트 어썸: 아이콘 -->
+    <script
+      defer
+      src="https://kit.fontawesome.com/9daa42bcef.js"
+      crossorigin="anonymous"
+    ></script>
+    <!-- 커스텀 css, js -->
+    <link rel="stylesheet" href="order-complete.css" />
+    <script src="/order-complete/order-complete.js" type="module" defer></script>
+  </head>
+  <body>
+    <!-- 헤더 -->
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="container mt-3">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="/">
+            <img src="/images/logo.png" width="60" height="180" />
+            <span class="is-size-4 has-text-weight-bold has-text-link ml-2">북팔이</span>
+          </a>
+
+          <a
+            role="button"
+            class="navbar-burger"
+            aria-label="menu"
+            aria-expanded="false"
+            data-target="navbarBasicExample"
+          >
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+
+        <div class="navbar-end breadcrumb my-auto" aria-label="breadcrumbs">
+          <ul id="navbar">
+            <li>
+              <a href="/cart" aria-current="page">
+                <span class="icon">
+                  <i class="fas fa-cart-shopping"></i>
+                </span>
+                <span>카트</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- 주문완료창 -->
+    <section class="section">
+      <div class="container">
+        <div class="cart-header">
+          <div class="subtitle">
+            <p class="is-size-6">
+              &nbsp; 장바구니 &nbsp; &gt; &nbsp; 주문결제 &nbsp; &gt;
+            </p>
+          </div>
+          <div class="title">
+            <p class="is-size-2">주문완료</p>
+          </div>
+        </div>
+
+        <div class="order-complete-container">
+          <div class="box order-complete">
+            <div class="icon-text">
+              <span class="icon has-text-success">
+                <i class="fas fa-circle-check"></i>
+              </span>
+              <span>주문이 완료되었습니다!</span>
+            </div>
+            <div class="buttons-container">
+              <button
+                class="button is-medium is-fullwidth"
+                id="orderDetailButton"
+              >
+                주문내역 보기
+              </button>
+              <button
+                class="button is-primary is-medium is-fullwidth"
+                id="shoppingButton"
+              >
+                쇼핑 계속하기
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer class="footer">
+      <div class="container">
+        <div class="content has-text-centered">
+          <p>
+            회사명: 북팔이<br>
+            대표자: 엘리스<br>
+            E-mail: 8team@elice.com<br>
+            문의전화: 010-1234-5678<br>
+            평일 10시~17시
+            (토, 일, 공휴일 휴무)<br>
+            사업자 등록번호: 123-45-67890<br>
+          </p>
+          <p>
+            <strong>8team</strong>
+          </p>
+        </div>
+      </div>
+    </footer>
+
+  </body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shopping Mall</title>
+    <!-- 아이콘 -->
+    <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/elice-rabbit-favicon.png"
+    />
+    <!-- bulma css 관련 -->
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+    />
+    <!-- 폰트 어썸: 아이콘 -->
+    <script
+            defer
+            src="https://kit.fontawesome.com/9daa42bcef.js"
+            crossorigin="anonymous"
+    ></script>
+    <!-- Daum 주소 API 사용하기 위한 파일 -->
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <!-- 커스텀 css, js -->
+    <link rel="stylesheet" href="/order/order.css" />
+    <script src="/order/order-detail.js" type="module" defer></script>
+</head>
+<body>
+<!-- 헤더 -->
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="container mt-3">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <img src="/images/logo.png" width="60" height="180" />
+                <span class="is-size-4 has-text-weight-bold has-text-link ml-2">북팔이</span>
+            </a>
+
+            <a
+                    role="button"
+                    class="navbar-burger"
+                    aria-label="menu"
+                    aria-expanded="false"
+                    data-target="navbarBasicExample"
+            >
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div class="navbar-end breadcrumb my-auto" aria-label="breadcrumbs">
+            <ul id="navbar">
+                <li>
+                    <a href="/cart" aria-current="page">
+                <span class="icon">
+                  <i class="fas fa-cart-shopping"></i>
+                </span>
+                        <span>카트</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- 배송지 정보 입력 박스 -->
+<section class="section">
+    <div class="container">
+        <div class="cart-header">
+            <div class="title">
+             <p class="is-size-2">주문 상세</p>
+            </div>
+        </div>
+
+        <div class="tile is-ancestor">
+            <div class="tile is-parent cart-products">
+                <div class="box delivery-info">
+
+                    <!-- 배송지 정보 -->
+                    <p class="subtitle is-4">배송지 정보</p>
+                    <div class="field is-horizontal">
+
+                        <!-- 이름 표시 -->
+                        <div class="field-label is-normal">
+                            <label class="label">이름</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="field">
+                                <p class="input receiverName is-static">-</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="field is-horizontal">
+
+                        <!-- 전화번호 표시 -->
+                        <div class="field-label is-normal">
+                            <label class="label">연락처</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="field">
+                                <p class="input receiverPhoneNumber is-static">-</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field is-horizontal">
+                        <!-- 주소 표시 -->
+                        <div class="field-label is-normal">
+                            <label class="label">주소</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="field">
+                                <p class="input userAddress is-static">-</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 요청사항 표시 -->
+                    <div class="field is-horizontal">
+                        <div class="field-label is-normal">
+                            <label class="label">요청사항</label>
+                        </div>
+                        <div class="field-body">
+                            <p class="input request is-static">-</p>
+                        </div>
+                    </div>
+
+                    <div class="field is-horizontal">
+                        <!-- 상세주소 표시 -->
+                        <div class="field-label is-normal">
+                            <label class="label">주문상태</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="field">
+                                <p class="input orderStatus is-static">-</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 주문 정보 요약 -->
+            <div class="tile is-parent tile-order-summary">
+                <div class="box order-summary">
+                    <div class="header">
+                        <p>결제정보</p>
+                    </div>
+                    <div class="order-info">
+                        <div class="info">
+                            <p>주문상품</p>
+                            <p id="productsTitle">-</p>
+                        </div>
+                        <div class="info">
+                            <p>할인율</p>
+                            <p id="discountRate">-</p>
+                        </div>
+                        <div class="info">
+                            <p>배송비</p>
+                            <p id="deliveryFee">-</p>
+                        </div>
+                    </div>
+                    <div class="total">
+                        <p class="total-label">총 결제금액</p>
+                        <p class="total-price" id="orderTotal">-</p>
+                    </div>
+                    <div class="purchase">
+                        <button class="button is-info" id="checkoutButton"
+                                style = "background-color: #485fc7;"
+                        >
+                            배송지 정보 수정
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        배송지 정보 유의사항 -<br>
+        • 배송 전 일때만 배송지 주소를 변경하실 수 있습니다. (상품 준비중 단계까지만 가능)
+    </div>
+</section>
+<footer class="footer">
+    <div class="container">
+        <div class="content has-text-centered">
+            <p>
+                회사명: 북팔이<br>
+                대표자: 엘리스<br>
+                E-mail: 8team@elice.com<br>
+                문의전화: 010-1234-5678<br>
+                평일 10시~17시
+                (토, 일, 공휴일 휴무)<br>
+                사업자 등록번호: 123-45-67890<br>
+            </p>
+            <p>
+                <strong>8team</strong>
+            </p>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

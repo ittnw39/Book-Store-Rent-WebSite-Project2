@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shopping Mall</title>
+    <!-- 아이콘 -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/elice-rabbit-favicon.png"
+    />
+    <!-- bulma css -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+    />
+    <!-- 폰트 어썸: 아이콘 -->
+    <script
+      defer
+      src="https://kit.fontawesome.com/9daa42bcef.js"
+      crossorigin="anonymous"
+    ></script>
+    <!-- Daum 주소 API 사용하기 위한 파일 -->
+<!--    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>-->
+    <!-- 커스텀 css, js -->
+    <link rel="stylesheet" href="/account-orders/account-orders.css" />
+    <script src="/account-orders/account-orders.js" type="module" defer></script>
+    <script src="../admin-users/admin-users.js"></script>
+  </head>
+  <body>
+    <!-- 헤더 -->
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="container mt-3">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="/">
+            <img src="/images/logo.png" width="60" height="180" />
+            <span class="is-size-4 has-text-weight-bold has-text-link ml-2">북팔이</span>
+          </a>
+
+      <a
+              role="button"
+              class="navbar-burger"
+              aria-label="menu"
+              aria-expanded="false"
+              data-target="navbarBasicExample"
+      >
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+
+    <div class="navbar-end breadcrumb my-auto" aria-label="breadcrumbs">
+      <ul id="navbar">
+        <li>
+          <a href="/cart" aria-current="page">
+                <span class="icon">
+                  <i class="fas fa-cart-shopping"></i>
+                </span>
+            <span>카트</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <!-- 주문조회 -->
+    <section class="section">
+      <div class="container">
+        <div class="block account-header">
+          <h1 class="subtitle is-4">주문조회</h1>
+        </div>
+        <div class="container orders-container" id="ordersContainer">
+          <div
+            class="columns notification is-info is-light is-mobile orders-top"
+          >
+            <div class="column is-2">날짜</div>
+            <div class="column is-4">주문정보</div>
+            <div class="column is-2">주문총액</div>
+            <div class="column is-2">상태</div>
+            <div class="column is-2">신청</div>
+          </div>
+        </div>
+        <!-- 페이지 네비게이션 -->
+        <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+          <a class="pagination-previous" id="prevPage">ᐸ</a>
+          <a class="pagination-next" id="nextPage">ᐳ</a>
+          <ul class="pagination-list" id="paginationList"></ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 주문을 정말 취소할 지 묻는 Modal 창 -->
+<div id="modal" class="modal">
+  <div class="modal-background" id="modalBackground"></div>
+  <div class="modal-content">
+    <div class="box">
+      <p class="mb-3">
+        주문 취소 시 복구할 수 없습니다. 정말로 취소하시겠습니까?
+      </p>
+
+      <div class="buttons">
+        <button
+                class="button mt-5"
+                id="deleteCompleteButton"
+                aria-label="close"
+        >
+          네
+        </button>
+        <button
+                class="button is-primary mt-5"
+                id="deleteCancelButton"
+                aria-label="close"
+        >
+          아니오
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <button
+          class="modal-close is-large"
+          id="modalCloseButton"
+          aria-label="close"
+  ></button>
+</div>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="content has-text-centered">
+          <p>
+            회사명: 북팔이<br>
+            대표자: 엘리스<br>
+            E-mail: 8team@elice.com<br>
+            문의전화: 010-1234-5678<br>
+            평일 10시~17시
+            (토, 일, 공휴일 휴무)<br>
+            사업자 등록번호: 123-45-67890<br>
+          </p>
+          <p>
+            <strong>8team</strong>
+          </p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

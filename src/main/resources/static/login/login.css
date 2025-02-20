@@ -1,0 +1,22 @@
+.login-form-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 85vh;
+}
+
+.login-form-box {
+    width: 30rem;
+}
+
+.login-form-box .title {
+    text-align: center;
+}
+
+.login-form-box .button {
+    font-weight: bold;
+}
+
+.naver-logo {
+  width: 200px; /* 로고 이미지 크기 조절 */
+}

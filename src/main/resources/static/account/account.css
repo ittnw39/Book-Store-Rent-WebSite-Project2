@@ -1,0 +1,59 @@
+/* 헤더  */
+.header-search-input {
+  width: 20rem;
+}
+
+.navbar-menu .is-info:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.account-header {
+  display: block;
+  border-bottom: #ddd 1px solid;
+  padding-bottom: 0.7rem;
+}
+
+/* 계정관리 관련 메뉴 */
+.menu-container {
+  display: grid;
+  grid-gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(25rem, 1fr));
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.menu-card {
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  font-size: 1.25rem;
+  padding: 0.5rem;
+  border: 1px #d5d9d9 solid;
+}
+
+.menu-card:hover {
+  background-color: #edf7f7;
+}
+
+.menu-icon {
+  margin: 0 2rem;
+  padding: 1rem;
+  font-size: 3.5rem;
+}
+
+.menu-body {
+  border-radius: 6px;
+  color: #7a7a7a;
+  font-size: 1.25em;
+  padding: 1em;
+  flex-grow: 1;
+}
+
+.menu-body .title {
+  margin-bottom: 1rem;
+}
+
+.title:not(.is-spaced) + .subtitle {
+  margin-top: 1rem;
+}

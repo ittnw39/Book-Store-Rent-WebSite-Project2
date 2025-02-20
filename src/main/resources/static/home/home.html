@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shopping Mall</title>
+  <!-- 아이콘 -->
+  <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/elice-rabbit-favicon.png"
+  />
+  <!-- bulma css -->
+  <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+  />
+  <!-- 폰트 어썸: 아이콘 -->
+  <script
+      defer
+      src="https://kit.fontawesome.com/9daa42bcef.js"
+      crossorigin="anonymous"
+  ></script>
+  <!-- 커스텀 css, js -->
+  <link rel="stylesheet" href="/home/home.css" />
+  <script src="/home/home.js" type="module" defer></script>
+  <script src="/login/login.js"></script>
+</head>
+<body>
+<!-- 헤더 -->
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="container mt-3">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">
+        <img src="/images/logo.png" width="60" height="180" />
+        <span class="is-size-4 has-text-weight-bold has-text-link ml-2">북팔이</span>
+      </a>
+
+      <a class="navbar-item" href="/books">
+        <span class="has-text-link">전체 목록</span>
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          카테고리
+        </a>
+        <div class="navbar-dropdown" id="category-dropdown">
+          <!-- 카테고리 목록이 여기 추가될 예정 -->
+        </div>
+      </div>
+
+      <form id="search-form" class="navbar-item ml-2" action="/product/list" method="get">
+        <div class="field has-addons">
+          <div class="control">
+            <input
+                    class="input"
+                    type="text"
+                    name="search"
+                    placeholder="저자 또는 책 제목을 입력하세요."
+            />
+          </div>
+          <div class="control">
+            <button class="button is-link" type="submit">
+              <span class="icon">
+                <i class="fas fa-search"></i>
+              </span>
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <a
+          role="button"
+          class="navbar-burger"
+          aria-label="menu"
+          aria-expanded="false"
+          data-target="navbarBasicExample"
+      >
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div class="navbar-end breadcrumb my-auto" aria-label="breadcrumbs">
+      <ul id="navbar">
+        <li>
+          <a href="/cart" aria-current="page">
+              <span class="icon">
+                <i class="fas fa-cart-shopping"></i>
+              </span>
+            <span>카트</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<section class="section">
+  <div class="container">
+    <a href="/users/register" class="banner">
+      <div class="banner-content">
+        <div class="banner-image-container">
+          <img src="/images/image8.png" alt="회원 가입 이벤트" class="banner-image" />
+        </div>
+        <div class="banner-text-container">
+          <div class="banner-text">
+            <h3>책 읽는 즐거움을 가장 합리적인 가격에 만나보세요!</h3>
+            <br />
+            <p class="emphasis">회원 가입하고 <span class="highlight">독서의 새로운 차원</span>으로 진입하세요.</p>
+            <p class="emphasis"><span class="highlight">지금 바로 클릭</span>하고 특별 혜택을 누리세요!</p>
+            <br />
+            <br />
+            <br />
+            <br />
+            <p class="expiration">2024년 6월 30일까지</p>
+          </div>
+      </div>
+        </div>
+    </a>
+  </div>
+</section>
+
+
+
+
+
+<style>
+  .modal-content {
+    width: 800px;
+    max-width: 90%;
+  }
+
+  .box {
+    background-color: #e6f2ff;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .content-wrapper {
+    flex-grow: 1;
+  }
+
+  .buttons-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding: 20px;
+    border-top: 1px solid #dbdbdb;
+  }
+</style>
+
+
+<div id="event-popup" class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-content">
+    <div class="box">
+      <div class="columns">
+        <div class="column">
+          <img src="/images/image5.png" alt="Event Image">
+        </div>
+        <div class="column">
+          <h3 class="title is-4">회원 가입 이벤트!</h3>
+          <p>
+            똑똑한 독자라면 놓칠 수 없는 기회!<br />
+            회원 가입하고 10% 할인 혜택을 잡으세요.<br />
+            <br />
+            북팔이 회원이 되어 특별한 혜택을 누려보세요.<br />
+            이벤트 기간: 2024년 6월 30일까지
+            <br />
+            <br />
+            <br />
+            <br />
+          </p>
+          <div class="buttons">
+            <a href="/users/register" class="button is-primary">회원 가입하기</a>
+            <button id="close-for-today" class="button is-text">오늘 하루 보지 않기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="modal-close is-large" aria-label="close"></button>
+</div>
+<!-- 네비바 아래에 이미지 슬라이더 추가 -->
+<section class="hero is-medium">
+  <div class="hero-body">
+    <div class="container">
+      <div class="slider">
+        <div class="slide">
+          <img src="/images/image1.png" alt="Image 1">
+          <p class="slide-text">지식의 바다로 뛰어들 준비 되셨나요?</p>
+        </div>
+        <div class="slide">
+          <img src="/images/image2.png" alt="Image 2">
+          <p class="slide-text">새로운 세상을 발견할 시간입니다!</p>
+        </div>
+        <div class="slide">
+          <img src="/images/image3.png" alt="Image 3">
+          <p class="slide-text">책과 함께 성장하는 즐거움을 경험하세요.</p>
+        </div>
+        <div class="slide">
+          <img src="/images/image4.png" alt="Image 4">
+          <p class="slide-text">당신의 인생을 바꿀 책을 찾아보세요!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section quote-section">
+  <div class="container">
+    <p class="quote">북팔이와 함께 당신의 독서 여정을 시작해보세요!</p>
+    <hr class="quote-divider">
+  </div>
+</section>
+
+<!-- 주문 많은 책 섹션-->
+<section class="section">
+  <div class="container">
+    <h2 class="title is-3">베스트셀러 📚 <span class="subtitle is-6">가장 인기 있는 책들을 만나보세요!</span></h2>
+    <div class="columns is-centered" id="top-ordered-books-container">
+      <!-- 상위 3위 책 목록이 여기 추가될 예정 -->
+    </div>
+  </div>
+</section>
+
+<div class="jb-division-line"></div>
+
+<!-- 리뷰 많은 책 섹션 -->
+<section class="section">
+  <div class="container">
+    <h2 class="title is-3">리뷰 많은 책 TOP 3 <span class="subtitle is-6">독자들의 생생한 목소리를 들어보세요!</span></h2>
+    <div class="columns" id="top-books-container">
+      <!-- 상위 3위 책 목록이 여기 추가될 예정 -->
+    </div>
+  </div>
+</section>
+
+
+
+<!-- footer 섹션 -->
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <p>
+        회사명: 북팔이<br>
+        대표자: 엘리스<br>
+        E-mail: 8team@elice.com<br>
+        문의전화: 010-1234-5678<br>
+        평일 10시~17시
+        (토, 일, 공휴일 휴무)<br>
+        사업자 등록번호: 123-45-67890<br>
+      </p>
+      <p>
+        <strong>8team</strong>
+      </p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
+
+

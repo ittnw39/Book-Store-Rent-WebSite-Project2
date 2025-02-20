@@ -1,0 +1,233 @@
+.header-search-input {
+  width: 20rem;
+}
+
+.navbar-menu .is-info:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.cart-header {
+  border-bottom: #dbdbdb solid 1px;
+  padding-bottom: 0.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+}
+
+.cart-header .title {
+  margin-bottom: 0;
+  padding-top: 2rem;
+}
+
+.cart-header .subtitle {
+  padding: 2rem 1rem 0 1rem;
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 1.7;
+}
+
+.subtitle-cart {
+  cursor: pointer;
+}
+
+.title:not(.is-spaced) + .subtitle {
+  margin-top: 0;
+}
+
+.cart-products {
+  height: 100%;
+  flex: none;
+  width: 60%;
+}
+
+.delivery-info {
+  width: 100%;
+}
+
+.delivery-info .subtitle {
+  padding-left: 0.4rem;
+}
+
+.delivery-info .field-label {
+  flex-basis: 7rem;
+  flex-grow: 0;
+  text-align: left;
+  height: 3rem;
+  line-height: 2rem;
+  padding-left: 0.5rem;
+}
+
+.delivery-info .field-body,
+.delivery-info .select {
+  flex-basis: 35rem;
+  flex-grow: 0;
+  height: 3rem;
+}
+
+.select select {
+  width: 100%;
+  height: 100%;
+  color: rgba(0, 0, 0, 0.3);
+}
+
+.select .select-option {
+  font-size: 1.1rem;
+  color: black;
+}
+
+.delivery-info .button {
+  height: 3rem;
+}
+
+.delivery-info .field-body .control,
+.delivery-info .field-body .input {
+  height: 100%;
+}
+
+.delivery-info .custom-request {
+  display: none;
+}
+
+/* 숫자 input의 위 아래 화살표 제거 */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.tile-order-summary {
+  height: 100%;
+  position: sticky;
+  top: 0.5rem;
+}
+
+.order-summary {
+  background-color: #f0f5f7;
+  width: 100%;
+}
+
+.order-summary .header {
+  border-bottom: #555 solid 1px;
+  font-size: 1.4rem;
+}
+
+.order-info {
+  border-bottom: #555 solid 1px;
+}
+
+.order-info .info {
+  margin-top: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.1rem;
+}
+
+.order-info .info:first-child {
+  margin-top: 1.2rem;
+}
+
+.order-info .info:last-child {
+  margin-bottom: 1.2rem;
+}
+
+.order-info .info p {
+  display: block;
+  max-width: 70%;
+}
+
+.order-info .products-title {
+  text-align: right;
+}
+
+.total {
+  margin-top: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.total P {
+  display: block;
+}
+
+.total .total-label {
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-top: 0.5rem;
+}
+
+.total .total-price {
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+.purchase {
+  margin-top: 3rem;
+  padding: 0.2rem 0;
+}
+
+.purchase button {
+  font-size: 1.4rem;
+  font-weight: 800;
+  width: 100%;
+  height: 4rem;
+}
+
+@media only screen and (max-width: 500px) {
+  .cart-product-item {
+    flex-direction: column;
+  }
+
+  .cart-product-item label {
+    left: 0;
+  }
+
+  .cart-product-item .image {
+    height: 150px;
+    width: 150px;
+    margin-top: 1rem;
+  }
+
+  .cart-product-item .content {
+    flex-basis: 2rem;
+    margin-top: 2rem;
+  }
+
+  .cart-product-item .content p {
+    margin-top: 0.5rem;
+  }
+
+  .calculation {
+    margin-top: 1rem;
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .delivery-info .field-label {
+    height: 1.5rem;
+  }
+
+  .delivery-info .no-label {
+    height: 0;
+  }
+
+  .delivery-info .search {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .delivery-info .search .field {
+    flex-grow: 1;
+  }
+
+  .delivery-info .button {
+    height: 2.3rem;
+    margin-left: 1rem;
+  }
+
+  .delivery-info .select {
+    height: 2.3rem;
+  }
+}

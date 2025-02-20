@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shopping Mall</title>
+  <!-- 아이콘 -->
+  <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/elice-rabbit-favicon.png"
+  />
+  <!-- bulma css 관련 -->
+  <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+  />
+  <!-- 폰트 어썸: 아이콘 -->
+  <script
+      defer
+      src="https://kit.fontawesome.com/9daa42bcef.js"
+      crossorigin="anonymous"
+  ></script>
+  <!-- AWS S3 사용하기 위한 파일 -->
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.410.0.min.js"></script>
+  <!-- 커스텀 css, js -->
+  <link rel="stylesheet" href="/product-detail/product-detail.css" />
+  <script src="/product-detail/product-detail.js" type="module" defer></script>
+</head>
+<body>
+<!-- 헤더 -->
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="container mt-3">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">
+        <img src="/images/logo.png" width="60" height="180" />
+        <span class="is-size-4 has-text-weight-bold has-text-link ml-2">북팔이</span>
+      </a>
+
+      <a
+          role="button"
+          class="navbar-burger"
+          aria-label="menu"
+          aria-expanded="false"
+          data-target="navbarBasicExample"
+      >
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+
+    <div class="navbar-end breadcrumb my-auto" aria-label="breadcrumbs">
+      <ul id="navbar">
+        <li>
+          <a href="/cart" aria-current="page">
+                <span class="icon">
+                  <i class="fas fa-cart-shopping"></i>
+                </span>
+            <span>카트</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- 제품 상세 설명 카드 -->
+<section class="section">
+  <div class="container">
+    <div class="tile is-ancestor product-detail-card">
+      <div class="tile is-6 is-parent">
+        <div class="tile is-child box product-image">
+          <figure class="image is-square">
+            <img id="productImageTag" src="" />
+          </figure>
+        </div>
+      </div>
+      <div class="tile is-parent is-vertical">
+        <div class="tile is-child box product-detail">
+          <div class="tabs">
+            <ul>
+              <li id="publisherTag"></li>
+              <li>&nbsp;/&nbsp;</li>
+              <li id="publishedDateTag"></li>
+              <li>&nbsp;/&nbsp;</li>
+              <li id="categoryTag"></li>
+            </ul>
+          </div>
+          <div class="content">
+            <p class="subtitle is-2 is-family-monospace" id="titleTag"></p>
+            <p class="subtitle is-4 is-family-monospace" id="authorTag"></p>
+            <h1 id="priceTag"></h1>
+            <p class="detail-description" id="descriptionTag">설명</p>
+            <!-- Quantity input field -->
+            <input type="number" id="quantity" name="quantity" min="1" value="1">
+          </div>
+        </div>
+        <div class="tile is-child box buttons-container">
+          <button class="button is-warning" id="addToCartButton">
+            장바구니 추가하기
+          </button>
+          <button class="button is-info ml-2" id="purchaseButton">
+            바로 구매하기
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- 리뷰 작성 폼과 리스트 컨테이너 -->
+<section class="section">
+  <div class="container review-container">
+    <!-- 리뷰 작성 폼 -->
+    <div class="box">
+      <h2 class="title is-4">리뷰 작성</h2>
+      <div class="field">
+        <label class="label"></label>
+        <div class="control">
+          <textarea class="textarea" id="reviewComment" placeholder="리뷰를 작성해주세요"></textarea>
+        </div>
+      </div>
+      <div class="control">
+        <button class="button is-link" id="submitReviewButton">등록</button>
+      </div>
+    </div>
+
+    <!-- 리뷰 리스트 -->
+    <div class="box">
+      <div class="select is-small">
+        <select id="sortOption">
+          <option value="date">최신순</option>
+          <option value="likes">좋아요순</option>
+        </select>
+      </div>
+      <div id="reviewsContainer"></div>
+    </div>
+  </div>
+</section>
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <p>
+        회사명: 북팔이<br>
+        대표자: 엘리스<br>
+        E-mail: 8team@elice.com<br>
+        문의전화: 010-1234-5678<br>
+        평일 10시~17시
+        (토, 일, 공휴일 휴무)<br>
+        사업자 등록번호: 123-45-67890<br>
+      </p>
+      <p>
+        <strong>8team</strong>
+      </p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
